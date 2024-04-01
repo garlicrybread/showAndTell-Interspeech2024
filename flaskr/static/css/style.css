@@ -1,0 +1,150 @@
+/*
+main colors purple
+light:  #e1dcef
+med:    #b6aece
+dark:   #8e81b1
+
+contrast (green)
+light:  #b5c4ae
+dark:   #8fa484
+*/
+
+
+html { font-family: "Verdana", sans-serif; background: #e1dcef; padding: 1rem; }
+body { max-width: 960px; margin: 0 auto; background: white; border-radius: 5px}
+h1 { font-family: serif; color: black; margin: 1rem 0; height: available}
+/* login, register, log out buttons*/
+a { color: black; }
+hr { border: none; border-top: 1px solid lightgray; }
+
+nav { background: #b6aece;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    border-radius: 5px;
+}
+nav h1 { flex: auto; margin: 0; }
+nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
+nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
+nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
+
+.content { padding: 0 1rem 1rem; }
+.content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
+.content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
+.content > header h2 { flex: auto; margin: 1rem 0 0.25rem 0; font-size: large}
+
+.column > summary { flex: auto; margin: 1rem 0 0.25rem 0; font-weight: normal; font-size: medium;
+    border-bottom: 1px solid lightgray; }
+
+.flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
+
+.content:last-child { margin-bottom: 0; }
+.content form { margin: 1em 0; display: flex; flex-direction: column; }
+.content div { margin: 0.5em 0; display: flex; flex-direction: column; }
+.content label { font-weight: normal; margin-bottom: 0.5em; }
+.content input, .content textarea { margin-bottom: 1em; }
+.content textarea { min-height: 12em; resize: vertical; }
+
+.flex-col div {display: flex; flex-direction: row; flex-wrap: wrap;}
+/*.flex-col input {display: flex; flex-direction: column; flex-wrap: wrap; justify-content: space-around}*/
+.flex-row div {
+    display: flex; flex-direction: column;
+    margin: auto; padding: 0.005em; margin-top: 1em;
+    /*border-right: 1px solid lightgray;*/
+}
+.flex-row > div.flex-col-right {margin-right: 1em;}
+.flex-row > div.flex-col-left {margin-left: 1em;}
+div > summary { display: flex; justify-content: center; margin-bottom: 5px}
+
+
+button {
+    min-width: auto;
+    min-height: 2em;
+    background-color: #e1dcef;
+    border: none;
+    border-radius: 5px;
+    margin-top: auto;
+}
+button[type=nav-button]:hover:not(:disabled) { background-color: #8e81b1; }
+button[type=nav-button]:active:not(:disabled) { background-color: #b6aece; }
+button[type="nav-button"] {
+    align-self: flex-start;
+}
+
+
+input.danger { color: #cc2f2e; }
+input[type=submit] {
+    align-self: start;
+    min-width: 10em;
+    padding: 5px;
+    background-color: #b5c4ae;
+    border: none;
+    border-radius: 5px;
+}
+input[type=submit]:hover { background-color: #8fa484 }
+input[type=button] {
+    display: flex;
+    align-self: center;
+    width: 10em;
+    height: 2em;
+    background-color: #e1dcef;
+    border: none;
+    border-radius: 5px;
+    margin-top: auto;
+    justify-content: center;
+}
+input[type=button]:hover:not(:disabled) { background-color: #8e81b1; }
+input[type=button]:active:not(:disabled) { background-color: #b6aece; }
+
+input[type=button].back-btn {align-self: flex-start; justify-content: center; width: auto}
+input[type=button].prev-btn {align-self: flex-start; justify-content: center; width: auto}
+input[type=button].next-btn {align-self: flex-end; justify-content: center; width: auto}
+
+.loader1, .loader2 {
+    height: 50px; /* Set the desired height */
+    display: flex;
+    align-items: center;
+}
+
+.loader1:not(.active) .stroke, .loader2:not(.active) .stroke {
+    display: none;
+}
+
+.loader1 .stroke, .loader2 .stroke {
+    display: block;
+    position: relative;
+    background: #78a9eb;
+    height: 100%;
+    width: 10px; /* Adjust width as needed */
+    border-radius: 50px;
+    margin: 0 5px;
+    animation: animate 1.2s linear infinite;
+}
+
+@keyframes animate {
+    50% {
+        transform: scaleY(0.2); /* Change scaleY to scaleX for horizontal alignment */
+    }
+    100% {
+        transform: scaleY(1); /* Change scaleY to scaleX for horizontal alignment */
+    }
+}
+
+.stroke:nth-child(1) {
+    animation-delay: 0s;
+}
+.stroke:nth-child(2) {
+    animation-delay: 0.3s;
+}
+.stroke:nth-child(3) {
+    animation-delay: 0.6s;
+}
+.stroke:nth-child(4) {
+    animation-delay: 0.9s;
+}
+.stroke:nth-child(5) {
+    animation-delay: 0.2s;
+}
+.stroke:nth-child(6) {
+    animation-delay: 0.1s;
+}

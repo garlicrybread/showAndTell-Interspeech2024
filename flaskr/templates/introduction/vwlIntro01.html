@@ -1,0 +1,19 @@
+<!-- Template: auth/login.html -->
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Practice Pronunciation{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+<!--  <label for="username">Username</label>-->
+<!--  <input name="username" id="username" required>-->
+
+<!--  <label for="password">Password</label>-->
+<!--  <input type="password" name="password" id="password" required>-->
+  <input type="submit" value="Developer secret log in bypass" id="devLoginButton" style="display: none">
+
+  <script src="{{ url_for('static', filename='js/authScript.js') }}"></script>
+</form>
+{% endblock %}
