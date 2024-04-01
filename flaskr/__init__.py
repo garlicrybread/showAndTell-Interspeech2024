@@ -90,10 +90,14 @@ def create_app(test_config=None):
     app.register_blueprint(navigationAndCalibration.bp)
     app.add_url_rule('/', endpoint='home')
 
-    from . import db
+    # from . import db
 
-    from . import practice
-    app.register_blueprint(practice.bp)
+    from . import tutorial
+    app.register_blueprint(tutorial.bp)
+
+    # from . import practice
+    # app.register_blueprint(practice.bp)
+
 
     @init_cli.command("db")
     def init_db():

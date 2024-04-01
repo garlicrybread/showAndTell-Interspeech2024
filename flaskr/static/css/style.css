@@ -40,20 +40,26 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
-.content div { margin: 0.5em 0; display: flex; flex-direction: column; }
+.content div { margin: 0.5em 0; display: flex; }
 .content label { font-weight: normal; margin-bottom: 0.5em; }
 .content input, .content textarea { margin-bottom: 1em; }
 .content textarea { min-height: 12em; resize: vertical; }
 
-.flex-col div {display: flex; flex-direction: row; flex-wrap: wrap;}
+.flex-col {
+    flex-direction: row;
+    margin: auto; justify-content: space-around;
+    align-content: space-evenly;
+}
 /*.flex-col input {display: flex; flex-direction: column; flex-wrap: wrap; justify-content: space-around}*/
-.flex-row div {
+.flex-row {
     display: flex; flex-direction: column;
     margin: auto; padding: 0.005em; margin-top: 1em;
+    justify-content: space-evenly;
     /*border-right: 1px solid lightgray;*/
 }
 .flex-row > div.flex-col-right {margin-right: 1em;}
 .flex-row > div.flex-col-left {margin-left: 1em;}
+.border {border: 1px solid #8fa484}
 div > summary { display: flex; justify-content: center; margin-bottom: 5px}
 
 
@@ -86,11 +92,10 @@ input[type=button] {
     display: flex;
     align-self: center;
     width: 10em;
-    height: 2em;
+    height: 10em;
     background-color: #e1dcef;
     border: none;
     border-radius: 5px;
-    margin-top: auto;
     justify-content: center;
 }
 input[type=button]:hover:not(:disabled) { background-color: #8e81b1; }
@@ -147,4 +152,8 @@ input[type=button].next-btn {align-self: flex-end; justify-content: center; widt
 }
 .stroke:nth-child(6) {
     animation-delay: 0.1s;
+}
+
+svg {
+
 }
