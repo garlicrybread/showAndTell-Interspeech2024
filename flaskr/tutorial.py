@@ -16,8 +16,9 @@ import os
 bp = Blueprint('tutorial', __name__, url_prefix='/tutorial')
 
 @bp.route('/vowelP1', methods=('GET', 'POST'))
-def viwekP1():
+def vowelP1():
     return render_template('tutorial/vowelP1.html')
+
 @bp.route('/vowelP2', methods=('GET', 'POST'))
-def viwekP2():
+def vowelP2():
     return render_template('tutorial/vowelP2.html')
