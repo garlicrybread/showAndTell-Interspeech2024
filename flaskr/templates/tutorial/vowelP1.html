@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
     <p>
        Vowel charts represent the tongue position when saying a vowel.
         In this tutorial, we will practice saying words to build intuition on how to read a vowel chart.
@@ -32,9 +31,15 @@
 
     </div>
 
-
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script type="module" src="../../static/js/vwlChart.js"></script>
 {#    <script type="module" src="../../static/js/myJS.js"></script>#}
-</form>
+
+
+<div class="flex-col-right">
+    <button id="myButton">Start Recording</button>
+{#        <input type="button" class="next-btn" value=">" idnum="" >#}
+   
+
+</div>
 {% endblock %}
