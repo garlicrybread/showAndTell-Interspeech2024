@@ -1,45 +1,5 @@
 import data from '../data/vwls.json' with { type: 'json'};
-import dataSpa from '../data/spa-tardo_vwls.json' with { type: 'json'};
-// hard coded-values for frequencies for sake of practice
-// const dat = [
-//     {vwl:{f1:200,f2:2500}}, // top right
-//     // {vwl:[{f1:300,f2:25000},{f1:200,f2:500}]}, // top left
-//     {vwl:{f1:850,f2:1750}}, // bottom left
-//     // {vwl:{f1:900,f2:2500}}, // bottom left out of range
-//     // {vwl:{f1:500,f2:2500}},
-//     // {vwl:{f1:300,f2:2500}},
-//     // {vwl:{f1:850,f2:500}}, // bottom right
-//     // {vwl: [
-//     //         {f1:300,f2:2300}, // [i]
-//     //         {f1:400,f2:1700},
-//     //         {f1:900,f2:2500},
-//     //         {f1:550,f2:1800} // [ɛ]
-//     //     ]
-//     // },
-//     {vwl: [ // from cry-tardo
-//             {f1:843,f2:1495},
-//             {f1:825,f2:1513},
-//             {f1:810,f2:1541},
-//             {f1:790,f2:1569},
-//             {f1:778,f2:1590},
-//             {f1:765,f2:1635},
-//             {f1:757,f2:1677}
-//         ]},
-//     {vwl: [
-//             {f1:478,f2:1968}
-//         ]},
-//     {vwl: [ // cry-tia
-//             {f1:391,f2:2757},
-//             {f1:393,f2:2814},
-//             {f1:401,f2:2846},
-//             {f1:412,f2:2872},
-//             {f1:422,f2:2859},
-//             {f1:423,f2:2807},
-//             {f1:822,f2:1787}
-//         ]}
-// ];
-// console.log(dat[2]['vwl'][0].f1)
-// console.log(data[2]['vwl'][0].f1)
+import coordinates from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'}
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
@@ -236,16 +196,19 @@ async function drawVowels() {
     const xWidth = svgWidth - 2 * padding.x;
     const yHeight = svgHeight - 2 * padding.y;
     const slope = (0.9999 * yHeight) / (0.375 * xWidth);
+    const xrange = [coordinates[0][1], coordinates[0][0]];
+    const yrange = coordinates[1]
+    console.log(xrange,yrange)
     // convert frequencies to svg scale
     // TODO: don't hardcode domains
     const f1ToYCoordinates = d3.scaleLinear()
-        .domain([200, 850])
+        .domain(yrange)
         .range([padding.y, svgHeight - padding.y])
         .clamp(true)
     function f2ToXCoordinates(d) {
         const y = f1ToYCoordinates(d.f1);
         const toXCoor = d3.scaleLinear()
-            .domain([2500, 500])
+            .domain(xrange)
             .range([(y + 2 * padding.x) / slope, svgWidth - padding.x])
         .clamp(true)
         return toXCoor(d.f2)
@@ -359,7 +322,7 @@ async function drawVowels() {
             }
         }
     );
-};
+}
 async function svgGetPadding(svg) {
     // get height and width of svg
     const svgViewBox = svg.attr("viewBox").split(',');
