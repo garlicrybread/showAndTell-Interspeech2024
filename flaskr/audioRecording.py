@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
-DATA_DIR = MAIN_DIR + "flaskr/participantData/"
+DATA_DIR = MAIN_DIR + "flaskr/static/participantData/"
 
 def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=False, secondTime=False):
     # obtain lang_files from the microphone
@@ -92,24 +92,18 @@ def main():
         recordFile("bata",debug=True)
         return ''
     try:
-        id = sys.argv.index('-id') + 1
+        idIDX = sys.argv.index('-id') + 1
     except ValueError:
         feedback += "You need to specify participant id with flag '-id'\n"
     # If the Speaker Calibration flag is set, then run recordCalibrationFiles. This only works if id was also set.
+    try:
+        id = sys.argv[idIDX]
+    except UnboundLocalError:
+        feedback += "Include an id name along with the -id flag, e.g. -id [id_name]"
+        return feedback
     if "speakerCalibration" in sys.argv:
-        try:
-            recordCalibrationFiles(sys.argv[id])
-            return ''
-        except UnboundLocalError:
-            print("UnboundLocalError")
-            pass
-    # Check to make sure that L1 or L2 speaker was specified
-    elif 'L1' in sys.argv:
-        speaker = 'L1'
-    elif 'L2' in sys.argv:
-        speaker = 'L2'
-    else:
-        feedback += "Missing L1 and L2 flags."
+        recordCalibrationFiles(sys.argv[id])
+        return ''
 
     # If any flag was not properly set, then feedback won't be zero and it should be returned
     if len(feedback) != 0:
@@ -125,10 +119,8 @@ if __name__ == '__main__':
     info='''
     This file can be run with the following flags
     -debug : prints out microphone information
-    The following flags are required if debug is not set (choice between L1 or L2 NOT BOTH!)
+    The following flags are required if debug is not set 
         id : highest level folder name where the speaker's audio files will be stored
-        L1 : collect L1 speaker's data or
-        L2 : collect L2 speaker's data
     -speakerCalibration : record files for vowel chart calibration
     '''
     import time
