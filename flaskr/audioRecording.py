@@ -114,6 +114,10 @@ def main():
     # If any flag was not properly set, then feedback won't be zero and it should be returned
     if len(feedback) != 0:
         return feedback
+
+    eng_words = ['cheese','big','beg','bag','ruler','dune','could','cup']
+    for word in eng_words:
+        recordFile(word,id)
     return ''
 
 
