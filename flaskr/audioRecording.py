@@ -73,9 +73,7 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
 
 
 def recordCalibrationFiles(id):
-    words = ['beet','bat','bow','bot','boot']
-    info = ["as in the vegetable", "as in the flying mammal",
-            "as in bend forward", "as in robot", "as in what cowboys wear"]
+    words = ['eee','ooo','awe']
     for idx, word in enumerate(words):
         speak = f"The next word you'll be asked to say is \t{word}, {info[idx]}"
         print(speak)
@@ -101,8 +99,9 @@ def main():
     except UnboundLocalError:
         feedback += "Include an id name along with the -id flag, e.g. -id [id_name]"
         return feedback
-    if "speakerCalibration" in sys.argv:
-        recordCalibrationFiles(sys.argv[id])
+    print('calibrate' in sys.argv)
+    if "-calibrate" in sys.argv:
+        recordCalibrationFiles(id)
         return ''
 
     # If any flag was not properly set, then feedback won't be zero and it should be returned
@@ -121,7 +120,7 @@ if __name__ == '__main__':
     -debug : prints out microphone information
     The following flags are required if debug is not set 
         id : highest level folder name where the speaker's audio files will be stored
-    -speakerCalibration : record files for vowel chart calibration
+    -calibrate : record files for vowel chart calibration
     '''
     import time
     import sys
