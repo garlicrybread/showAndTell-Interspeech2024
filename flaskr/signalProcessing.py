@@ -98,7 +98,9 @@ def formantsToJson(f1List,f2List,path,jsonName,cal=False):
             f2_vwl = tempF2[vwl_idx]
             tempDict = {"f1": f1_vwl, "f2": f2_vwl}
             vwlsDict["vwl"].append(tempDict)
-        data.append(vwlsDict)
+
+        if vwlsDict['vwl'] != []:
+            data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     pprint(data)
 
@@ -118,11 +120,9 @@ def maxAndMinOfFormants(data):
     minF2 = maxF2
     f1 = 'f1'
     f2 = 'f2'
-    print(type(data))
     for formants in data['vwl']:
         # See if the f1 formant is greater than the current max
         # or if it is less than the current min
-        print(formants)
         if formants[f1] > maxF1:
             maxF1 = formants[f1]
         elif formants[f1] < minF1:
@@ -151,10 +151,11 @@ def vowelChartPoints(rootDirectory):
     # json data in the form of list(dictionary
     pprint(vowels)
     edges = {}
-    words = ['beet','bot','bow']
+    words = ['eee','ooo','awe']
     for word, vwls in vowels.items():
-        print(f"Processing {word, vwls}")
         for vwl in vwls:
+            print(f'vwl {word}')
+            pprint(vwl)
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
             if word == words[0]:
                 xmax, ymin = maxF2, minF1
@@ -186,7 +187,6 @@ def vowelChartCalibration(id):
 
         # Writing to sample.json
         jsonName = "vwlChartCoordinates.json"
-        print(path + jsonName)
         with open(path + jsonName, "w") as outfile:
             outfile.write(json_object)
 
@@ -198,7 +198,8 @@ if __name__ == '__main__':
     rootDirectory = homeDir + dataDir
     if 'cal' in sys.argv:
         print("Calibrating vowel chart coordinates...")
-        vowelChartCalibration('yoder')
+        #todo: make id a sys argv
+        vowelChartCalibration('silas')
     else:
         for path, dir, files in os.walk(rootDirectory):
             path = path + '/'
