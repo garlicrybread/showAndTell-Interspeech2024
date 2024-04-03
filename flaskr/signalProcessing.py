@@ -13,7 +13,7 @@ import json
 
 
 homeDir = f'{os.getcwd()}/'
-dataDir = 'flaskr/participantData/'
+dataDir = 'flaskr/static/participantData/'
 
 def audioToVwlFormants(path,file_name):
     vocalToolKitDir = '~/plugin_VocalToolkit/'
@@ -150,7 +150,7 @@ def vowelChartPoints(rootDirectory):
                 xmax, ymin = maxF2, minF1
             elif word == words[1]:
                 xmin = minF2
-            elif word == words[1]:
+            elif word == words[2]:
                 ymax = maxF1
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
@@ -161,6 +161,7 @@ def vowelChartPoints(rootDirectory):
 
 def vowelChartCalibration(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
+    print(f'in directory {rootDirectory}')
     for path, dir, files in os.walk(rootDirectory):
         # path = path + '/'
         for file in files:
@@ -189,6 +190,7 @@ if __name__ == '__main__':
     file = 'cry-tardo-2023_05_02_155250.wav'
     jsonName = f"{file.split('.')[0]}-vwl.json"
     if 'cal' in sys.argv:
+        print("Calibrating vowel chart coordinates...")
         vowelChartCalibration('yoder')
     else:
         f1, f2 = audioToVwlFormants(path,file)
