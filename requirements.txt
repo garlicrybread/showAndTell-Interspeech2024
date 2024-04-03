@@ -13,3 +13,4 @@ python-dotenv==1.0.0
 pytest==7.4.3
 librosa==0.10.0
 PyAudio==0.2.11
+praat-parselmouth==0.4.3
