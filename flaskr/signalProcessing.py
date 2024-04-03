@@ -138,7 +138,8 @@ def maxAndMinOfFormants(data):
 
 
 def vowelChartPoints(rootDirectory):
-    '''hardcoded for beet, bat, bot, and bow'''
+    '''hardcoded for eee, ooo, and awe'''
+    # todo: fix so that coordinates are correct might mean fixing max and min of formants too
 
     vowels = {}
     for path, dir, files in os.walk(rootDirectory):
@@ -149,24 +150,26 @@ def vowelChartPoints(rootDirectory):
                     name,word,date,_ =file.split('-')
                     vowels[word] = data
     # json data in the form of list(dictionary
-    pprint(vowels)
     edges = {}
     words = ['eee','ooo','awe']
     for word, vwls in vowels.items():
+        ymin = []
         for vwl in vwls:
-            print(f'vwl {word}')
             pprint(vwl)
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
             if word == words[0]:
-                xmax, ymin = maxF2, minF1
+                xmax = maxF2
+                ymin.append(minF1)
             elif word == words[1]:
                 xmin = minF2
+                ymin.append(minF1)
             elif word == words[2]:
                 ymax = maxF1
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    coordinates = [(xmin,xmax),(ymin,ymax)]
+    coordinates = [(xmin,xmax),(min(ymin),ymax)]
+    print(coordinates)
     return coordinates
 
 
@@ -197,9 +200,13 @@ if __name__ == '__main__':
     # hardcoded for now
     rootDirectory = homeDir + dataDir
     if 'cal' in sys.argv:
-        print("Calibrating vowel chart coordinates...")
-        #todo: make id a sys argv
-        vowelChartCalibration('silas')
+        try:
+            idx = sys.argv.index('-id') + 1
+            print("Calibrating vowel chart coordinates...")
+            # todo: make id a sys argv
+            vowelChartCalibration(sys.argv[idx])
+        except ValueError:
+            print("Specify the -id")
     else:
         for path, dir, files in os.walk(rootDirectory):
             path = path + '/'
