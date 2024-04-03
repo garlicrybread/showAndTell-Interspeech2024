@@ -141,23 +141,21 @@ def vowelChartPoints(rootDirectory):
     # json data in the form of list(dictionary
     pprint(vowels)
     edges = {}
-    words = ['beet','bot','bow','bat']
+    words = ['beet','bot','bow']
     for word, vwls in vowels.items():
         print(f"Processing {word, vwls}")
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
             if word == words[0]:
-                x1, y1 = maxF2, minF1
+                xmax, ymin = maxF2, minF1
             elif word == words[1]:
-                x2 = minF1
-            elif word == words[2]:
-                y4 = maxF1
-            elif word == words[3]:
-                xt, yt = maxF2, maxF1
-    m = abs((yt - y1) / (xt - x1))
-    x3 = y4 / m
-    # top: left corner, right corner, bottom: left corner, right corner
-    coordinates = [(x1,y1),(x2,y1),(x3,y4),(x2,y4)]
+                xmin = minF2
+            elif word == words[1]:
+                ymax = maxF1
+    # m = abs((yt - y1) / (xt - x1))
+    # x3 = y4 / m
+    # x range, y range (xmin, xmax, ymin, ymax)
+    coordinates = [(xmin,xmax),(ymin,ymax)]
     return coordinates
 
 
