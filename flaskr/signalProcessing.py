@@ -15,11 +15,12 @@ import json
 homeDir = f'{os.getcwd()}/'
 dataDir = 'flaskr/static/participantData/'
 
+def mean(l):
+    return sum(l) / len(l)
 def audioToVwlFormants(path,file_name):
     vocalToolKitDir = '~/plugin_VocalToolkit/'
     extractVwlFile = "extractvowels.praat"
     file = path + file_name
-    print(file)
     # read the wav file and get the samplerate and data
     samplerate, data = wavfile.read(file)
     # fft_data = np.fft.fft(data)
@@ -57,12 +58,23 @@ def audioToVwlFormants(path,file_name):
         if f1 > 0:
             f1_list.append(f1)
             f2_list.append(f2)
-
-    print(f"f1 list: {f1_list}, \nf2 list: {f2_list}")
     return f1_list, f2_list
 
+def condenseFormantList(formantList,cal=False):
+    # If calibration, we need to retain the mins and maxes
+    if cal:
+        return formantList
+    condensed = []
+    num = 3
+    i = 0
+    for i in range(0, int(len(formantList) / num)):
+        chunk = formantList[num * i:num * i + num]
+        condensed.append(mean(chunk))
+    # anything that was extra, append without change
+    condensed += formantList[num * i + num:len(formantList)+1]
+    return condensed
 
-def formantsToJson(f1List,f2List,path,jsonName):
+def formantsToJson(f1List,f2List,path,jsonName,cal=False):
     idx_vwls = [0]
     for prev_idx, vwlF1 in enumerate(f1List[1:]):
         prevVwlF1 = f1List[prev_idx]
@@ -70,27 +82,25 @@ def formantsToJson(f1List,f2List,path,jsonName):
         vwlF2 = f2List[prev_idx + 1]
         absDiffF1 = abs(vwlF1 - prevVwlF1)
         absDiffF2 = abs(vwlF2 - prevVwlF2)
-        # print(prev_idx+1,vwlF1,vwlF2)
         diff = 150
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List) - 1)
-    # print(idx_vwls)
-    # print(f2_list[20])
     data = []
     # go through the index list
     prev_idx = 0
     for i, idx in enumerate(idx_vwls[1:]):
         vwlsDict = {"vwl": []}
-        print(prev_idx, idx)
-        for vwl_idx in range(prev_idx, idx):
-            # print(f1_list[idx],f2_list[idx])
-            f1_vwl = f1List[vwl_idx]
-            f2_vwl = f2List[vwl_idx]
+        tempF1 = condenseFormantList(f1List[prev_idx:idx],cal)
+        tempF2 = condenseFormantList(f2List[prev_idx:idx],cal)
+        for vwl_idx in range(len(tempF1)):
+            f1_vwl = tempF1[vwl_idx]
+            f2_vwl = tempF2[vwl_idx]
             tempDict = {"f1": f1_vwl, "f2": f2_vwl}
             vwlsDict["vwl"].append(tempDict)
         data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
+    pprint(data)
 
     # Serializing json
     json_object = json.dumps(data, indent=4)
@@ -166,9 +176,9 @@ def vowelChartCalibration(id):
         # path = path + '/'
         for file in files:
             if '.wav' in file:
-                # f1, f2 = audioToVwlFormants(path,file)
+                f1, f2 = audioToVwlFormants(path,file)
                 jsonName = f"{file.split('.')[0]}-vwlCal.json"
-                # formantsToJson(f1,f2,path,jsonName)
+                formantsToJson(f1,f2,path,jsonName, True)
         coordinates = vowelChartPoints(path)
 
         # Serializing json
@@ -182,17 +192,20 @@ def vowelChartCalibration(id):
 
 
 
-
 if __name__ == '__main__':
     start_time = time.time()
     # hardcoded for now
-    path = homeDir + dataDir + 'cry/tardo/'
-    file = 'cry-tardo-2023_05_02_155250.wav'
-    jsonName = f"{file.split('.')[0]}-vwl.json"
+    rootDirectory = homeDir + dataDir
     if 'cal' in sys.argv:
         print("Calibrating vowel chart coordinates...")
         vowelChartCalibration('yoder')
     else:
-        f1, f2 = audioToVwlFormants(path,file)
-        formantsToJson(f1,f2,path,jsonName)
+        for path, dir, files in os.walk(rootDirectory):
+            path = path + '/'
+            for file in files:
+                if 'vowelCalibration' not in path and '.json' not in file:
+                    f1, f2 = audioToVwlFormants(path,file)
+                    jsonName = f'{file.split(".")[0]}.json'
+                    print(jsonName)
+                    formantsToJson(f1,f2,path,jsonName)
     print("--- %s milliseconds ---" % ((time.time() - start_time)*1000))
