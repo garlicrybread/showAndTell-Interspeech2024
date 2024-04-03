@@ -1,4 +1,5 @@
 import data from '../data/vwls.json' with { type: 'json'};
+import dataSpa from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
 import coordinates from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'}
 
 "use strict";
@@ -196,8 +197,9 @@ async function drawVowels() {
     const xWidth = svgWidth - 2 * padding.x;
     const yHeight = svgHeight - 2 * padding.y;
     const slope = (0.9999 * yHeight) / (0.375 * xWidth);
-    const xrange = [coordinates[0][1], coordinates[0][0]];
-    const yrange = coordinates[1]
+    const pad = 50;
+    const xrange = [coordinates[0][1]+pad, coordinates[0][0]-pad];
+    const yrange = [coordinates[1][0]-pad, coordinates[1][1]+pad];
     console.log(xrange,yrange)
     // convert frequencies to svg scale
     // TODO: don't hardcode domains
