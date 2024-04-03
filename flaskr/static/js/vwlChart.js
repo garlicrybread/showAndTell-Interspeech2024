@@ -1,6 +1,8 @@
-import data from '../data/vwls.json' with { type: 'json'};
-import dataSpa from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
-import coordinates from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'}
+// import dataL1 from '../participantData/silas/cheese/silas-cheese-2024_04_03_153402.json' with { type: 'json'};
+import dataL1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' with { type: 'json'};
+import dataL2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
+import coordinatesL1 from '../participantData/silas/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'}
+import coordinatesL2 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
@@ -198,30 +200,49 @@ async function drawVowels() {
     const yHeight = svgHeight - 2 * padding.y;
     const slope = (0.9999 * yHeight) / (0.375 * xWidth);
     const pad = 50;
-    const xrange = [coordinates[0][1]+pad, coordinates[0][0]-pad];
-    const yrange = [coordinates[1][0]-pad, coordinates[1][1]+pad];
-    console.log(xrange,yrange)
+    const xrangeL1 = [coordinatesL1[0][1]+pad, coordinatesL1[0][0]-pad];
+    const yrangeL1 = [coordinatesL1[1][0]-pad, coordinatesL1[1][1]+pad];
     // convert frequencies to svg scale
-    // TODO: don't hardcode domains
-    const f1ToYCoordinates = d3.scaleLinear()
-        .domain(yrange)
+    const f1ToYCoordinatesL1 = d3.scaleLinear()
+        .domain(yrangeL1)
         .range([padding.y, svgHeight - padding.y])
         .clamp(true)
-    function f2ToXCoordinates(d) {
-        const y = f1ToYCoordinates(d.f1);
+    function f2ToXCoordinatesL1(d) {
+        const y = f1ToYCoordinatesL1(d.f1);
         const toXCoor = d3.scaleLinear()
-            .domain(xrange)
+            .domain(xrangeL1)
             .range([(y + 2 * padding.x) / slope, svgWidth - padding.x])
         .clamp(true)
         return toXCoor(d.f2)
     }
-
-    const glideMaker = d3.line()
-        .y(d => f1ToYCoordinates(d.f1))
-        .x(d => f2ToXCoordinates(d))
+    const glideMakerL1 = d3.line()
+        .y(d => f1ToYCoordinatesL1(d.f1))
+        .x(d => f2ToXCoordinatesL1(d))
         .curve(d3.curveCardinal);
 
-    const color = 'green';
+    const xrangeL2 = [coordinatesL2[0][1]+pad, coordinatesL2[0][0]-pad];
+    const yrangeL2 = [coordinatesL2[1][0]-pad, coordinatesL2[1][1]+pad];
+
+    // convert L2 speaker frequencies to svg scale
+    const f1ToYCoordinatesL2 = d3.scaleLinear()
+        .domain(yrangeL2)
+        .range([padding.y, svgHeight - padding.y])
+        .clamp(true)
+    function f2ToXCoordinatesL2(d) {
+        const y = f1ToYCoordinatesL2(d.f1);
+        const toXCoor = d3.scaleLinear()
+            .domain(xrangeL2)
+            .range([(y + 2 * padding.x) / slope, svgWidth - padding.x])
+            .clamp(true)
+        return toXCoor(d.f2)
+    }
+
+    const glideMakerL2 = d3.line()
+        .y(d => f1ToYCoordinatesL2(d.f1))
+        .x(d => f2ToXCoordinatesL2(d))
+        .curve(d3.curveCardinal);
+
+    const colorSpa = 'green';
     const hoverColor = 'green';
     const strokeWidthDefault = 5;
     const strokeWidthHover = 8;
@@ -229,7 +250,7 @@ async function drawVowels() {
     // Add arrow marker
     svg.append("defs").append("marker")
         .attr("id", "arrow")
-        .attr('color', color)
+        .attr('color', colorSpa)
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 5)
         .attr("markerWidth", 2)
@@ -240,20 +261,20 @@ async function drawVowels() {
         .attr("class", "arrowHead");
 
     d3.select("defs marker#arrow path")
-        .attr("fill", color); // Change "red" to the desired color
+        .attr("fill", colorSpa); // Change "red" to the desired color
 
     // connect the related ones!
     // Draw curves between related data points
-    data.forEach(d => {
+    dataL1.forEach(d => {
         if (Array.isArray(d.vwl)) {
             svg.append("path")
                 .datum(d.vwl)
                 .attr("fill", "none")
-                .attr("stroke", color)
+                .attr("stroke", colorSpa)
                 .attr("stroke-width", strokeWidthDefault)
                 .attr("stroke-linecap", strokeLinecap)
                 .attr("marker-end", "url(#arrow)")
-                .attr("d", glideMaker)
+                .attr("d", glideMakerL1)
                 .on("mouseover", function () {
                     d3.select(this)
                         .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
@@ -266,20 +287,20 @@ async function drawVowels() {
                 .on("mouseout", function () {
                     d3.select(this)
                         .attr("stroke-width", strokeWidthDefault)  // Restore original stroke width
-                        .attr('stroke', color);
+                        .attr('stroke', colorSpa);
                     d3.select('#arrow')
                         .select('path')
-                        .attr('fill', color)
+                        .attr('fill', colorSpa)
                 });
         } else {
             // Draw individual points if no related data points found
             svg.append("circle")
                 .data([d.vwl])
                 .join("circle")
-                .attr("cx", d => f2ToXCoordinates(d))
-                .attr("cy", d => f1ToYCoordinates(d.f1))
+                .attr("cx", d => f2ToXCoordinatesL1(d))
+                .attr("cy", d => f1ToYCoordinatesL1(d.f1))
                 .attr("r", strokeWidthDefault)
-                .attr("fill", color)
+                .attr("fill", colorSpa)
                 .on("mouseover", function () {
                     d3.select(this)
                         .attr("r", strokeWidthHover)  // Increase stroke width on hover
@@ -288,38 +309,38 @@ async function drawVowels() {
                 .on("mouseout", function () {
                     d3.select(this)
                         .attr("r", strokeWidthDefault)  // Restore original stroke width
-                        .attr('fill', color);
+                        .attr('fill', colorSpa);
                 });
         }
     });
-    const colorSpa = 'steelblue';
-    dataSpa.forEach(d => {
+    const color = 'steelblue';
+    dataL2.forEach(d => {
         console.log(d)
             if (Array.isArray(d.vwl)) {
                 svg.append("path")
                     .datum(d.vwl)
                     .attr("fill", "none")
-                    .attr("stroke", colorSpa)
+                    .attr("stroke", color)
                     .attr("stroke-width", strokeWidthDefault)
                     .attr("stroke-linecap", strokeLinecap)
                     .attr("marker-end", "url(#arrow)")
-                    .attr("d", glideMaker)
+                    .attr("d", glideMakerL2)
                     .on("mouseover", function () {
                         d3.select(this)
                             .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
-                            .attr("stroke", colorSpa);   // Change stroke color on hover
+                            .attr("stroke", color);   // Change stroke color on hover
                         // Change color of the arrowhead
                         d3.select("#arrow")
                             .select("path")
-                            .attr("fill", colorSpa);
+                            .attr("fill", color);
                     })
                     .on("mouseout", function () {
                         d3.select(this)
                             .attr("stroke-width", strokeWidthDefault)  // Restore original stroke width
-                            .attr('stroke', colorSpa);
+                            .attr('stroke', color);
                         d3.select('#arrow')
                             .select('path')
-                            .attr('fill', colorSpa)
+                            .attr('fill', color)
                     });
             }
         }
