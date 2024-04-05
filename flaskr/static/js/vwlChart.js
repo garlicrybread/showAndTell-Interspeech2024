@@ -6,7 +6,7 @@ import coordinatesL2 from '../participantData/yoder/vowelCalibration/vwlChartCoo
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
-window.addEventListener("load", drawVowels);
+// window.addEventListener("load", drawVowels);
 async function drawVowelChart(){
     const svg = d3.select("svg");
     const vwlChrtProperties = await svgGetPadding(svg);
@@ -44,6 +44,12 @@ async function drawVowelChart(){
     const fontSize = "smaller";
     const fontFamily = "Courier, Helvetica, Verdana"
 
+    // Text Labels
+    const topText = 'high';
+    const midTopText = 'med-high';
+    const midBottomText = 'med-low';
+    const bottomText = 'low';
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // TEXT FOR VWL CHART
@@ -56,28 +62,28 @@ async function drawVowelChart(){
         .attr("x", xfront-10)
         .attr("text-anchor","end")
         .attr("y", yclose+yAdjustAxis)
-        .text("close");
+        .text(topText);
     svg.append("text")
         .attr("font-size",fontSize)
         .attr("font-family",fontFamily)
         .attr("x", xnearFront-10)
         .attr("text-anchor","end")
         .attr("y", ycloseMid+10)
-        .text("close-mid");
+        .text(midTopText);
     svg.append("text")
         .attr("font-size",fontSize)
         .attr("font-family",fontFamily)
         .attr("x", xmidFrontCent-10)
         .attr("text-anchor","end")
         .attr("y", yopenMid)
-        .text("open-mid");
+        .text(midBottomText);
     svg.append("text")
         .attr("font-size",fontSize)
         .attr("font-family",fontFamily)
         .attr("x", xleftCent-10)
         .attr("text-anchor","end")
         .attr("y", yopen)
-        .text("open");
+        .text(bottomText);
 
     // x labels
    svg.append("text")
