@@ -11,7 +11,7 @@ from flask_login import login_required, current_user
 import pandas as pd
 import os
 
-# from flaskr.audio import record_file
+from flaskr.audioRecording import recordFile
 
 bp = Blueprint('practice', __name__, url_prefix='/practice')
 
@@ -150,7 +150,7 @@ def retrieveWordPair(week, id):
 # @login_required
 def record():
     print("in record")
-    gotAudio = record_file('bata','tester')
+    gotAudio = recordFile('bata','tester')
     print(f"I'm here {gotAudio}")
     return jsonify({'gotAudio': gotAudio})
 
