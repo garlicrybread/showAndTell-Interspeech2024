@@ -31,10 +31,19 @@
 {#    <script type="module" src="../../static/js/myJS.js"></script>#}
 
 
-<div class="flex-col-right">
-    <button id="myButton">Start Recording</button>
-{#        <input type="button" class="next-btn" value=">" idnum="" >#}
-   
+    <div class="flex-col">
+        <button id="myButton">Start Recording</button>
+    {#        <input type="button" class="next-btn" value=">" idnum="" >#}
 
-</div>
+
+    </div>
+    <div id="recordingsList"></div>
+
+    <div class="loader loader1">
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+    </div>
 {% endblock %}
