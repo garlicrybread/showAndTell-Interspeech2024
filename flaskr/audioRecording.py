@@ -2,8 +2,21 @@ import speech_recognition as sr
 from datetime import datetime
 import os
 
+from flask import (Blueprint, jsonify)
+
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
 DATA_DIR = MAIN_DIR + "flaskr/static/participantData/"
+
+
+bp = Blueprint('audio', __name__, url_prefix='/audio')
+@bp.route('/api/record', methods=('GET', 'POST'))
+def record():
+    # todo: don't hardcode word and id
+    print("in record")
+    gotAudio = recordFile('bata','tester')
+    return jsonify({'gotAudio': gotAudio})
+
+
 
 def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=False, secondTime=False):
     # obtain lang_files from the microphone

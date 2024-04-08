@@ -11,8 +11,6 @@ from flask_login import login_required, current_user
 import pandas as pd
 import os
 
-from flaskr.audioRecording import recordFile
-
 bp = Blueprint('practice', __name__, url_prefix='/practice')
 
 @bp.route('/weeks', methods=('GET', 'POST'))
@@ -146,13 +144,6 @@ def retrieveWordPair(week, id):
     spa0, spa1 = row['spa0'].iloc[0], row['spa1'].iloc[0]
     return f'{spa0}-{spa1}'
 
-@bp.route('/api/record', methods=('GET', 'POST'))
-# @login_required
-def record():
-    print("in record")
-    gotAudio = recordFile('bata','tester')
-    print(f"I'm here {gotAudio}")
-    return jsonify({'gotAudio': gotAudio})
 
 @bp.route('/wordsInWeek', methods=('GET', 'POST'))
 @login_required
