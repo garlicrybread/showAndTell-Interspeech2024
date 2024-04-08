@@ -22,10 +22,9 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
         except sr.WaitTimeoutError:
             print("We weren't able to hear you. Try talking a little louder!\n")
             audioObtained = False
+            return 'Quiet'
             if not secondTime:
                 recordFile(word, participantID,debug,L1,speakerCalibration,secondTime=True)
-    # to give speaker time in case they say the word again
-    time.sleep(2)
     if audioObtained:
         if debug:
             p = pyaudio.PyAudio()
