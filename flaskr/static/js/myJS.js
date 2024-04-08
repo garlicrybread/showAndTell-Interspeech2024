@@ -4,11 +4,18 @@ let audioURLs = []; // Array to store multiple audio URLs
 let recordingIndex = 0;
 let stateIndex = 0;
 let stream;
-let practicePath;
+let recordingPath;
 if (window.location.href.includes("/pronunciationVis/")) {
-    practicePath = "/pronunciationVis/practice"; // Set for remote
+    recordingPath = "/pronunciationVis/audio"; // Set for remote
 } else {
-    practicePath = "/practice"; // Set for local
+    recordingPath = "/audio"; // Set for local
+}
+
+let processingPath;
+if (window.location.href.includes("/pronunciationVis/")) {
+    processingPath = "/pronunciationVis/process"; // Set for remote
+} else {
+    processingPath = "/process"; // Set for local
 }
 
 function toggleText(buttonId) {
@@ -38,11 +45,13 @@ function toggleText(buttonId) {
         button.style.backgroundColor = "";
         stopAnimation(loader_number);
     }
+    console.log('end of toggling')
 }
 
 function startRecording() {
     // Prepare the data to be sent to the server
     // todo: request data should not be hardcoded
+    // todo: display wait notification to users
     var requestData = {
         word: 'YourWordHere', // Provide the word you want to record
         participantID: 'test', // Provide the participant ID
@@ -51,7 +60,7 @@ function startRecording() {
 
     // Make a fetch request to your server endpoint where the Python function is executed
     // const path = window.location.href
-    fetch(`${practicePath}/api/record`, {
+    fetch(`${recordingPath}/api/record`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -64,11 +73,12 @@ function startRecording() {
         }
         return response.text();
     })
-    .then(data => {
+    .then(filePath => {
         // Handle success
-        console.log('File recorded successfully:', data);
+        console.log('File recorded successfully:', filePath);
         // TODO: variable button id
         toggleText('myButton')
+        audioToPlotting(filePath)
     })
     .catch(error => {
         // Handle errors
@@ -76,6 +86,19 @@ function startRecording() {
     });
 }
 
+function audioToPlotting(filePath) {
+    const requestData = {
+        filePath: filePath
+    }
+
+    fetch(`${processingPath}/api/process`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+}
 
 // function startRecording() {
 //     navigator.mediaDevices.getUserMedia({
