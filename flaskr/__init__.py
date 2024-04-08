@@ -98,6 +98,12 @@ def create_app(test_config=None):
     from . import practice
     app.register_blueprint(practice.bp)
 
+    from . import audioRecording
+    app.register_blueprint(audioRecording.bp)
+
+    from . import signalProcessing
+    app.register_blueprint(signalProcessing.bp)
+
 
     @init_cli.command("db")
     def init_db():
