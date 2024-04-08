@@ -11,9 +11,12 @@ from pprint import pprint
 # writing to json
 import json
 
+from flask import (Blueprint)
+
 
 homeDir = f'{os.getcwd()}/'
 dataDir = 'flaskr/static/participantData/'
+bp = Blueprint('process', __name__, url_prefix='/process')
 
 def mean(l):
     return sum(l) / len(l)
