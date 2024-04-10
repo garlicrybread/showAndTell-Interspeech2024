@@ -1,8 +1,7 @@
 // import dataL1 from '../participantData/silas/cheese/silas-cheese-2024_04_03_153402.json' with { type: 'json'};
 import L1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' with { type: 'json'};
 import L2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
-import coordinatesL1 from '../participantData/silas/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
-import coordinatesL2 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
+import coordinatesL1 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
@@ -193,13 +192,11 @@ async function drawVowelChart(){
         .attr("stroke-width", strokeWidth);
 }
 
-export async function drawVowels(dataL1Path,dataL2Path) {
+export async function drawVowels(dataL1Path) {
     // fetch json data
     // const dataL1Path =
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
-    const response2 = await fetch(dataL2Path);
-    const dataL2 = await response2.json();
 
     const svg = d3.select("svg")
     const vwlChrtProperties = await svgGetPadding(svg);
@@ -231,28 +228,6 @@ export async function drawVowels(dataL1Path,dataL2Path) {
     const glideMakerL1 = d3.line()
         .y(d => f1ToYCoordinatesL1(d.f1))
         .x(d => f2ToXCoordinatesL1(d))
-        .curve(d3.curveCardinal);
-
-    const xrangeL2 = [coordinatesL2[0][1]+pad, coordinatesL2[0][0]-pad];
-    const yrangeL2 = [coordinatesL2[1][0]-pad, coordinatesL2[1][1]+pad];
-
-    // convert L2 speaker frequencies to svg scale
-    const f1ToYCoordinatesL2 = d3.scaleLinear()
-        .domain(yrangeL2)
-        .range([padding.y, svgHeight - padding.y])
-        .clamp(true)
-    function f2ToXCoordinatesL2(d) {
-        const y = f1ToYCoordinatesL2(d.f1);
-        const toXCoor = d3.scaleLinear()
-            .domain(xrangeL2)
-            .range([(y + 2 * padding.x) / slope, svgWidth - padding.x])
-            .clamp(true)
-        return toXCoor(d.f2)
-    }
-
-    const glideMakerL2 = d3.line()
-        .y(d => f1ToYCoordinatesL2(d.f1))
-        .x(d => f2ToXCoordinatesL2(d))
         .curve(d3.curveCardinal);
 
     const colorSpa = 'green';
@@ -326,38 +301,6 @@ export async function drawVowels(dataL1Path,dataL2Path) {
                 });
         }
     });
-    const color = 'steelblue';
-    dataL2.forEach(d => {
-        console.log(d)
-            if (Array.isArray(d.vwl)) {
-                svg.append("path")
-                    .datum(d.vwl)
-                    .attr("fill", "none")
-                    .attr("stroke", color)
-                    .attr("stroke-width", strokeWidthDefault)
-                    .attr("stroke-linecap", strokeLinecap)
-                    .attr("marker-end", "url(#arrow)")
-                    .attr("d", glideMakerL2)
-                    .on("mouseover", function () {
-                        d3.select(this)
-                            .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
-                            .attr("stroke", color);   // Change stroke color on hover
-                        // Change color of the arrowhead
-                        d3.select("#arrow")
-                            .select("path")
-                            .attr("fill", color);
-                    })
-                    .on("mouseout", function () {
-                        d3.select(this)
-                            .attr("stroke-width", strokeWidthDefault)  // Restore original stroke width
-                            .attr('stroke', color);
-                        d3.select('#arrow')
-                            .select('path')
-                            .attr('fill', color)
-                    });
-            }
-        }
-    );
 }
 async function svgGetPadding(svg) {
     // get height and width of svg
