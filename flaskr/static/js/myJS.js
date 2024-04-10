@@ -17,6 +17,7 @@ if (window.location.href.includes("/pronunciationVis/")) {
 } else {
     processingPath = "/process"; // Set for local
 }
+import {drawVowels} from "./vwlChart.js";
 
 function toggleText(buttonId) {
     console.log('toggling button')
@@ -75,10 +76,10 @@ function startRecording() {
     })
     .then(filePath => {
         // Handle success
-        console.log('File recorded successfully:', filePath);
+        console.log('File recorded successfully:',filePath);
         // TODO: variable button id
         toggleText('myButton')
-        audioToPlotting(filePath)
+        audioToJson(filePath)
     })
     .catch(error => {
         // Handle errors
@@ -86,20 +87,35 @@ function startRecording() {
     });
 }
 
-function audioToPlotting(filePath) {
-    const requestData = {
-        filePath: filePath
-    }
+function audioToJson(filePath) {
+    console.log(`filePath ${filePath}`)
 
-    fetch(`${processingPath}/api/process`, {
+    fetch(`${processingPath}/api/processVwlData`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestData)
+        body: filePath
     })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(relfilepath => {
+        // Handle success
+        console.log('Formants extracted successfully:',relfilepath);
+        plotJson(relfilepath)
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error recording file:', error);
+    });
 }
-
+function plotJson(filePath) {
+    drawVowels(filePath,filePath)
+}
 // function startRecording() {
 //     navigator.mediaDevices.getUserMedia({
 //         audio: true

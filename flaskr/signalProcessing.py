@@ -11,12 +11,31 @@ from pprint import pprint
 # writing to json
 import json
 
-from flask import (Blueprint)
+from flask import (Blueprint, request)
 
 
 homeDir = f'{os.getcwd()}/'
 dataDir = 'flaskr/static/participantData/'
 bp = Blueprint('process', __name__, url_prefix='/process')
+
+@bp.route('/api/processVwlData', methods=["POST"])
+def processVwlData():
+    print('In process data',)
+    filePath = request.get_json()['gotAudio']
+    pathList = filePath.split('/')
+    print(f'pathlist {pathList}')
+    path = '/'.join(pathList[:len(pathList)-1]) + '/'
+    filename = pathList[-1]
+    print(path,filename)
+    f1List, f2List = audioToVwlFormants(path,filename)
+    f1List = condenseFormantList(f1List)
+    f2List = condenseFormantList(f2List)
+    jsonName = filename.split('.')[0] + '.json'
+    formantsToJson(f1List,f2List,path,jsonName)
+    id,word,_ = jsonName.split('-')
+    relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
+    print(relPath)
+    return relPath
 
 def mean(l):
     return sum(l) / len(l)

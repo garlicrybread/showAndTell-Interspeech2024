@@ -1,12 +1,12 @@
 // import dataL1 from '../participantData/silas/cheese/silas-cheese-2024_04_03_153402.json' with { type: 'json'};
-import dataL1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' with { type: 'json'};
-import dataL2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
-import coordinatesL1 from '../participantData/silas/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'}
+import L1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' with { type: 'json'};
+import L2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
+import coordinatesL1 from '../participantData/silas/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
 import coordinatesL2 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
-// window.addEventListener("load", drawVowels);
+// window.addEventListener("load", drawVowels(L1,L2));
 async function drawVowelChart(){
     const svg = d3.select("svg");
     const vwlChrtProperties = await svgGetPadding(svg);
@@ -193,7 +193,14 @@ async function drawVowelChart(){
         .attr("stroke-width", strokeWidth);
 }
 
-async function drawVowels() {
+export async function drawVowels(dataL1Path,dataL2Path) {
+    // fetch json data
+    // const dataL1Path =
+    const response1 = await fetch(dataL1Path);
+    const dataL1 = await response1.json();
+    const response2 = await fetch(dataL2Path);
+    const dataL2 = await response2.json();
+
     const svg = d3.select("svg")
     const vwlChrtProperties = await svgGetPadding(svg);
     // const svgXOrigin = vwlChrtProperties.xOrigin;
