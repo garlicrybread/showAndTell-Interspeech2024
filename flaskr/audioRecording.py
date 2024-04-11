@@ -1,8 +1,9 @@
 import speech_recognition as sr
 from datetime import datetime
 import os
-
+import numpy as np
 from flask import (Blueprint, jsonify)
+import librosa as lr
 
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
 DATA_DIR = MAIN_DIR + "flaskr/static/participantData/"
@@ -20,6 +21,7 @@ def record():
 
 def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=False, secondTime=False):
     # obtain lang_files from the microphone
+    import speech_recognition as sr
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Please wait. Calibrating microphone...")
@@ -54,6 +56,7 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
         # get wave data from lang_files
         wav_data = audio.get_wav_data()
 
+
         # save data to file
         now = datetime.now()
         date_time = now.strftime("%Y_%m_%d_%H%M%S")
@@ -79,6 +82,14 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
 
         with open(DATA_DIR + new_file_name , "wb") as f:
             f.write(wav_data)
+
+        # audioData, sr = lr.load(DATA_DIR + new_file_name)
+        # # normalize audio data
+        # peakAmp = np.max(np.abs(audioData))
+        # scaleFactor = 0.9 / peakAmp
+        # audioData = audioData * scaleFactor
+        #
+        # lr.output.write_wav(DATA_DIR + new_file_name, audioData,sr=sr)
 
         return DATA_DIR + new_file_name
     return "NoDataRecorded"
