@@ -11,8 +11,10 @@ from pprint import pprint
 # writing to json
 import json
 
-from flask import (Blueprint, request)
-
+from flask import (Blueprint, request, current_app)
+# for transforming actual Vwl to SVG vwl points
+from skimage.transform import ProjectiveTransform
+import numpy as np
 
 homeDir = f'{os.getcwd()}/'
 dataDir = 'flaskr/static/participantData/'
@@ -26,8 +28,9 @@ def processVwlData():
     filename = pathList[-1]
     print(path,filename)
     f1List, f2List = audioToVwlFormants(path,filename)
-    jsonName = filename.split('.')[0] + '.json'
-    formantsToJson(f1List,f2List,path,jsonName)
+    jsonNameFreq = filename.split('.')[0] + '-freq.json'
+    jsonNameSVG = filename.split('.')[0] + '-svg.json'
+    formantsToJson(f1List,f2List,path,jsonNameFreq,jsonNameSVG)
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     return relPath
@@ -89,8 +92,7 @@ def condenseFormantList(formantList,cal=False):
     condensed += formantList[num * i + num:len(formantList)+1]
     return condensed
 
-def formantsToJson(f1List,f2List,path,jsonName,cal=False):
-    print(f'first of f1 formant:{f1List[0]}')
+def formantsToJson(f1List,f2List,path,jsonNameFreq,jsonNameSVG, cal=False):
     idx_vwls = [0]
     # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
     # difference between two formants is
@@ -118,15 +120,19 @@ def formantsToJson(f1List,f2List,path,jsonName,cal=False):
             f2_vwl = tempF2[vwl_idx]
             tempDict = {"f1": f1_vwl, "f2": f2_vwl}
             vwlsDict["vwl"].append(tempDict)
-
         if vwlsDict['vwl'] != []:
             data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     print(f'data {data}')
     # Serializing json
-    json_object = json.dumps(data, indent=4)
+    dataSVG = 0
+    writeToJson(path, jsonNameFreq, data)
+    writeToJson(path, jsonNameSVG, dataSVG)
 
-    # Writing to sample.json
+def writeToJson(path, jsonName, data):
+    # Serializing json
+    json_object= json.dumps(data, indent=4)
+    # Writing to json
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
 
@@ -163,12 +169,14 @@ def loadVowelChartFiles(rootDirectory):
                     name,word,_ = file.split('-')
                     vowels[word] = data
     coordinates = vowelChartPoints(vowels)
+    return coordinates
+
 def vowelChartPoints(vowels):
     ''' vowels is a dictionary {word: data} '''
     words = ['frontHigh','backHigh','frontLow', 'backLow']
     # F = Front, B = Back, H = High, L = Low
+    print(f'vowls {vowels}\n')
     for word, vwls in vowels.items():
-        print(word)
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
             if word == words[0]:
@@ -188,26 +196,46 @@ def vowelChartPoints(vowels):
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    print((xFH,yFH),(xBH,yBH),(xFL,yFL),(xBL,yBL))
     frontHigh = (xFH,yFH)
     backHigh = (xBH,yBH)
     frontLow = (xFL,yFL)
     backLow = (xBL,yBL)
     coordinates = [frontHigh,backHigh,frontLow,backLow]
-    print(f'coordinates: {coordinates}')
     return coordinates
 
+def transformArray(actualCoordinates, svgCoordinates):
+    t = ProjectiveTransform()
+    src = np.asarray(actualCoordinates)
+    print(f'src {src}')
+    dst = np.asarray(svgCoordinates)
+    print(f'dst {dst}')
+    if not t.estimate(src, dst): raise Exception("estimate failed")
 
+    # Homogeneous to Euclidean
+    # [x, y, w]^T --> [x/w, y/w]^T
+    x = t.params[0]
+    y = t.params[1]
+    w = t.params[2]
+    transform = [x,y,w]
+    current_app.config.update(TRANSFORM_FREQ_SVG=transform)
+
+
+def freqToSVG(freq):
+    '''
+    params freq: list [x,y]
+    returns svg: list [xSVG, ySVG]
+    '''
+    pass
 def vowelChartCalibration(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
-    print(f'in directory {rootDirectory}')
+    pprint(f'in directory {rootDirectory}')
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
             if '.wav' in file:
                 f1, f2 = audioToVwlFormants(path,file)
                 jsonName = f"{file.split('.')[0]}-vwlCal.json"
                 formantsToJson(f1,f2,path,jsonName, True)
-        coordinates = vowelChartPoints(path)
+        coordinates = loadVowelChartFiles(path)
 
         # Serializing json
         json_object = json.dumps(coordinates, indent=4)

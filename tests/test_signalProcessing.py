@@ -1,8 +1,13 @@
 import os
 
+import app
 from flaskr.signalProcessing import (
-    vowelChartPoints
+    vowelChartPoints, transformArray
 )
+from skimage.transform import ProjectiveTransform
+import numpy as np
+from flask import (current_app)
+
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
 def test_vowelChartPoints():
     # test the basic case
@@ -48,4 +53,30 @@ def test_vowelChartPoints():
     assert BH == calcBH
     assert FL == calcFL
     assert BL == calcBL
+
+def test_transformArray(app):
+    with app.app_context():
+        t = ProjectiveTransform()
+        actualCoordinates = [
+            (2500.5, 300.5),(250.5,350.5),
+            (1571.5, 850.6), (255.8, 834.3),
+        ]
+        # todo: determine svg's 0,0
+        svgCoordinates = [
+            (0,1),(1,1),
+            (0,0),(1,0)
+        ]
+        src = np.asarray(actualCoordinates)
+        dst = np.asarray(svgCoordinates)
+        print(f'dst {dst}')
+        if not t.estimate(src, dst): raise Exception("estimate failed")
+        actualX = t.params[0]
+        actualY = t.params[1]
+        actualW = t.params[2]
+        transformArray(actualCoordinates,svgCoordinates)
+        calcT = current_app.config['TRANSFORM_FREQ_SVG']
+        assert (actualX == calcT[0]).all()
+        assert (actualY == calcT[1]).all()
+        assert (actualW == calcT[2]).all()
+
 

@@ -41,14 +41,14 @@ def create_app(test_config=None):
         app.config.from_mapping(
             TESTING=True,
             MONGO_URI=f"{MONGODB}/testProVis",  # MongoDB connection string for testing
-            PRACTICE_DATA = None
+            TRANSFORM_FREQ_SVG= None
         )
         print("Testing config")
     else:
         app.config.from_mapping(
             SECRET_KEY='dev',
             MONGO_URI=f"{MONGODB}/pronunciation_vis",  # MongoDB connection string for production
-            PRACTICE_DATA=None
+            TRANSFORM_FREQ_SVG= None
         )
         print("Development config")
 
