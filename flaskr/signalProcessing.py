@@ -53,7 +53,7 @@ def audioToVwlFormants(path,file_name):
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5000
+    formant_ceiling = 5500
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.05
@@ -153,24 +153,24 @@ def maxAndMinOfFormants(data):
     return maxF1, maxF2, minF1, minF2
 
 
-def vowelChartPoints(rootDirectory):
-    '''hardcoded for bee, boo, baa, and baw'''
-    # todo: fix so that coordinates are correct might mean fixing max and min of formants too
-
+def loadVowelChartFiles(rootDirectory):
     vowels = {}
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
             if '.json' in file and 'Coordinates' not in file:
                 with open(path+file,'r') as f:
                     data = json.load(f)
-                    name,word,date,_ = file.split('-')
+                    name,word,_ = file.split('-')
                     vowels[word] = data
-    words = ['beed','booed','bad', 'baw']
+    coordinates = vowelChartPoints(vowels)
+def vowelChartPoints(vowels):
+    ''' vowels is a dictionary {word: data} '''
+    words = ['frontHigh','backHigh','frontLow', 'backLow']
     # F = Front, B = Back, H = High, L = Low
     for word, vwls in vowels.items():
+        print(word)
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
-            print(word)
             if word == words[0]:
                 xFH = maxF2
                 yFH = minF1
@@ -202,7 +202,6 @@ def vowelChartCalibration(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
     print(f'in directory {rootDirectory}')
     for path, dir, files in os.walk(rootDirectory):
-        # path = path + '/'
         for file in files:
             if '.wav' in file:
                 f1, f2 = audioToVwlFormants(path,file)
