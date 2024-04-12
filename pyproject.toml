@@ -18,6 +18,9 @@ build-backend = "flit_core.buildapi"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
 
 [tool.coverage.run]
 branch = true
