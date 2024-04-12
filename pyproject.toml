@@ -1,5 +1,5 @@
 [project]
-name = "showAndTell2024"
+name = "flaskr"
 version = "1.0.0"
 authors = [
   { name="Charlotte Yoder", email="yoder6@illinois.edu" },
@@ -15,3 +15,10 @@ dependencies = [
 [build-system]
 requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["flaskr"]
