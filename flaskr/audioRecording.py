@@ -19,7 +19,7 @@ def record():
 
 
 
-def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=False, secondTime=False):
+def recordFile(word, participantID, debug=False, chartEdgePoint='False', secondTime=False):
     # obtain lang_files from the microphone
     import speech_recognition as sr
     r = sr.Recognizer()
@@ -29,7 +29,7 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
         r.adjust_for_ambient_noise(source, duration=1)
         print(f"Please say {word}")
         # timeout after 5 seconds of not hearing anything and let user know that there was a timeout
-        timeout = 3
+        timeout = 5
         try:
             audio = r.listen(source, timeout=timeout)
             print("Heard you, just a moment\n")
@@ -39,7 +39,7 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
             audioObtained = False
             return 'Quiet'
             if not secondTime:
-                recordFile(word, participantID,debug,L1,speakerCalibration,secondTime=True)
+                recordFile(word, participantID,debug,L1,secondTime=True)
     if audioObtained:
         if debug:
             p = pyaudio.PyAudio()
@@ -60,15 +60,18 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
         # save data to file
         now = datetime.now()
         date_time = now.strftime("%Y_%m_%d_%H%M%S")
-        file_name = participantID + "-" + word + "-" + date_time
 
         folderID = f"{participantID}/"
 
         # If we're gathering words for vowel calibration, save the files in the same folder.
-        if speakerCalibration:
+        if chartEdgePoint != 'NA':
+            file_name = participantID + "-" + chartEdgePoint
             folderWORD = f"vowelCalibration/"
+            new_file_name = folderID + folderWORD + file_name + ".wav"
         else:
+            file_name = participantID + "-" + word + "-" + date_time
             folderWORD = f"{word}/"
+            new_file_name = folderID + folderWORD + file_name + ".wav"
 
         # Create user Directory if it doesn't exist
         if not os.path.exists(DATA_DIR+folderID):
@@ -76,9 +79,6 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
         # create word directory if it doesn't exist
         if not os.path.exists(DATA_DIR+folderID+folderWORD):
             os.mkdir(DATA_DIR+folderID+folderWORD)
-
-        new_file_name = folderID + folderWORD + file_name + ".wav"
-        # print(new_file_name)
 
         with open(DATA_DIR + new_file_name , "wb") as f:
             f.write(wav_data)
@@ -96,12 +96,12 @@ def recordFile(word, participantID, debug=False, L1=True, speakerCalibration=Fal
 
 
 def recordCalibrationFiles(id):
-    words = ['eee','ooo','awe']
+    words = ['bee','boo','baa','baw']
+    pointLabels = ['frontHigh','backHigh','frontLow','backLow']
     for idx, word in enumerate(words):
         speak = f"The next word you'll be asked to say is \t{word}, {info[idx]}"
         print(speak)
-        recordFile(word,id,L1=False,speakerCalibration=True)
-
+        recordFile(word,id,chartEdgePoint=pointLabels[idx])
     return "Recorded calibration files."
 
 
