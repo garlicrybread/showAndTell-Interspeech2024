@@ -15,3 +15,4 @@ librosa==0.10.0
 PyAudio==0.2.11
 praat-parselmouth==0.4.3
 SpeechRecognition==3.10.1
+pytest==7.4.3
