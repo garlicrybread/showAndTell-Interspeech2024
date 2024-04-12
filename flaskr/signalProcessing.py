@@ -26,8 +26,6 @@ def processVwlData():
     filename = pathList[-1]
     print(path,filename)
     f1List, f2List = audioToVwlFormants(path,filename)
-    f1List = condenseFormantList(f1List)
-    f2List = condenseFormantList(f2List)
     jsonName = filename.split('.')[0] + '.json'
     formantsToJson(f1List,f2List,path,jsonName)
     id,word,_ = jsonName.split('-')
@@ -56,8 +54,9 @@ def audioToVwlFormants(path,file_name):
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
     formant_ceiling = 5000
-    num_formants = 4
-    window_len = 0.015
+    num_formants = 5
+    # higher window length to deal with smoothing
+    window_len = 0.05
     preemphasis = 100
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
@@ -93,6 +92,8 @@ def condenseFormantList(formantList,cal=False):
 def formantsToJson(f1List,f2List,path,jsonName,cal=False):
     print(f'first of f1 formant:{f1List[0]}')
     idx_vwls = [0]
+    # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
+    # difference between two formants is
     for prev_idx, vwlF1 in enumerate(f1List[1:]):
         prevVwlF1 = f1List[prev_idx]
         prevVwlF2 = f2List[prev_idx]
@@ -103,6 +104,7 @@ def formantsToJson(f1List,f2List,path,jsonName,cal=False):
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List) - 1)
+    print(f'idx vwls {idx_vwls}')
     data = []
     # go through the index list
     prev_idx = 0
@@ -110,6 +112,7 @@ def formantsToJson(f1List,f2List,path,jsonName,cal=False):
         vwlsDict = {"vwl": []}
         tempF1 = condenseFormantList(f1List[prev_idx:idx],cal)
         tempF2 = condenseFormantList(f2List[prev_idx:idx],cal)
+        print(f'tempF1 {tempF1}')
         for vwl_idx in range(len(tempF1)):
             f1_vwl = tempF1[vwl_idx]
             f2_vwl = tempF2[vwl_idx]
@@ -151,7 +154,7 @@ def maxAndMinOfFormants(data):
 
 
 def vowelChartPoints(rootDirectory):
-    '''hardcoded for eee, ooo, and awe'''
+    '''hardcoded for bee, boo, baa, and baw'''
     # todo: fix so that coordinates are correct might mean fixing max and min of formants too
 
     vowels = {}
@@ -162,28 +165,35 @@ def vowelChartPoints(rootDirectory):
                     data = json.load(f)
                     name,word,date,_ = file.split('-')
                     vowels[word] = data
-    # json data in the form of list(dictionary
-    edges = {}
-    words = ['eee','ooo','awe']
-    ymin = []
+    words = ['beed','booed','bad', 'baw']
+    # F = Front, B = Back, H = High, L = Low
     for word, vwls in vowels.items():
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
             print(word)
-            print(f'mins and maxes {maxF1,maxF2,minF1,minF2}\n')
             if word == words[0]:
-                xmax = maxF2
-                ymin.append(minF1)
+                xFH = maxF2
+                yFH = minF1
             elif word == words[1]:
-                xmin = minF2
-                ymin.append(minF1)
+                xBH = minF2
+                yBH = minF1
             elif word == words[2]:
-                ymax = maxF1
+                xFL = maxF2
+                yFL = maxF1
+            elif word == words[3]:
+                xBL = minF2
+                yBL = maxF1
+
+
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    print(xmin, xmax, ymin, ymax)
-    coordinates = [(xmin,xmax),(min(ymin),ymax)]
+    print((xFH,yFH),(xBH,yBH),(xFL,yFL),(xBL,yBL))
+    frontHigh = (xFH,yFH)
+    backHigh = (xBH,yBH)
+    frontLow = (xFL,yFL)
+    backLow = (xBL,yBL)
+    coordinates = [frontHigh,backHigh,frontLow,backLow]
     print(f'coordinates: {coordinates}')
     return coordinates
 
