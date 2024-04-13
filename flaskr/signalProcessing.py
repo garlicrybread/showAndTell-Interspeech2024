@@ -218,6 +218,7 @@ def transformArray(actualCoordinates, svgCoordinates):
     w = t.params[2]
     transform = [x,y,w]
     current_app.config.update(TRANSFORM_FREQ_SVG=transform)
+    return transform
 
 
 def freqToSVG(freq):
@@ -225,7 +226,19 @@ def freqToSVG(freq):
     params freq: list [x,y]
     returns svg: list [xSVG, ySVG]
     '''
-    pass
+    # freq is a 3x1
+    tempList = [[freq[0]],[freq[1]],[1]]
+    freq = np.array(tempList)
+    # t is a 3x3
+    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
+    x,y,w = np.dot(t,freq).tolist()
+    x = sum(x)
+    y = sum(y)
+    w = sum(w)
+    return [x/w,y/w]
+
+
+
 def vowelChartCalibration(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
     pprint(f'in directory {rootDirectory}')

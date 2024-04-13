@@ -2,7 +2,7 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    vowelChartPoints, transformArray
+    vowelChartPoints, transformArray, freqToSVG
 )
 from skimage.transform import ProjectiveTransform
 import numpy as np
@@ -78,5 +78,36 @@ def test_transformArray(app):
         assert (actualX == calcT[0]).all()
         assert (actualY == calcT[1]).all()
         assert (actualW == calcT[2]).all()
+
+def test_freqToSVG(app, test_transform):
+    def transform(t, freq):
+        xt = t[0]
+        yt = t[1]
+        wt = t[2]
+        x = xt[0] * freq[0] + xt[1] * freq[1] + xt[2]
+        y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
+        w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
+        return [x / w, y / w]
+
+    with app.app_context():
+        # base case tests
+        t = current_app.config['TRANSFORM_FREQ_SVG']
+        freq = [6,9]
+        actualSVG = transform(t,freq)
+        calcSVG = freqToSVG(freq)
+        assert type(calcSVG) == list
+        assert len(calcSVG) == 2
+        assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+
+        freq = [2500.3,210.43]
+        actualSVG = transform(t,freq)
+        calcSVG = freqToSVG(freq)
+        assert type(calcSVG) == list
+        assert len(calcSVG) == 2
+        assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+
+
+
+
 
 
