@@ -229,7 +229,12 @@ def test_condenseFormantList():
     assert (condensedActual == condensedCalc)
 
 def test_writeToJson():
-    pass
+    text = "I am written"
+    path =  DATA_DIR + 'testData/test/'
+    name = 'test.json'
+    writeToJson(path,name,text)
+    with open(path+name,'r') as f:
+        assert f.readlines()[0] == f'"{text}"'
 
 def test_calJsonToCoordinates():
     path = f"{DATA_DIR}testData/vowelCalibration/"
