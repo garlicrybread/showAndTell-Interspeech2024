@@ -38,6 +38,7 @@ def processVwlData():
 def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
+
 def audioToVwlFormants(path,file_name):
     vocalToolKitDir = '~/plugin_VocalToolkit/'
     extractVwlFile = "extractvowels.praat"
@@ -98,6 +99,28 @@ def condenseFormantList(formantList,cal=False):
             condensed.append(mean(formantList[num * i + num : length+1]))
     return condensed
 
+def maxAndMinOfFormants(data):
+    maxF1 = data['vwl'][0]['f1']
+    maxF2 = data['vwl'][0]['f2']
+    minF1 = maxF1
+    minF2 = maxF2
+    f1 = 'f1'
+    f2 = 'f2'
+    for formants in data['vwl']:
+        # See if the f1 formant is greater than the current max
+        # or if it is less than the current min
+        if formants[f1] > maxF1:
+            maxF1 = formants[f1]
+        elif formants[f1] < minF1:
+            minF1 = formants[f1]
+        # See if the f2 formant is greater than the current max
+        # or if it is less than the current min
+        if formants[f2] > maxF2:
+            maxF2 = formants[f2]
+        elif formants[f2] < minF2:
+            minF2 = formants[f2]
+    return maxF1, maxF2, minF1, minF2
+
 def formantsToJsonFormat(f1List,f2List,cal=False):
     idx_vwls = [0]
     # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
@@ -144,46 +167,43 @@ def writeToJson(path, jsonName, data):
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
 
-def maxAndMinOfFormants(data):
-    maxF1 = data['vwl'][0]['f1']
-    maxF2 = data['vwl'][0]['f2']
-    minF1 = maxF1
-    minF2 = maxF2
-    f1 = 'f1'
-    f2 = 'f2'
-    for formants in data['vwl']:
-        # See if the f1 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f1] > maxF1:
-            maxF1 = formants[f1]
-        elif formants[f1] < minF1:
-            minF1 = formants[f1]
-        # See if the f2 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f2] > maxF2:
-            maxF2 = formants[f2]
-        elif formants[f2] < minF2:
-            minF2 = formants[f2]
-    return maxF1, maxF2, minF1, minF2
+def transformArray(actualCoordinates, svgCoordinates):
+    t = ProjectiveTransform()
+    src = np.asarray(actualCoordinates)
+    print(f'src {src}')
+    dst = np.asarray(svgCoordinates)
+    print(f'dst {dst}')
+    if not t.estimate(src, dst): raise Exception("estimate failed")
 
+    # Homogeneous to Euclidean
+    # [x, y, w]^T --> [x/w, y/w]^T
+    x = t.params[0]
+    y = t.params[1]
+    w = t.params[2]
+    transform = [x,y,w]
+    current_app.config.update(TRANSFORM_FREQ_SVG=transform)
+    return transform
 
-def loadVowelChartFiles(rootDirectory):
-    vowels = {}
-    for path, dir, files in os.walk(rootDirectory):
-        for file in files:
-            if '.json' in file and 'Coordinates' not in file:
-                with open(path+file,'r') as f:
-                    data = json.load(f)
-                    name,word,_ = file.split('-')
-                    vowels[word] = data
-    coordinates = vowelChartPoints(vowels)
-    return coordinates
+def freqToSVG(freq):
+    '''
+    params freq: list [x,y]
+    returns svg: list [xSVG, ySVG]
+    '''
+    # freq is a 3x1
+    tempList = [[freq[0]],[freq[1]],[1]]
+    freq = np.array(tempList)
+    # t is a 3x3
+    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
+    x,y,w = np.dot(t,freq).tolist()
+    x = sum(x)
+    y = sum(y)
+    w = sum(w)
+    return [x/w,y/w]
 
 def vowelChartPoints(vowels):
     ''' vowels is a dictionary {word: data} '''
     words = ['frontHigh','backHigh','frontLow', 'backLow']
     # F = Front, B = Back, H = High, L = Low
-    print(f'vowls {vowels}\n')
     for word, vwls in vowels.items():
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
@@ -211,41 +231,19 @@ def vowelChartPoints(vowels):
     coordinates = [frontHigh,backHigh,frontLow,backLow]
     return coordinates
 
-def transformArray(actualCoordinates, svgCoordinates):
-    t = ProjectiveTransform()
-    src = np.asarray(actualCoordinates)
-    print(f'src {src}')
-    dst = np.asarray(svgCoordinates)
-    print(f'dst {dst}')
-    if not t.estimate(src, dst): raise Exception("estimate failed")
+def calJsonToCoordinates(rootDirectory):
+    vowels = {}
+    for path, dir, files in os.walk(rootDirectory):
+        for file in files:
+            if '.json' in file and 'Coordinates' not in file:
+                with open(path+file,'r') as f:
+                    data = json.load(f)
+                    name,word,_ = file.split('-')
+                    vowels[word] = data
+    coordinates = vowelChartPoints(vowels)
+    return coordinates
 
-    # Homogeneous to Euclidean
-    # [x, y, w]^T --> [x/w, y/w]^T
-    x = t.params[0]
-    y = t.params[1]
-    w = t.params[2]
-    transform = [x,y,w]
-    current_app.config.update(TRANSFORM_FREQ_SVG=transform)
-    return transform
-
-
-def freqToSVG(freq):
-    '''
-    params freq: list [x,y]
-    returns svg: list [xSVG, ySVG]
-    '''
-    # freq is a 3x1
-    tempList = [[freq[0]],[freq[1]],[1]]
-    freq = np.array(tempList)
-    # t is a 3x3
-    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
-    x,y,w = np.dot(t,freq).tolist()
-    x = sum(x)
-    y = sum(y)
-    w = sum(w)
-    return [x/w,y/w]
-
-def vowelChartCalibration(id):
+def calAudioToCoordinatesJson(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
     pprint(f'in directory {rootDirectory}')
     for path, dir, files in os.walk(rootDirectory):
@@ -254,7 +252,7 @@ def vowelChartCalibration(id):
                 f1, f2 = audioToVwlFormants(path,file)
                 jsonName = f"{file.split('.')[0]}-vwlCal.json"
                 dataFreq, dataSVG = formantsToJsonFormat(f1,f2,path,jsonName, True)
-        coordinates = loadVowelChartFiles(path)
+        coordinates = calJsonToCoordinates(path)
 
         # Serializing json
         json_object = json.dumps(coordinates, indent=4)
@@ -266,7 +264,7 @@ def vowelChartCalibration(id):
 
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     start_time = time.time()
     # hardcoded for now
     rootDirectory = homeDir + dataDir
@@ -278,7 +276,7 @@ if __name__ == '__main__':
     if 'cal' in sys.argv:
         try:
             print("Calibrating vowel chart coordinates...")
-            vowelChartCalibration(id)
+            calAudioToCoordinatesJson(id)
         except ValueError as e:
             print("Specify the -id")
             print(e)

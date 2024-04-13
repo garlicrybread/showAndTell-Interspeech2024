@@ -2,11 +2,12 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    vowelChartPoints, transformArray, freqToSVG, formantsToJsonFormat, condenseFormantList
+    vowelChartPoints, transformArray, freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson, calJsonToCoordinates
 )
 from skimage.transform import ProjectiveTransform
 import numpy as np
 from flask import (current_app)
+import json
 
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
 
@@ -23,6 +24,11 @@ def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
 
+def test_processVwlData():
+    pass
+
+def test_audioToVwlFormants():
+    pass
 
 def test_vowelChartPoints():
     # test the basic case
@@ -31,7 +37,7 @@ def test_vowelChartPoints():
         "f2": 2300.6
     },{
         "f1": 177.0,
-        "f2": 2235.9
+        "f2": 2435.9
     }]}]
 
     vowelsBH = [{'vwl': [{
@@ -61,7 +67,7 @@ def test_vowelChartPoints():
         'frontHigh': vowelsFH, 'backHigh': vowelsBH,
         'frontLow': vowelsFL, 'backLow':vowelsBL
     }
-    FH, BH = (2300.6,177.0), (736.4,274.6)
+    FH, BH = (2435.9,177.0), (736.4,274.6)
     FL, BL = (2400.6,860.4), (831.9,553.8)
     calcFH, calcBH, calcFL, calcBL = vowelChartPoints(vowels)
     assert FH == calcFH
@@ -181,6 +187,11 @@ def test_condenseFormantList():
     condensedCalc = condenseFormantList(f)
     assert len(condensedCalc) == len(condensedActual)
     assert (condensedActual == condensedCalc)
+    # check calibration
+    condensedCalc = condenseFormantList(f,True)
+    assert len(condensedCalc) == len(f)
+    assert (condensedCalc == f)
+
 
     f = [20,15,80]
     condensedActual = [mean(f)]
@@ -216,3 +227,30 @@ def test_condenseFormantList():
     condensedCalc = condenseFormantList(f)
     assert len(condensedCalc) == len(condensedActual)
     assert (condensedActual == condensedCalc)
+
+def test_writeToJson():
+    pass
+
+def test_calJsonToCoordinates():
+    path = f"{DATA_DIR}testData/vowelCalibration/"
+    file1 = 'testData-backHigh-vwlCal.json'
+    file2 = 'testData-backLow-vwlCal.json'
+    file3 = 'testData-frontHigh-vwlCal.json'
+    file4 = 'testData-frontLow-vwlCal.json'
+    files = [file1,file2,file3,file4]
+    vowels = {}
+    for file in files:
+        with open(path+file,'r') as f:
+            data = json.load(f)
+            name,word,_ = file.split('-')
+            vowels[word] = data
+    aCoordinates = vowelChartPoints(vowels)
+    cCoordinates = calJsonToCoordinates(path)
+    assert len(aCoordinates) == len(cCoordinates)
+    assert aCoordinates == cCoordinates
+
+
+def test_calAudioToCoordinatesJson():
+    pass
+
+
