@@ -209,7 +209,7 @@ export async function drawVowels(dataL1Path) {
     const xWidth = svgWidth - 2 * padding.x;
     const yHeight = svgHeight - 2 * padding.y;
     const slope = (0.9999 * yHeight) / (0.375 * xWidth);
-    const pad = 20;
+    const pad = 15;
     const xrangeL1 = [coordinatesL1[0][1]+pad, coordinatesL1[0][0]-pad];
     const yrangeL1 = [coordinatesL1[1][0]-pad, coordinatesL1[1][1]+pad];
     // convert frequencies to svg scale
@@ -302,6 +302,7 @@ export async function drawVowels(dataL1Path) {
         }
     });
 }
+
 async function svgGetPadding(svg) {
     // get height and width of svg
     const svgViewBox = svg.attr("viewBox").split(',');
