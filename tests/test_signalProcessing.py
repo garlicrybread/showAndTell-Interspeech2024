@@ -18,6 +18,12 @@ def transform(t, freq):
     y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
     w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
     return [x / w, y / w]
+
+def mean(l):
+    if len(l) != 0:
+        return sum(l) / len(l)
+
+
 def test_vowelChartPoints():
     # test the basic case
     vowelsFH = [{'vwl': [{
@@ -107,32 +113,68 @@ def test_freqToSVG(app, test_transform):
         assert len(calcSVG) == 2
         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
 
-# def test_formantsToJsonFormat(app, test_transform):
-#     with app.app_context():
-#         t = current_app.config['TRANSFORM_FREQ_SVG']
-#         f1 = [390.5, 365.0]
-#         f2 = [1800.6, 1760.9]
-#         p1 = [f1[0],f2[0]]
-#         p2 = [f1[1],f2[1]]
-#         data = [{'vwl': [{ "f1": p1[0], "f2": p1[1]},{ "f1": p2[0], "f2": p2[1] }] }]
-#         svg1 = transform(t,p1)
-#         svg2 = transform(t,p2)
-#         dataSVG = [{'vwl': [{ 'f1': svg1[0], 'f2': svg1[1]},{ 'f1': svg2[0],'f2': svg2[1] }] }]
-#         calcData, calcDataSVG = formantsToJsonFormat(f1,f2)
-#
-#         # make sure data was calculated correctly
-#         for idx, pair in enumerate(data[0]['vwl']):
-#             calcPair = calcData[0]['vwl'][idx]
-#             svgPair = dataSVG[0]['vwl'][idx]
-#             calcSvgPair = calcDataSVG[0]['vwl'][idx]
-#             for key in pair:
-#                 assert calcPair[key] == pair[key]
-#                 assert svgPair[key] == calcSvgPair[key]
+def test_formantsToJsonFormat(app, test_transform):
+    with app.app_context():
+        t = current_app.config['TRANSFORM_FREQ_SVG']
+        # one vowel test
+        f1 = [390.5, 365.0]
+        f2 = [1800.6, 1760.9]
+        mf1 = mean(f1)
+        mf2 = mean(f2)
+        data = [{'vwl': [{ "f1": mf1, "f2": mf2 }] }]
+        svg = transform(t,[mf1,mf2])
+        dataSVG = [{'vwl': [{ 'f1': svg[0], 'f2': svg[1]}] }]
+        calcData, calcDataSVG = formantsToJsonFormat(f1,f2)
+
+        # make sure data was calculated correctly
+        for idx, pair in enumerate(data[0]['vwl']):
+            calcPair = calcData[0]['vwl'][idx]
+            svgPair = dataSVG[0]['vwl'][idx]
+            calcSvgPair = calcDataSVG[0]['vwl'][idx]
+            for key in pair:
+                assert calcPair[key] == pair[key]
+                assert svgPair[key] == calcSvgPair[key]
+
+        # two vowels test, two freq for the kept vowel
+        f1 = [390.5, 365.0, 200, 210, 240, 250]
+        f2 = [1800.6, 1760.9, 1500, 1450, 1425, 1450]
+        mf1 = mean(f1[:2])
+        mf2 = mean(f2[:2])
+        data = [{'vwl': [{ "f1": mf1, "f2": mf2 }] }]
+        svg = transform(t,[mf1,mf2])
+        dataSVG = [{'vwl': [{ 'f1': svg[0], 'f2': svg[1]}] }]
+        calcData, calcDataSVG = formantsToJsonFormat(f1,f2)
+
+        # make sure data was calculated correctly
+        for idx, pair in enumerate(data[0]['vwl']):
+            calcPair = calcData[0]['vwl'][idx]
+            svgPair = dataSVG[0]['vwl'][idx]
+            calcSvgPair = calcDataSVG[0]['vwl'][idx]
+            for key in pair:
+                assert calcPair[key] == pair[key]
+                assert svgPair[key] == calcSvgPair[key]
+
+        # three vowels test, 5 freq for the kept vowel
+        f1 = [390.5, 365.0, 400, 410, 390, 200, 210, 240, 250, 500, 510]
+        f2 = [1800.6, 1760.9, 1720, 1705, 1700, 1500, 1450, 1425, 1450, 1610, 1670]
+        mf1 = [mean(f1[:3]), mean(f1[3:5])]
+        mf2 = [mean(f2[:3]), mean(f2[3:5])]
+        data = [{'vwl': [{ "f1": mf1[0], "f2": mf2[0] }, { "f1": mf1[1], "f2": mf2[1] }] }]
+        svg1 = transform(t,[mf1[0],mf2[0]])
+        svg2 = transform(t,[mf1[1],mf2[1]])
+        dataSVG = [{'vwl': [{ 'f1': svg1[0], 'f2': svg1[1]},{ 'f1': svg2[0], 'f2': svg2[1]}] }]
+        calcData, calcDataSVG = formantsToJsonFormat(f1,f2)
+
+        # make sure data was calculated correctly
+        for idx, pair in enumerate(data[0]['vwl']):
+            calcPair = calcData[0]['vwl'][idx]
+            svgPair = dataSVG[0]['vwl'][idx]
+            calcSvgPair = calcDataSVG[0]['vwl'][idx]
+            for key in pair:
+                assert calcPair[key] == pair[key]
+                assert svgPair[key] == calcSvgPair[key]
 
 def test_condenseFormantList():
-    def mean(l):
-        if len(l) != 0:
-            return sum(l) / len(l)
     # base case test first
     f = [20,15,80,90,45,3]
     condensedActual = [mean(f[:3]),mean(f[3:])]

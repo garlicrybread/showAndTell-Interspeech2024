@@ -111,7 +111,7 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
         diff = 150
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
-    idx_vwls.append(len(f1List) - 1)
+    idx_vwls.append(len(f1List))
     data = []
     dataSVG = []
     # go through the index list; only takes the first vowel
@@ -132,8 +132,8 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             vwlsDictSVG["vwl"].append(tempDict)
         if vwlsDict['vwl'] != []:
             data.append(vwlsDict)
+            dataSVG.append(vwlsDictSVG)
         prev_idx = idx_vwls[i + 1]
-    print(f'data {data}')
     # Serializing json
     return data, dataSVG
 
