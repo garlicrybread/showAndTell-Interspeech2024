@@ -36,7 +36,8 @@ def processVwlData():
     return relPath
 
 def mean(l):
-    return sum(l) / len(l)
+    if len(l) != 0:
+        return sum(l) / len(l)
 def audioToVwlFormants(path,file_name):
     vocalToolKitDir = '~/plugin_VocalToolkit/'
     extractVwlFile = "extractvowels.praat"
@@ -80,19 +81,24 @@ def audioToVwlFormants(path,file_name):
 
 def condenseFormantList(formantList,cal=False):
     # If calibration, we need to retain the mins and maxes
+    length = len(formantList)
     if cal:
         return formantList
     condensed = []
     num = 3
     i = 0
-    for i in range(0, int(len(formantList) / num)):
+    for i in range(0, int(length / num)):
         chunk = formantList[num * i:num * i + num]
         condensed.append(mean(chunk))
     # anything that was extra, append without change
-    condensed += formantList[num * i + num:len(formantList)+1]
+    if length % 3 != 0:
+        if length <= 2:
+            condensed.append(mean(formantList))
+        else:
+            condensed.append(mean(formantList[num * i + num : length+1]))
     return condensed
 
-def formantsToJson(f1List,f2List,path,jsonNameFreq,jsonNameSVG, cal=False):
+def formantsToJsonFormat(f1List,f2List,cal=False):
     idx_vwls = [0]
     # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
     # difference between two formants is
@@ -106,28 +112,30 @@ def formantsToJson(f1List,f2List,path,jsonNameFreq,jsonNameSVG, cal=False):
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List) - 1)
-    print(f'idx vwls {idx_vwls}')
     data = []
-    # go through the index list
+    dataSVG = []
+    # go through the index list; only takes the first vowel
     prev_idx = 0
-    for i, idx in enumerate(idx_vwls[1:]):
+    for i, idx in enumerate(idx_vwls[1:2]):
         vwlsDict = {"vwl": []}
+        vwlsDictSVG = {"vwl": []}
         tempF1 = condenseFormantList(f1List[prev_idx:idx],cal)
         tempF2 = condenseFormantList(f2List[prev_idx:idx],cal)
-        print(f'tempF1 {tempF1}')
         for vwl_idx in range(len(tempF1)):
             f1_vwl = tempF1[vwl_idx]
             f2_vwl = tempF2[vwl_idx]
             tempDict = {"f1": f1_vwl, "f2": f2_vwl}
             vwlsDict["vwl"].append(tempDict)
+            # convert freq pair to svg point
+            svgF1, svgF2 = freqToSVG([f1_vwl, f2_vwl])
+            tempDict = {"f1": svgF1, "f2":svgF2}
+            vwlsDictSVG["vwl"].append(tempDict)
         if vwlsDict['vwl'] != []:
             data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     print(f'data {data}')
     # Serializing json
-    dataSVG = 0
-    writeToJson(path, jsonNameFreq, data)
-    writeToJson(path, jsonNameSVG, dataSVG)
+    return data, dataSVG
 
 def writeToJson(path, jsonName, data):
     # Serializing json
@@ -237,8 +245,6 @@ def freqToSVG(freq):
     w = sum(w)
     return [x/w,y/w]
 
-
-
 def vowelChartCalibration(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
     pprint(f'in directory {rootDirectory}')
@@ -247,7 +253,7 @@ def vowelChartCalibration(id):
             if '.wav' in file:
                 f1, f2 = audioToVwlFormants(path,file)
                 jsonName = f"{file.split('.')[0]}-vwlCal.json"
-                formantsToJson(f1,f2,path,jsonName, True)
+                dataFreq, dataSVG = formantsToJsonFormat(f1,f2,path,jsonName, True)
         coordinates = loadVowelChartFiles(path)
 
         # Serializing json

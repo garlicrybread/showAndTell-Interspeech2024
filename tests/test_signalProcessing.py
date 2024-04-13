@@ -2,7 +2,7 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    vowelChartPoints, transformArray, freqToSVG
+    vowelChartPoints, transformArray, freqToSVG, formantsToJsonFormat, condenseFormantList
 )
 from skimage.transform import ProjectiveTransform
 import numpy as np
@@ -107,9 +107,70 @@ def test_freqToSVG(app, test_transform):
         assert len(calcSVG) == 2
         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
 
-def test_formantsToJsonFormat(app):
-    pass
+# def test_formantsToJsonFormat(app, test_transform):
+#     with app.app_context():
+#         t = current_app.config['TRANSFORM_FREQ_SVG']
+#         f1 = [390.5, 365.0]
+#         f2 = [1800.6, 1760.9]
+#         p1 = [f1[0],f2[0]]
+#         p2 = [f1[1],f2[1]]
+#         data = [{'vwl': [{ "f1": p1[0], "f2": p1[1]},{ "f1": p2[0], "f2": p2[1] }] }]
+#         svg1 = transform(t,p1)
+#         svg2 = transform(t,p2)
+#         dataSVG = [{'vwl': [{ 'f1': svg1[0], 'f2': svg1[1]},{ 'f1': svg2[0],'f2': svg2[1] }] }]
+#         calcData, calcDataSVG = formantsToJsonFormat(f1,f2)
+#
+#         # make sure data was calculated correctly
+#         for idx, pair in enumerate(data[0]['vwl']):
+#             calcPair = calcData[0]['vwl'][idx]
+#             svgPair = dataSVG[0]['vwl'][idx]
+#             calcSvgPair = calcDataSVG[0]['vwl'][idx]
+#             for key in pair:
+#                 assert calcPair[key] == pair[key]
+#                 assert svgPair[key] == calcSvgPair[key]
 
+def test_condenseFormantList():
+    def mean(l):
+        if len(l) != 0:
+            return sum(l) / len(l)
+    # base case test first
+    f = [20,15,80,90,45,3]
+    condensedActual = [mean(f[:3]),mean(f[3:])]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
 
+    f = [20,15,80]
+    condensedActual = [mean(f)]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
 
+    # lists that are not evenly divisible by 3
+    # length 5
+    f = [20,15,80,90,45]
+    condensedActual = [mean(f[:3]),mean(f[3:])]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
 
+    # length 4
+    f = [20,15,80,90]
+    condensedActual = [mean(f[:3]),mean(f[3:])]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
+
+    # length 2
+    f = [20,15]
+    condensedActual = [mean(f)]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
+
+    # length 1
+    f = [20]
+    condensedActual = [mean(f)]
+    condensedCalc = condenseFormantList(f)
+    assert len(condensedCalc) == len(condensedActual)
+    assert (condensedActual == condensedCalc)
