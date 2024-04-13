@@ -1,11 +1,13 @@
 import pytest
 
 from flaskr import create_app
+from flaskr.signalProcessing import transformArray
 from flaskr.db import init_db
 from flask_login import current_user, login_user
 
 from flask import current_app
-
+from skimage.transform import ProjectiveTransform
+import numpy as np
 
 @pytest.fixture
 def app():
@@ -46,3 +48,23 @@ def test_user():
         ordering=ordering,
         location=location
     )
+@pytest.fixture
+def test_transform(app):
+    with app.app_context():
+        t = ProjectiveTransform()
+        actualCoordinates = [
+            (2500.5, 300.5), (250.5, 350.5),
+            (1571.5, 850.6), (255.8, 834.3),
+        ]
+        # todo: determine svg's 0,0
+        svgCoordinates = [
+            (0, 1), (1, 1),
+            (0, 0), (1, 0)
+        ]
+        src = np.asarray(actualCoordinates)
+        dst = np.asarray(svgCoordinates)
+        if not t.estimate(src, dst): raise Exception("estimate failed")
+        actualX = t.params[0]
+        actualY = t.params[1]
+        actualW = t.params[2]
+        return transformArray(actualCoordinates, svgCoordinates)
