@@ -79,7 +79,7 @@ def test_transformArray(app):
         assert (actualY == calcT[1]).all()
         assert (actualW == calcT[2]).all()
 
-def test_freqToSVG(app, test_transform):
+def test_freqToSVG(app):
     def transform(t, freq):
         xt = t[0]
         yt = t[1]
