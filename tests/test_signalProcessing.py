@@ -9,6 +9,15 @@ import numpy as np
 from flask import (current_app)
 
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
+
+def transform(t, freq):
+    xt = t[0]
+    yt = t[1]
+    wt = t[2]
+    x = xt[0] * freq[0] + xt[1] * freq[1] + xt[2]
+    y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
+    w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
+    return [x / w, y / w]
 def test_vowelChartPoints():
     # test the basic case
     vowelsFH = [{'vwl': [{
@@ -79,15 +88,7 @@ def test_transformArray(app):
         assert (actualY == calcT[1]).all()
         assert (actualW == calcT[2]).all()
 
-def test_freqToSVG(app):
-    def transform(t, freq):
-        xt = t[0]
-        yt = t[1]
-        wt = t[2]
-        x = xt[0] * freq[0] + xt[1] * freq[1] + xt[2]
-        y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
-        w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
-        return [x / w, y / w]
+def test_freqToSVG(app, test_transform):
 
     with app.app_context():
         # base case tests
@@ -106,7 +107,8 @@ def test_freqToSVG(app):
         assert len(calcSVG) == 2
         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
 
-
+def test_formantsToJsonFormat(app):
+    pass
 
 
 
