@@ -11,7 +11,7 @@ from pprint import pprint
 # writing to json
 import json
 
-from flask import (Blueprint, request, current_app)
+from flask import (Blueprint, request, current_app, jsonify)
 # for transforming actual Vwl to SVG vwl points
 import numpy as np
 
@@ -33,6 +33,33 @@ def processVwlData():
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     return relPath
+@bp.route('/api/freqToSVG',methods=['POST'])
+def freqToSVG():
+    # todo: update function description
+    '''
+    params freq: list [x,y]
+    returns svg: list [xSVG, ySVG]
+    '''
+    # freq is a 3x1
+    freq = request.get_json()
+    print(f'freq {freq}')
+    tempList = [[freq['f2']],[freq['f1']],[1]]
+    freq = np.array(tempList)
+    # t is a 3x3
+    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
+    x,y,w = np.dot(t,freq).tolist()
+    x = sum(x)
+    y = sum(y)
+    w = sum(w)
+    data = {'svg': [x/w,y/w]}
+    return jsonify(data)
+
+@bp.route('/api/svgToConfig',methods=['POST'])
+def svgToConfig():
+    svg = request.get_json()
+    current_app.config.update(SVG_COORDINATES=svg)
+    print(f'\ncurrent app {current_app.config["SVG_COORDINATES"]}\n')
+    return jsonify({'success':True})
 
 def mean(l):
     if len(l) != 0:
@@ -135,23 +162,8 @@ def writeToJson(path, jsonName, data):
     # Writing to json
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
+    print(f'json filename {path+jsonName}')
 
-def freqToSVG(freq):
-    '''
-    params freq: list [x,y]
-    returns svg: list [xSVG, ySVG]
-    '''
-    # todo: convert to a javascript function
-    # freq is a 3x1
-    tempList = [[freq[0]],[freq[1]],[1]]
-    freq = np.array(tempList)
-    # t is a 3x3
-    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
-    x,y,w = np.dot(t,freq).tolist()
-    x = sum(x)
-    y = sum(y)
-    w = sum(w)
-    return [x/w,y/w]
 
 
 if __name__ == '__main__': # pragma: no cover
