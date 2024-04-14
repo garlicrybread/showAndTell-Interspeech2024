@@ -13,7 +13,6 @@ import json
 
 from flask import (Blueprint, request, current_app)
 # for transforming actual Vwl to SVG vwl points
-from skimage.transform import ProjectiveTransform
 import numpy as np
 
 homeDir = f'{os.getcwd()}/'
@@ -77,7 +76,6 @@ def audioToVwlFormants(path,file_name):
         if f1 > 0:
             f1_list.append(f1)
             f2_list.append(f2)
-    print(f'f1 frequencies: {f1_list}')
     return f1_list, f2_list
 
 def condenseFormantList(formantList,cal=False):
@@ -99,27 +97,6 @@ def condenseFormantList(formantList,cal=False):
             condensed.append(mean(formantList[num * i + num : length+1]))
     return condensed
 
-def maxAndMinOfFormants(data):
-    maxF1 = data['vwl'][0]['f1']
-    maxF2 = data['vwl'][0]['f2']
-    minF1 = maxF1
-    minF2 = maxF2
-    f1 = 'f1'
-    f2 = 'f2'
-    for formants in data['vwl']:
-        # See if the f1 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f1] > maxF1:
-            maxF1 = formants[f1]
-        elif formants[f1] < minF1:
-            minF1 = formants[f1]
-        # See if the f2 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f2] > maxF2:
-            maxF2 = formants[f2]
-        elif formants[f2] < minF2:
-            minF2 = formants[f2]
-    return maxF1, maxF2, minF1, minF2
 
 def formantsToJsonFormat(f1List,f2List,cal=False):
     idx_vwls = [0]
@@ -136,12 +113,10 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List))
     data = []
-    dataSVG = []
     # go through the index list; only takes the first vowel
     prev_idx = 0
     for i, idx in enumerate(idx_vwls[1:2]):
         vwlsDict = {"vwl": []}
-        vwlsDictSVG = {"vwl": []}
         tempF1 = condenseFormantList(f1List[prev_idx:idx],cal)
         tempF2 = condenseFormantList(f2List[prev_idx:idx],cal)
         for vwl_idx in range(len(tempF1)):
@@ -149,16 +124,11 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             f2_vwl = tempF2[vwl_idx]
             tempDict = {"f1": f1_vwl, "f2": f2_vwl}
             vwlsDict["vwl"].append(tempDict)
-            # convert freq pair to svg point
-            svgF1, svgF2 = freqToSVG([f1_vwl, f2_vwl])
-            tempDict = {"f1": svgF1, "f2":svgF2}
-            vwlsDictSVG["vwl"].append(tempDict)
         if vwlsDict['vwl'] != []:
             data.append(vwlsDict)
-            dataSVG.append(vwlsDictSVG)
         prev_idx = idx_vwls[i + 1]
     # Serializing json
-    return data, dataSVG
+    return data
 
 def writeToJson(path, jsonName, data):
     # Serializing json
@@ -167,28 +137,12 @@ def writeToJson(path, jsonName, data):
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
 
-def transformArray(actualCoordinates, svgCoordinates):
-    t = ProjectiveTransform()
-    src = np.asarray(actualCoordinates)
-    print(f'src {src}')
-    dst = np.asarray(svgCoordinates)
-    print(f'dst {dst}')
-    if not t.estimate(src, dst): raise Exception("estimate failed")
-
-    # Homogeneous to Euclidean
-    # [x, y, w]^T --> [x/w, y/w]^T
-    x = t.params[0]
-    y = t.params[1]
-    w = t.params[2]
-    transform = [x,y,w]
-    current_app.config.update(TRANSFORM_FREQ_SVG=transform)
-    return transform
-
 def freqToSVG(freq):
     '''
     params freq: list [x,y]
     returns svg: list [xSVG, ySVG]
     '''
+    # todo: convert to a javascript function
     # freq is a 3x1
     tempList = [[freq[0]],[freq[1]],[1]]
     freq = np.array(tempList)
@@ -200,48 +154,7 @@ def freqToSVG(freq):
     w = sum(w)
     return [x/w,y/w]
 
-def vowelChartPoints(vowels):
-    ''' vowels is a dictionary {word: data} '''
-    words = ['frontHigh','backHigh','frontLow', 'backLow']
-    # F = Front, B = Back, H = High, L = Low
-    for word, vwls in vowels.items():
-        for vwl in vwls:
-            maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
-            if word == words[0]:
-                xFH = maxF2
-                yFH = minF1
-            elif word == words[1]:
-                xBH = minF2
-                yBH = minF1
-            elif word == words[2]:
-                xFL = maxF2
-                yFL = maxF1
-            elif word == words[3]:
-                xBL = minF2
-                yBL = maxF1
 
-
-    # m = abs((yt - y1) / (xt - x1))
-    # x3 = y4 / m
-    # x range, y range (xmin, xmax, ymin, ymax)
-    frontHigh = (xFH,yFH)
-    backHigh = (xBH,yBH)
-    frontLow = (xFL,yFL)
-    backLow = (xBL,yBL)
-    coordinates = [frontHigh,backHigh,frontLow,backLow]
-    return coordinates
-
-def calJsonToCoordinates(rootDirectory):
-    vowels = {}
-    for path, dir, files in os.walk(rootDirectory):
-        for file in files:
-            if '.json' in file and 'Coordinates' not in file:
-                with open(path+file,'r') as f:
-                    data = json.load(f)
-                    name,word,_ = file.split('-')
-                    vowels[word] = data
-    coordinates = vowelChartPoints(vowels)
-    return coordinates
 
 def calAudioToCoordinatesJson(id):
     rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
@@ -250,8 +163,11 @@ def calAudioToCoordinatesJson(id):
         for file in files:
             if '.wav' in file:
                 f1, f2 = audioToVwlFormants(path,file)
-                jsonName = f"{file.split('.')[0]}-vwlCal.json"
-                dataFreq, dataSVG = formantsToJsonFormat(f1,f2,path,jsonName, True)
+                jsonName = f"{file.split('.')[0]}-vwlCal"
+                jsonEnd = '.json'
+                data, dataSVG = formantsToJsonFormat(f1, f2, True)
+                writeToJson(path, jsonName+jsonEnd, data)
+                writeToJson(path, f'{jsonName}-svg{jsonEnd}', dataSVG)
         coordinates = calJsonToCoordinates(path)
 
         # Serializing json
