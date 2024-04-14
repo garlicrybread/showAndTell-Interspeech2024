@@ -155,6 +155,7 @@ def test_writeToJson():
 #         assert type(calcSVG) == list
 #         assert len(calcSVG) == 2
 #         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+
 # def transform(t, freq):
 #     xt = t[0]
 #     yt = t[1]
