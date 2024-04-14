@@ -4,7 +4,7 @@ import app
 from flaskr.signalProcessing import (
     freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
 )
-from flask import (current_app)
+from flask import (current_app, url_for)
 import json
 
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
@@ -106,8 +106,25 @@ def test_formantsToJsonFormat(app, test_transform):
             for key in pair:
                 assert calcpair[key] == pair[key]
 
-def test_audioToVwlFormants():
-    pass
+def test_audioToVwlFormants(app,client):
+    id = 'testData'
+    filename1 = 'testData-bag-2024_04_03_110633'
+    filename2 = 'testData-bag-2024_04_10_102243'
+    path1 = DATA_DIR + f'{id}/bag/{filename1}.wav'
+    path2 = DATA_DIR + f'{id}/bag/{filename2}.wav'
+    data = {'gotAudio': path1}
+    data2 = {'gotAudio': path2}
+    with app.app_context():
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/bag/{filename1}.json'
+
+        # check for another file to be sure
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/bag/{filename2}.json'
 
 def test_writeToJson():
     text = "I am written"

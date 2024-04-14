@@ -17,7 +17,7 @@ import numpy as np
 
 homeDir = f'{os.getcwd()}/'
 dataDir = 'flaskr/static/participantData/'
-bp = Blueprint('process', __name__, url_prefix='/process')
+bp = Blueprint('signalProcessing', __name__, url_prefix='/signalProcessing')
 
 @bp.route('/api/processVwlData', methods=["POST"])
 def processVwlData():
@@ -27,9 +27,9 @@ def processVwlData():
     filename = pathList[-1]
     print(path,filename)
     f1List, f2List = audioToVwlFormants(path,filename)
-    jsonNameFreq = filename.split('.')[0] + '-freq.json'
-    jsonNameSVG = filename.split('.')[0] + '-svg.json'
-    formantsToJson(f1List,f2List,path,jsonNameFreq,jsonNameSVG)
+    jsonName = filename.split('.')[0] + '.json'
+    data = formantsToJsonFormat(f1List,f2List)
+    writeToJson(path,jsonName,data)
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     return relPath
@@ -97,7 +97,6 @@ def condenseFormantList(formantList,cal=False):
             condensed.append(mean(formantList[num * i + num : length+1]))
     return condensed
 
-
 def formantsToJsonFormat(f1List,f2List,cal=False):
     idx_vwls = [0]
     # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
@@ -153,31 +152,6 @@ def freqToSVG(freq):
     y = sum(y)
     w = sum(w)
     return [x/w,y/w]
-
-
-
-def calAudioToCoordinatesJson(id):
-    rootDirectory = homeDir + dataDir + id +"/vowelCalibration/"
-    pprint(f'in directory {rootDirectory}')
-    for path, dir, files in os.walk(rootDirectory):
-        for file in files:
-            if '.wav' in file:
-                f1, f2 = audioToVwlFormants(path,file)
-                jsonName = f"{file.split('.')[0]}-vwlCal"
-                jsonEnd = '.json'
-                data, dataSVG = formantsToJsonFormat(f1, f2, True)
-                writeToJson(path, jsonName+jsonEnd, data)
-                writeToJson(path, f'{jsonName}-svg{jsonEnd}', dataSVG)
-        coordinates = calJsonToCoordinates(path)
-
-        # Serializing json
-        json_object = json.dumps(coordinates, indent=4)
-
-        # Writing to sample.json
-        jsonName = "vwlChartCoordinates.json"
-        with open(path + jsonName, "w") as outfile:
-            outfile.write(json_object)
-
 
 
 if __name__ == '__main__': # pragma: no cover
