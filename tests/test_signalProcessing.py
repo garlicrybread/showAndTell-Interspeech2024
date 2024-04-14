@@ -2,7 +2,7 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    formantsToJsonFormat, condenseFormantList, writeToJson,
+    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
 )
 from flask import (current_app, url_for)
 import json
@@ -134,33 +134,31 @@ def test_writeToJson():
     with open(path+name,'r') as f:
         assert f.readlines()[0] == f'"{text}"'
 
+def transform(t, freq):
+    xt = t[0]
+    yt = t[1]
+    wt = t[2]
+    x = xt[0] * freq[0] + xt[1] * freq[1] + xt[2]
+    y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
+    w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
+    return [x / w, y / w]
 
-# todo: convert this to a JS function
-# I'm too afraid to delete this until I've made sure the JS works...
-# def test_freqToSVG(app, test_transform):
-#
-#     with app.app_context():
-#         # base case tests
-#         t = current_app.config['TRANSFORM_FREQ_SVG']
-#         freq = [6,9]
-#         actualSVG = transform(t,freq)
-#         calcSVG = freqToSVG(freq)
-#         assert type(calcSVG) == list
-#         assert len(calcSVG) == 2
-#         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
-#
-#         freq = [2500.3,210.43]
-#         actualSVG = transform(t,freq)
-#         calcSVG = freqToSVG(freq)
-#         assert type(calcSVG) == list
-#         assert len(calcSVG) == 2
-#         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+def test_freqToSVG(app, test_transform):
 
-# def transform(t, freq):
-#     xt = t[0]
-#     yt = t[1]
-#     wt = t[2]
-#     x = xt[0] * freq[0] + xt[1] * freq[1] + xt[2]
-#     y = yt[0] * freq[0] + yt[1] * freq[1] + yt[2]
-#     w = wt[0] * freq[0] + wt[1] * freq[1] + wt[2]
-#     return [x / w, y / w]
+    with app.app_context():
+        # base case tests
+        t = current_app.config['TRANSFORM_FREQ_SVG']
+        freq = [6,9]
+        actualSVG = transform(t,freq)
+        calcSVG = freqToSVG(freq)
+        assert type(calcSVG) == list
+        assert len(calcSVG) == 2
+        assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+
+        freq = [2500.3,210.43]
+        actualSVG = transform(t,freq)
+        calcSVG = freqToSVG(freq)
+        assert type(calcSVG) == list
+        assert len(calcSVG) == 2
+        assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == actualSVG[1])
+

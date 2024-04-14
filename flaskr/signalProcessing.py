@@ -136,22 +136,22 @@ def writeToJson(path, jsonName, data):
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
 
-# def freqToSVG(freq):
-#     '''
-#     params freq: list [x,y]
-#     returns svg: list [xSVG, ySVG]
-#     '''
-#     # todo: convert to a javascript function
-#     # freq is a 3x1
-#     tempList = [[freq[0]],[freq[1]],[1]]
-#     freq = np.array(tempList)
-#     # t is a 3x3
-#     t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
-#     x,y,w = np.dot(t,freq).tolist()
-#     x = sum(x)
-#     y = sum(y)
-#     w = sum(w)
-#     return [x/w,y/w]
+def freqToSVG(freq):
+    '''
+    params freq: list [x,y]
+    returns svg: list [xSVG, ySVG]
+    '''
+    # todo: convert to a javascript function
+    # freq is a 3x1
+    tempList = [[freq[0]],[freq[1]],[1]]
+    freq = np.array(tempList)
+    # t is a 3x3
+    t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
+    x,y,w = np.dot(t,freq).tolist()
+    x = sum(x)
+    y = sum(y)
+    w = sum(w)
+    return [x/w,y/w]
 
 
 if __name__ == '__main__': # pragma: no cover
