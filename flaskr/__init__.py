@@ -41,14 +41,16 @@ def create_app(test_config=None):
         app.config.from_mapping(
             TESTING=True,
             MONGO_URI=f"{MONGODB}/testProVis",  # MongoDB connection string for testing
-            TRANSFORM_FREQ_SVG= None
+            TRANSFORM_FREQ_SVG= None,
+            SVG_COORDINATES=None
         )
         print("Testing config")
     else:
         app.config.from_mapping(
             SECRET_KEY='dev',
             MONGO_URI=f"{MONGODB}/pronunciation_vis",  # MongoDB connection string for production
-            TRANSFORM_FREQ_SVG= None
+            TRANSFORM_FREQ_SVG = None,
+            SVG_COORDINATES = None
         )
         print("Development config")
 
@@ -103,6 +105,10 @@ def create_app(test_config=None):
 
     from . import signalProcessing
     app.register_blueprint(signalProcessing.bp)
+
+    from . import coordinates
+    app.register_blueprint(coordinates.bp)
+
 
 
     @init_cli.command("db")
