@@ -2,7 +2,7 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
+    formantsToJsonFormat, condenseFormantList, writeToJson,
 )
 from flask import (current_app, url_for)
 import json
