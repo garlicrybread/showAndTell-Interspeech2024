@@ -8,7 +8,7 @@ from flask import (
 )
 
 from flaskr.signalProcessing import (
-    maxAndMinOfFormants, audioToVwlFormants, formantsToJsonFormat, writeToJson
+    audioToVwlFormants, formantsToJsonFormat, writeToJson
 )
 from pprint import pprint
 bp = Blueprint('coordinates', __name__, url_prefix='/coordinates')
@@ -51,6 +51,28 @@ def transformArray(actualCoordinates, svgCoordinates):
     transform = [x,y,w]
     current_app.config.update(TRANSFORM_FREQ_SVG=transform)
     return transform
+
+def maxAndMinOfFormants(data):
+    maxF1 = data['vwl'][0]['f1']
+    maxF2 = data['vwl'][0]['f2']
+    minF1 = maxF1
+    minF2 = maxF2
+    f1 = 'f1'
+    f2 = 'f2'
+    for formants in data['vwl']:
+        # See if the f1 formant is greater than the current max
+        # or if it is less than the current min
+        if formants[f1] > maxF1:
+            maxF1 = formants[f1]
+        elif formants[f1] < minF1:
+            minF1 = formants[f1]
+        # See if the f2 formant is greater than the current max
+        # or if it is less than the current min
+        if formants[f2] > maxF2:
+            maxF2 = formants[f2]
+        elif formants[f2] < minF2:
+            minF2 = formants[f2]
+    return maxF1, maxF2, minF1, minF2
 
 def vowelChartCoordinates(vowels):
     ''' vowels is a dictionary {word: jsonFormatData} '''
