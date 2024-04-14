@@ -103,5 +103,6 @@ def test_processCoordinateData(app,client):
             # each line is three values long since it is a 3x3 matrix
             assert len(line) == 3
             assert type(line) == list
+            assert line[0] < 10
 
 
