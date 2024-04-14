@@ -5,7 +5,6 @@ import coordinatesL1 from '../participantData/yoder/vowelCalibration/vwlChartCoo
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
-// window.addEventListener("load", drawVowels(L1,L2));
 async function drawVowelChart(){
     const svg = d3.select("svg");
     const vwlChrtProperties = await svgGetPadding(svg);
@@ -32,6 +31,9 @@ async function drawVowelChart(){
     const yopenMid = 0.6666*yHeight + yPadding;
     const yopen = 0.9999*yHeight + yPadding;
 
+    // send SVG properties to client
+    // upper left, upper right, lower left, lower right
+    svgToClient([(xfront,yclose),(xback,yclose),(xleftCent,yopen),(xback,yopen)]);
 
     // Line properties
     const color = "#a2c8db";
@@ -323,4 +325,12 @@ async function svgGetPadding(svg) {
         yOrigin:svgYOrigin,
         width:svgWidth,
         height:svgHeight};
+}
+
+async function svgToClient(data) {
+
+}
+
+async function freqToSVG(freq){
+
 }
