@@ -64,7 +64,7 @@ def recordFile(word, participantID, debug=False, chartEdgePoint='False', secondT
         folderID = f"{participantID}/"
 
         # If we're gathering words for vowel calibration, save the files in the same folder.
-        if chartEdgePoint != 'NA':
+        if not bool(chartEdgePoint):
             file_name = participantID + "-" + chartEdgePoint
             folderWORD = f"vowelCalibration/"
             new_file_name = folderID + folderWORD + file_name + ".wav"
