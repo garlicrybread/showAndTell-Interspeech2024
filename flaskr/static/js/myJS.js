@@ -12,10 +12,11 @@ if (window.location.href.includes("/pronunciationVis/")) {
 }
 
 let processingPath;
+const sigProcName = 'signalProcessing'
 if (window.location.href.includes("/pronunciationVis/")) {
-    processingPath = "/pronunciationVis/process"; // Set for remote
+    processingPath = `/pronunciationVis/${sigProcName}`; // Set for remote
 } else {
-    processingPath = "/process"; // Set for local
+    processingPath = "/"+sigProcName; // Set for local
 }
 import {drawVowels} from "./vwlChart.js";
 
