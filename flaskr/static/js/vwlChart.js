@@ -3,6 +3,14 @@ import L1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' w
 import L2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
 import coordinatesL1 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
 
+let processingPath;
+const sigProcName = 'signalProcessing'
+if (window.location.href.includes("/pronunciationVis/")) {
+    processingPath = `/pronunciationVis/${sigProcName}`; // Set for remote
+} else {
+    processingPath = "/"+sigProcName; // Set for local
+}
+
 "use strict";
 window.addEventListener("load", drawVowelChart);
 async function drawVowelChart(){
@@ -196,7 +204,6 @@ async function drawVowelChart(){
 
 export async function drawVowels(dataL1Path) {
     // fetch json data
-    // const dataL1Path =
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
 
@@ -228,8 +235,8 @@ export async function drawVowels(dataL1Path) {
         return toXCoor(d.f2)
     }
     const glideMakerL1 = d3.line()
-        .y(d => f1ToYCoordinatesL1(d.f1))
-        .x(d => f2ToXCoordinatesL1(d))
+        .x(d => freqToSVG(d)[0])
+        .y(d => freqToSVG(d)[1])
         .curve(d3.curveCardinal);
 
     const colorSpa = 'green';
@@ -328,9 +335,27 @@ async function svgGetPadding(svg) {
 }
 
 async function svgToClient(data) {
-
+    // fetch json data
+    const urlPath = `${processingPath}/api/svgToConfig`
+    const response = await fetch(urlPath, {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(data)
+    });
 }
 
 async function freqToSVG(freq){
-
+    // fetch json data
+    const urlPath = `${processingPath}/api/freqToSVG`
+    const response = await fetch(urlPath, {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(freq)
+    });
+    const svg = await response.json();
+    return svg['svg']
 }
