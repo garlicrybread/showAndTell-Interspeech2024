@@ -40,7 +40,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
-.content div { margin: 0.5em 0; display: flex; }
+.content div { display: flex; }
 .content label { font-weight: normal; margin-bottom: 0.5em; }
 .content input, .content textarea { margin-bottom: 1em; }
 .content textarea { min-height: 12em; resize: vertical; }
@@ -57,8 +57,8 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
     justify-content: space-evenly;
     /*border-right: 1px solid lightgray;*/
 }
-.flex-row > div.flex-col-right {margin-right: 1em;}
-.flex-row > div.flex-col-left {margin-left: 1em;}
+.flex-col-right {margin-left: auto;}
+.flex-row > flex-col-left {margin-left: 1em;}
 .border {border: 1px solid #8fa484}
 div > summary { display: flex; justify-content: center; margin-bottom: 5px}
 
@@ -104,6 +104,13 @@ input[type=button]:active:not(:disabled) { background-color: #b6aece; }
 input[type=button].back-btn {align-self: flex-start; justify-content: center; width: auto}
 input[type=button].prev-btn {align-self: flex-start; justify-content: center; width: auto}
 input[type=button].next-btn {align-self: flex-end; justify-content: center; width: auto}
+
+/* keep images from exploding over the edge of the page */
+img {
+            max-width: 100%; /* Maximum width of the image */
+            height: auto; /* Maintain aspect ratio */
+    margin: 1em;
+}
 
 .loader1, .loader2 {
     height: 50px; /* Set the desired height */
