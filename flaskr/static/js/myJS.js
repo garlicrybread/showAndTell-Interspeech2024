@@ -1,3 +1,5 @@
+import {drawVowels} from "./vwlChart.js";
+
 let mediaRecorders = []; // Array to store multiple media recorders
 let chunks = []; // Array to store chunks for each recorder
 let audioURLs = []; // Array to store multiple audio URLs
@@ -5,22 +7,28 @@ let recordingIndex = 0;
 let stateIndex = 0;
 let stream;
 let recordingPath;
-if (window.location.href.includes("/pronunciationVis/")) {
-    recordingPath = "/pronunciationVis/audio"; // Set for remote
-} else {
-    recordingPath = "/audio"; // Set for local
-}
-
 let processingPath;
+export let urlPath
 const sigProcName = 'signalProcessing'
 if (window.location.href.includes("/pronunciationVis/")) {
-    processingPath = `/pronunciationVis/${sigProcName}`; // Set for remote
+    const remote = '/pronunciationVis'
+    recordingPath = `${remote}/audio`; // Set for remote
+    processingPath = `${remote}/${sigProcName}`; // Set for remote
+    urlPath = `${remote}/`
 } else {
+    recordingPath = "/audio"; // Set for local
     processingPath = "/"+sigProcName; // Set for local
+    urlPath = `/`
 }
-import {drawVowels} from "./vwlChart.js";
 
-function toggleText(buttonId) {
+export async function navigateToRoute(location) {
+    // Retrieve the value of the input field with id "userId"
+    console.log(location)
+    const path = `${urlPath}${location}`
+    window.location.href = path
+}
+
+export function toggleText(buttonId,cal='False') {
     console.log('toggling button')
     var button = document.getElementById(buttonId);
     var loader_number;
@@ -32,7 +40,7 @@ function toggleText(buttonId) {
     // Check the current text content of the button
     if (button.textContent === "Start Recording") {
         // Change the text content to "Don't click"
-        startRecording();
+        startRecording(buttonId,cal);
         console.log('Microphone Being used', stream);
         button.textContent = "Stop Recording";
         button.style.backgroundColor = "#78a9eb";
@@ -50,14 +58,14 @@ function toggleText(buttonId) {
     console.log('end of toggling')
 }
 
-function startRecording() {
+function startRecording(word,cal) {
     // Prepare the data to be sent to the server
     // todo: request data should not be hardcoded
     // todo: display wait notification to users
     var requestData = {
-        word: 'YourWordHere', // Provide the word you want to record
-        participantID: 'test', // Provide the participant ID
-        debug: false // Set debug mode if needed
+        word: word, // Provide the word you want to record
+        debug: false, // Set debug mode if needed
+        cal: cal
     };
 
     // Make a fetch request to your server endpoint where the Python function is executed
@@ -79,6 +87,7 @@ function startRecording() {
         // Handle success
         console.log('File recorded successfully:',filePath);
         // TODO: variable button id
+        // put the text back to record
         toggleText('myButton')
         audioToJson(filePath)
     })
@@ -114,6 +123,7 @@ function audioToJson(filePath) {
         console.error('Error recording file:', error);
     });
 }
+
 function plotJson(filePath) {
     drawVowels(filePath,filePath)
 }
@@ -233,9 +243,9 @@ function stopRecording(buttonId) {
 
 
 
-document.getElementById("myButton").addEventListener("click", function () {
-    toggleText("myButton");
-});
+// document.getElementById("myButton").addEventListener("click", function () {
+//     toggleText("myButton");
+// });
 
 // document.getElementById("myButton2").addEventListener("click", function () {
 //     toggleText("myButton2");
