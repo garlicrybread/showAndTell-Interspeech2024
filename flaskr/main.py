@@ -34,7 +34,7 @@ bp = Blueprint('main', __name__, url_prefix='/')
 def home():
     return render_template('main/home.html')
 
-@bp.route('/vowelCalibration',methods=['GET', 'POST'])
+@bp.route('/vowelCalibration',methods=['GET'])
 def vowelCalibration():
     return render_template('main/vowelCalibration.html')
 
