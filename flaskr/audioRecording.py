@@ -2,7 +2,7 @@ import speech_recognition as sr
 from datetime import datetime
 import os
 import numpy as np
-from flask import (Blueprint, jsonify)
+from flask import (Blueprint, jsonify, request, current_app)
 import librosa as lr
 
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
@@ -14,12 +14,18 @@ bp = Blueprint('audio', __name__, url_prefix='/audio')
 def record():
     # todo: don't hardcode word and id
     print("in record")
-    gotAudio = recordFile('bata','tester')
+    data = request.get_json()
+    word = data['word']
+    participantID = current_app.config['USER_ID']
+    print(participantID)
+    cal = data['cal']
+    print(cal,type(cal))
+    gotAudio = recordFile(word,participantID,cal=cal)
     return jsonify({'gotAudio': gotAudio})
 
 
 
-def recordFile(word, participantID, debug=False, chartEdgePoint='False', secondTime=False):
+def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
     # obtain lang_files from the microphone
     import speech_recognition as sr
     r = sr.Recognizer()
@@ -64,8 +70,8 @@ def recordFile(word, participantID, debug=False, chartEdgePoint='False', secondT
         folderID = f"{participantID}/"
 
         # If we're gathering words for vowel calibration, save the files in the same folder.
-        if not bool(chartEdgePoint):
-            file_name = participantID + "-" + chartEdgePoint
+        if bool(cal):
+            file_name = participantID + "-" + word
             folderWORD = f"vowelCalibration/"
             new_file_name = folderID + folderWORD + file_name + ".wav"
         else:
@@ -101,7 +107,7 @@ def recordCalibrationFiles(id):
     for idx, word in enumerate(words):
         speak = f"The next word you'll be asked to say is \t{word}, {info[idx]}"
         print(speak)
-        recordFile(word,id,chartEdgePoint=pointLabels[idx])
+        recordFile(word,id,cal=pointLabels[idx])
     return "Recorded calibration files."
 
 
