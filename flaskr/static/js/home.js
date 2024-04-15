@@ -1,10 +1,5 @@
-const name = ''
-let urlPath;
-if (window.location.href.includes("/pronunciationVis/")) {
-    urlPath = `/pronunciationVis/${name}`; // Set for remote
-} else {
-    urlPath = "/"+name; // Set for local
-}
+import {navigateToRoute} from './myJS.js'
+import {urlPath} from './myJS.js'
 
 var button = document.getElementById('btnUserId')
 const calNavBtn  = document.getElementById('calibrationNavBtn')
@@ -13,6 +8,7 @@ const pracNavBtn = document.getElementById('practiceNavBtn')
 
 button.addEventListener("click", saveUserId);
 calNavBtn.addEventListener("click", function() {
+    console.log('in cal nav btn')
     navigateToRoute('vowelCalibration');
 });
 tutNavBtn.addEventListener("click", function() {
@@ -34,9 +30,3 @@ async function saveUserId() {
     })
 }
 
-async function navigateToRoute(location) {
-    // Retrieve the value of the input field with id "userId"
-    console.log(location)
-    const path = `${urlPath}${location}`
-    window.location.href = path
-}
