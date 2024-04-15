@@ -42,7 +42,9 @@ def vowelCalibration():
 def saveUserId():
     userId = request.get_json()
     current_app.config.update(USER_ID=userId)
+    print(f'userId {userId}')
     return jsonify({'saved':True})
+
 # @bp.route("/google-callback", methods=["POST"])
 # def callback():
 #     # Authors: Mix of Google's Developer Page and Alexander VanTol (Real Python)
