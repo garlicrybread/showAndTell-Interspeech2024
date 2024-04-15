@@ -12,7 +12,6 @@ DATA_DIR = MAIN_DIR + "flaskr/static/participantData/"
 bp = Blueprint('audio', __name__, url_prefix='/audio')
 @bp.route('/api/record', methods=('GET', 'POST'))
 def record():
-    # todo: don't hardcode word and id
     print("in record")
     data = request.get_json()
     word = data['word']
@@ -70,12 +69,13 @@ def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
         folderID = f"{participantID}/"
 
         # If we're gathering words for vowel calibration, save the files in the same folder.
-        if bool(cal):
+        if cal == 'True':
             file_name = participantID + "-" + word
             folderWORD = f"vowelCalibration/"
             new_file_name = folderID + folderWORD + file_name + ".wav"
         else:
             file_name = participantID + "-" + word + "-" + date_time
+            print(file_name)
             folderWORD = f"{word}/"
             new_file_name = folderID + folderWORD + file_name + ".wav"
 

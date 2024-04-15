@@ -33,6 +33,7 @@ def processVwlData():
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     return relPath
+
 @bp.route('/api/freqToSVG',methods=['POST'])
 def freqToSVG():
     # todo: update function description
@@ -52,6 +53,7 @@ def freqToSVG():
     y = sum(y)
     w = sum(w)
     data = {'svg': [x/w,y/w]}
+    print(data)
     return jsonify(data)
 
 @bp.route('/api/svgToConfig',methods=['POST'])

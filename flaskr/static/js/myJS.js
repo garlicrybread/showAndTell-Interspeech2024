@@ -30,6 +30,7 @@ export async function navigateToRoute(location) {
 
 export function toggleText(buttonId,cal='False') {
     console.log('toggling button')
+    console.log(`${buttonId}`)
     var button = document.getElementById(buttonId);
     var loader_number;
     if (buttonId == "myButton") {
@@ -40,7 +41,7 @@ export function toggleText(buttonId,cal='False') {
     // Check the current text content of the button
     if (button.textContent === "Start Recording") {
         // Change the text content to "Don't click"
-        startRecording(buttonId,cal);
+        startRecording(buttonId,cal,buttonId);
         console.log('Microphone Being used', stream);
         button.textContent = "Stop Recording";
         button.style.backgroundColor = "#78a9eb";
@@ -58,7 +59,7 @@ export function toggleText(buttonId,cal='False') {
     console.log('end of toggling')
 }
 
-function startRecording(word,cal) {
+function startRecording(word,cal,btnID) {
     // Prepare the data to be sent to the server
     // todo: request data should not be hardcoded
     // todo: display wait notification to users
@@ -86,9 +87,8 @@ function startRecording(word,cal) {
     .then(filePath => {
         // Handle success
         console.log('File recorded successfully:',filePath);
-        // TODO: variable button id
         // put the text back to record
-        toggleText('myButton')
+        toggleText(btnID)
         audioToJson(filePath)
     })
     .catch(error => {
