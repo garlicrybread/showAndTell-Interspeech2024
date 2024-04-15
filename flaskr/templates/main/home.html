@@ -7,13 +7,11 @@
 
 {% block content %}
 <form method="post">
-<!--  <label for="username">Username</label>-->
-<!--  <input name="username" id="username" required>-->
-
-<!--  <label for="password">Password</label>-->
-<!--  <input type="password" name="password" id="password" required>-->
-  <input type="submit" value="Developer secret log in bypass" id="devLoginButton" style="display: none">
-
-  <script src="{{ url_for('static', filename='js/authScript.js') }}"></script>
+<label for="username">Name</label>
+    <div class="flex-col">
+        <input name="userId" id="textInputId" required>
+        <button type="submit" id="btnUserId" >submit</button>
+    </div>
 </form>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

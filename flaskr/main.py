@@ -27,17 +27,22 @@ import pandas as pd
 # TODO: Generate a client_id and secret
 CLIENT_ID = os.environ.get("CLIENT_ID", None)
 
-bp = Blueprint('navigationAndCalibration', __name__, url_prefix='/')
+bp = Blueprint('main', __name__, url_prefix='/')
 
 
 @bp.route('/', methods=["GET", "POST"])
 def home():
-    return render_template('navigationAndCalibration/home.html')
+    return render_template('main/home.html')
 
 @bp.route('/vowelCalibration',methods=['GET', 'POST'])
 def vowelCalibration():
-    return render_template('navigationAndCalibration/vowelCalibration.html')
+    return render_template('main/vowelCalibration.html')
 
+@bp.route('/api/saveUserId',methods=['GET', 'POST'])
+def saveUserId():
+    userId = request.get_json()
+    current_app.config.update(USER_ID=userId)
+    return jsonify({'saved':True})
 # @bp.route("/google-callback", methods=["POST"])
 # def callback():
 #     # Authors: Mix of Google's Developer Page and Alexander VanTol (Real Python)

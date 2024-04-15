@@ -42,7 +42,8 @@ def create_app(test_config=None):
             TESTING=True,
             MONGO_URI=f"{MONGODB}/testProVis",  # MongoDB connection string for testing
             TRANSFORM_FREQ_SVG= None,
-            SVG_COORDINATES=None
+            SVG_COORDINATES=None,
+            USER_ID=None
         )
         print("Testing config")
     else:
@@ -50,7 +51,8 @@ def create_app(test_config=None):
             SECRET_KEY='dev',
             MONGO_URI=f"{MONGODB}/pronunciation_vis",  # MongoDB connection string for production
             TRANSFORM_FREQ_SVG = None,
-            SVG_COORDINATES = None
+            SVG_COORDINATES = None,
+            USER_ID = None
         )
         print("Development config")
 
@@ -88,8 +90,8 @@ def create_app(test_config=None):
     # @login_manager.user_loader
     # def load_user(user_id):
     #     return User.get(user_id)
-    from . import navigationAndCalibration
-    app.register_blueprint(navigationAndCalibration.bp)
+    from . import main
+    app.register_blueprint(main.bp)
     app.add_url_rule('/', endpoint='home')
 
     from . import db
