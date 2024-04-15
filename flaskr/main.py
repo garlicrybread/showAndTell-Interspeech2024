@@ -34,6 +34,10 @@ bp = Blueprint('navigationAndCalibration', __name__, url_prefix='/')
 def home():
     return render_template('navigationAndCalibration/home.html')
 
+@bp.route('/vowelCalibration',methods=['GET', 'POST'])
+def vowelCalibration():
+    return render_template('navigationAndCalibration/vowelCalibration.html')
+
 # @bp.route("/google-callback", methods=["POST"])
 # def callback():
 #     # Authors: Mix of Google's Developer Page and Alexander VanTol (Real Python)

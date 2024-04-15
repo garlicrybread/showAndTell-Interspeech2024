@@ -1,0 +1,44 @@
+<!-- Template: auth/login.html -->
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="flex-col">
+        <div class="flex-row">
+            <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
+            <input type="button" id="myButton" value="record 'beet'">
+        </div>
+        <div class="flex-row">
+            <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
+            <input type="button" id="myButton" value="record 'boot'">
+        </div>
+        <div class="flex-row">
+            <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
+            <input type="button" id="myButton" value="record 'bat'">
+        </div>
+        <div class="flex-row">
+            <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
+            <input type="button" id="myButton" value="record 'baw'">
+        </div>
+    </div>
+
+    <div class="flex-col">
+        <input type="button" id="calibrateBtn" value="calibrate!">
+    </div>
+    <div class="flex-row">
+        <div class="flex-col-right">
+            <input type="button" class="next-btn" value=">" idnum="" >
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
+{#    <script type="module" src="../../static/js/myJS.js"></script>#}
+
+
+
+
+{% endblock %}
