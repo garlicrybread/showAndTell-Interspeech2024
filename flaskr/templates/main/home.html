@@ -6,12 +6,20 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
-<label for="username">Name</label>
+{#    User Id input field and button    #}
+    <form method="post">
+        <div class="flex-row">
+            <input name="userId" id="textInputId" placeholder="name (e.g. Zhen)" required>
+            <button type="submit" id="btnUserId" >submit</button>
+        </div>
+    </form>
+    <hr>
+{#    Navigation buttons    #}
     <div class="flex-col">
-        <input name="userId" id="textInputId" required>
-        <button type="submit" id="btnUserId" >submit</button>
+        <input type="button" id="calibrationNavBtn" value="calibrate speaker">
+        <input type="button" id="tutorialNavBtn" value="tutorial">
+        <input type="button" id="practiceNavBtn" value="practice">
     </div>
-</form>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock %}
