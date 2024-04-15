@@ -41,7 +41,9 @@ async function drawVowelChart(){
 
     // send SVG properties to client
     // upper left, upper right, lower left, lower right
-    svgToClient([(xfront,yclose),(xback,yclose),(xleftCent,yopen),(xback,yopen)]);
+    const svgData = [[xfront,yclose],[xback,yclose],[xleftCent,yopen],[xback,yopen]];
+    console.log(svgData)
+    svgToClient(svgData);
 
     // Line properties
     const color = "#a2c8db";
@@ -336,6 +338,7 @@ async function svgGetPadding(svg) {
 
 async function svgToClient(data) {
     // fetch json data
+    console.log(data)
     const urlPath = `${processingPath}/api/svgToConfig`
     const response = await fetch(urlPath, {
         method: 'POST',

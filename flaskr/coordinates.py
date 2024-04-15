@@ -13,9 +13,12 @@ from flaskr.signalProcessing import (
 from pprint import pprint
 bp = Blueprint('coordinates', __name__, url_prefix='/coordinates')
 
+dataDir = 'flaskr/static/participantData/'
+
 @bp.route('/api/processCoordinateData', methods=["POST"])
 def processCoordinateData():
-    rootDirectory = request.get_json()['gotAudio']
+    id = current_app.config['USER_ID']
+    rootDirectory = dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
@@ -101,6 +104,7 @@ def vowelChartCoordinates(vowels):
     frontLow = (xFL,yFL)
     backLow = (xBL,yBL)
     coordinates = [frontHigh,backHigh,frontLow,backLow]
+    print(f'coordinates: {coordinates}')
     return coordinates
 
 def jsonToVowelPoints(rootDirectory):
