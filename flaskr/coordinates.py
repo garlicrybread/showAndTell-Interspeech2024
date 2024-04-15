@@ -37,8 +37,6 @@ def transformArray(actualCoordinates, svgCoordinates):
     - returns transform (needed?)
     '''
     t = ProjectiveTransform()
-    pprint(actualCoordinates)
-    pprint(svgCoordinates)
     src = np.asarray(actualCoordinates)
     dst = np.asarray(svgCoordinates)
     if not t.estimate(src, dst): raise Exception("estimate failed")
