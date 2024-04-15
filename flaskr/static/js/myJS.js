@@ -89,7 +89,9 @@ function startRecording(word,cal,btnID) {
         console.log('File recorded successfully:',filePath);
         // put the text back to record
         toggleText(btnID)
-        audioToJson(filePath)
+        if ( cal === 'False') {
+            audioToJson(filePath)
+        }
     })
     .catch(error => {
         // Handle errors
