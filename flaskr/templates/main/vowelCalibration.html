@@ -2,43 +2,37 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+<h2>{% block title %}Speaker Calibration{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
+    <div class="flex-col-left">
+        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    </div>
+    <p>Record the following words and sounds, then click 'calibrate!'.</p>
     <div class="flex-col">
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
-            <input type="button" id="myButton" value="record 'beet'">
+            <input type="button" id="frontHigh" value="beet">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
-            <input type="button" id="myButton" value="record 'boot'">
+            <input type="button" id="backHigh" value="owl sound (hoo)">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
-            <input type="button" id="myButton" value="record 'bat'">
+            <input type="button" id="frontLow" value="bat">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">
-            <input type="button" id="myButton" value="record 'baw'">
+            <input type="button" id="backLow" value="crow sound (caw)">
         </div>
     </div>
 
     <div class="flex-col">
         <input type="button" id="calibrateBtn" value="calibrate!">
     </div>
-    <div class="flex-row">
-        <div class="flex-col-right">
-            <input type="button" class="next-btn" value=">" idnum="" >
-        </div>
-    </div>
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
-{#    <script type="module" src="../../static/js/myJS.js"></script>#}
 
 
-
-
+    <script type="module" src="{{ url_for('static', filename='js/calibrate.js') }}"></script>
 {% endblock %}
