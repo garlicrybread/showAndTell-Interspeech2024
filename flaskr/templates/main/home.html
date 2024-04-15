@@ -13,13 +13,16 @@
             <button type="submit" id="btnUserId" >submit</button>
         </div>
     </form>
-    <hr>
 {#    Navigation buttons    #}
+    <div class="flex-col">
+        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
+    </div>
+    <hr>
     <div class="flex-col">
         <input type="button" id="calibrationNavBtn" value="calibrate speaker">
         <input type="button" id="tutorialNavBtn" value="tutorial">
         <input type="button" id="practiceNavBtn" value="practice">
     </div>
 
-    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock %}
