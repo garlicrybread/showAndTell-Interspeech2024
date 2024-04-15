@@ -13,10 +13,9 @@ import os
 
 bp = Blueprint('practice', __name__, url_prefix='/practice')
 
-@bp.route('/weeks', methods=('GET', 'POST'))
-@login_required
-def weeks():
-    return render_template('practice/weeks.html')
+@bp.route('/chart', methods=('GET', 'POST'))
+def chart():
+    return render_template('practice/chart.html')
 
 @bp.route('/api/loadWeeklyWordPairs', methods=["POST"])
 @login_required
