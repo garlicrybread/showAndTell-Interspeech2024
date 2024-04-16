@@ -11,7 +11,7 @@ from flaskr.signalProcessing import (
     audioToVwlFormants, formantsToJsonFormat, writeToJson
 )
 from pprint import pprint
-bp = Blueprint('coordinates', __name__, url_prefix='/coordinates')
+bp = Blueprint('vowelCalibration', __name__, url_prefix='/vowelCalibration')
 
 dataDir = 'flaskr/static/participantData/'
 
@@ -32,6 +32,14 @@ def processCoordinateData():
     transformArray(coordinates,svg)
     return jsonify({'success':True})
 
+@bp.route('/api/saveUserId',methods=["POST"])
+def saveUserId():
+    print('in save user id')
+    userId = request.get_json()
+    current_app.config.update(USER_ID=userId)
+    print(f'userId {userId}')
+    return jsonify({'saved':True})
+
 def transformArray(actualCoordinates, svgCoordinates):
     '''
     takes in vowel coordinates and coordinates of the SVG
@@ -42,6 +50,8 @@ def transformArray(actualCoordinates, svgCoordinates):
     t = ProjectiveTransform()
     src = np.asarray(actualCoordinates)
     dst = np.asarray(svgCoordinates)
+    print(f'src {src}')
+    print(f'dst {dst}')
     if not t.estimate(src, dst): raise Exception("estimate failed")
 
     # Homogeneous to Euclidean
@@ -99,10 +109,12 @@ def vowelChartCoordinates(vowels):
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    frontHigh = (xFH,yFH)
-    backHigh = (xBH,yBH)
-    frontLow = (xFL,yFL)
-    backLow = (xBL,yBL)
+    padf = 0
+    padb = 10
+    frontHigh = (xFH+padf,yFH-padf)
+    backHigh = (xBH-padb,yBH-padb)
+    frontLow = (xFL+padf,yFL+padf)
+    backLow = (xBL-padb,yBL+padb)
     coordinates = [frontHigh,backHigh,frontLow,backLow]
     print(f'coordinates: {coordinates}')
     return coordinates
@@ -112,6 +124,7 @@ def jsonToVowelPoints(rootDirectory):
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
             if '.json' in file:
+                print(file)
                 with open(path+file,'r') as f:
                     data = json.load(f)
                     name,word,_ = file.split('-')
