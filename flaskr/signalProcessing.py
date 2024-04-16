@@ -79,15 +79,16 @@ def audioToVwlFormants(path,file_name):
 
     vowels = praat.run_file(sound, vocalToolKitDir + extractVwlFile,0,0)[0]
     # TODO automate this step
+    # charlotte 65, 500, 5500, 4
     f0min = 65
-    f0max = 1500
+    f0max = 500
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
     formant_ceiling = 5500
-    num_formants = 5
+    num_formants = 4
     # higher window length to deal with smoothing
     window_len = 0.05
     preemphasis = 100
@@ -136,7 +137,7 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
         vwlF2 = f2List[prev_idx + 1]
         absDiffF1 = abs(vwlF1 - prevVwlF1)
         absDiffF2 = abs(vwlF2 - prevVwlF2)
-        diff = 150
+        diff = 200
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List))
