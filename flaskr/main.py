@@ -38,12 +38,6 @@ def home():
 def vowelCalibration():
     return render_template('main/vowelCalibration.html')
 
-@bp.route('/api/saveUserId',methods=['GET', 'POST'])
-def saveUserId():
-    userId = request.get_json()
-    current_app.config.update(USER_ID=userId)
-    print(f'userId {userId}')
-    return jsonify({'saved':True})
 
 # @bp.route("/google-callback", methods=["POST"])
 # def callback():
