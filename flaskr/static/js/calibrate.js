@@ -1,5 +1,6 @@
-import {navigateToRoute} from "./myJS.js";
+import {navigateToRoute, calPath} from "./myJS.js";
 import {toggleText} from './myJS.js';
+
 
 console.log('in vowelCalibration')
 const homeNavBtn = document.getElementById('homeNavBtn');
@@ -8,6 +9,8 @@ const backHighBtn = document.getElementById('backHigh');
 const frontLowBtn = document.getElementById('frontLow');
 const backLowBtn = document.getElementById('backLow');
 const calibrateBtn = document.getElementById('calibrateBtn')
+const button = document.getElementById('btnUserId')
+
 
 homeNavBtn.addEventListener('click', function () {
     navigateToRoute('')
@@ -29,9 +32,10 @@ backLowBtn.addEventListener('click', function () {
 calibrateBtn.addEventListener('click', function () {
     processCoordinateData()
 });
+button.addEventListener("click", saveUserId);
 
 function processCoordinateData() {
-    fetch(`coordinates/api/processCoordinateData`, {
+    fetch(`${calPath}/api/processCoordinateData`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -50,5 +54,29 @@ function processCoordinateData() {
     .catch(error => {
         // Handle errors
         console.error('Error processing data:', error);
+    });
+}
+async function saveUserId() {
+    const userId = document.getElementById("textInputId").value;
+    fetch(`${calPath}/api/saveUserId`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userId)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(result => {
+        // Handle success
+        console.log('userid saved successfully:',result);
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error saving userid:', error);
     });
 }
