@@ -10,6 +10,14 @@
         <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
     </div>
     <p>Record the following words and sounds, then click 'calibrate!'.</p>
+    {#    User Id input field and button    #}
+    <form>
+        <div class="flex-row">
+            <input name="userId" id="textInputId" placeholder="name (e.g. Zhen)" required>
+            <button type="submit" id="btnUserId" >submit</button>
+        </div>
+    </form>
+    <hr>
     <div class="flex-col">
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/vwl_tongue.png') }}" alt="tongue height for [vwl]">

@@ -42,7 +42,6 @@ async function drawVowelChart(){
     // send SVG properties to client
     // upper left, upper right, lower left, lower right
     const svgData = [[xfront,yclose],[xback,yclose],[xleftCent,yopen],[xback,yopen]];
-    console.log(svgData)
     svgToClient(svgData);
 
     // Line properties
