@@ -8,17 +8,21 @@ let stateIndex = 0;
 let stream;
 let recordingPath;
 let processingPath;
-export let urlPath
+export let urlPath;
+export let calPath;
 const sigProcName = 'signalProcessing'
+const vwlName = 'vowelCalibration'
 if (window.location.href.includes("/pronunciationVis/")) {
     const remote = '/pronunciationVis'
     recordingPath = `${remote}/audio`; // Set for remote
     processingPath = `${remote}/${sigProcName}`; // Set for remote
-    urlPath = `${remote}/`
+    urlPath = `${remote}/`;
+    calPath = `${remote}/${vwlName}`
 } else {
     recordingPath = "/audio"; // Set for local
     processingPath = "/"+sigProcName; // Set for local
-    urlPath = `/`
+    urlPath = `/`;
+    calPath = `/${vwlName}`
 }
 
 export async function navigateToRoute(location) {
