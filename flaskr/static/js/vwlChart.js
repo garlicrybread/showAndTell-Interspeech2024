@@ -1,8 +1,3 @@
-// import dataL1 from '../participantData/silas/cheese/silas-cheese-2024_04_03_153402.json' with { type: 'json'};
-// import L1 from '../participantData/silas/cup/silas-cup-2024_04_03_153447.json' with { type: 'json'};
-// import L2 from '../participantData/yoder/cheese/yoder-cheese-2024_04_03_110616.json' with {type: 'json'};
-// import coordinatesL1 from '../participantData/yoder/vowelCalibration/vwlChartCoordinates.json' with { type: 'json'};
-
 let processingPath;
 const sigProcName = 'signalProcessing'
 if (window.location.href.includes("/pronunciationVis/")) {
@@ -10,6 +5,20 @@ if (window.location.href.includes("/pronunciationVis/")) {
 } else {
     processingPath = "/"+sigProcName; // Set for local
 }
+/*
+main colors for vowel chart
+blue (L2)
+light:      #ffffcc
+between:    #a1dab4
+med:        #41b6c4
+between:    #2c7fb8
+darkest:    #253494
+
+orange (L1)
+light:  #fc8d59
+med:    #e34a33
+dark:   #b30000
+*/
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
