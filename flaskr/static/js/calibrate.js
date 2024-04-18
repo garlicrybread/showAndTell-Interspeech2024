@@ -63,7 +63,7 @@ async function saveUserId() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userId)
+        body: JSON.stringify({'userId':userId})
     })
     .then(response => {
         if (!response.ok) {
