@@ -7,7 +7,7 @@ from flask import (
 )
 
 from flaskr.coordinates import (
-    transformArray, vowelChartCoordinates
+    transformArray, vowelChartCoordinates, saveUserId
 )
 
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
@@ -75,24 +75,26 @@ def test_vowelChartCoordinates():
         'frontHigh': vowelsFH, 'backHigh': vowelsBH,
         'frontLow': vowelsFL, 'backLow':vowelsBL
     }
-    FH, BH = (2435.9,177.0), (736.4,274.6)
-    FL, BL = (2400.6,860.4), (831.9,553.8)
+    padf = 100
+    padb = 100
+    FH, BH = (2435.9+padf,177.0-padf), (736.4-padb,274.6-padb)
+    FL, BL = (2400.6+padf,860.4+padf), (831.9-padb,553.8+padb)
     calcFH, calcBH, calcFL, calcBL = vowelChartCoordinates(vowels)
     assert FH == calcFH
     assert BH == calcBH
     assert FL == calcFL
     assert BL == calcBL
 
-def test_processCoordinateData(app,client):
+def test_processCoordinateData(app,client,test_svgCoordinates):
     id = 'testData'
     path = DATA_DIR + f'{id}/vowelCalibration/'
     data = {'gotAudio': path}
     with app.app_context():
         t = current_app.config['TRANSFORM_FREQ_SVG']
-        svgCoordinates = [(200,0),(0,0),(0,100),(150,100)]
-        current_app.config.update(SVG_COORDINATES=svgCoordinates)
+        current_app.config.update(SVG_COORDINATES=test_svgCoordinates)
+        current_app.config.update(USER_ID=id)
         assert t == None
-        response = client.post(url_for('coordinates.processCoordinateData'), json=data)
+        response = client.post(url_for('vowelCalibration.processCoordinateData'), json=data)
         assert response.status_code == 200
         t = current_app.config['TRANSFORM_FREQ_SVG']
         assert t != None
@@ -105,4 +107,18 @@ def test_processCoordinateData(app,client):
             assert type(line) == list
             assert line[0] < 10
 
+def test_saveUserId(app, client):
+    with app.app_context():
+        userId = 'yoder'
+        data = {'userId': userId}
+        url = 'vowelCalibration.saveUserId'
+        response = client.post(url_for(url),json=data)
+        assert response.status_code == 200
+        assert response.get_json()['saved'] == True
+        assert current_app.config['USER_ID'] == userId
 
+        userId = 'g19'
+        data = {'userId': userId}
+        response = client.post(url_for(url),json=data)
+        assert response.status_code == 200
+        assert current_app.config['USER_ID'] == userId
