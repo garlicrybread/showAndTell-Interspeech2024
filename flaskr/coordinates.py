@@ -36,8 +36,8 @@ def processCoordinateData():
 def saveUserId():
     print('in save user id')
     userId = request.get_json()
-    current_app.config.update(USER_ID=userId)
-    print(f'userId {userId}')
+    print(userId)
+    current_app.config.update(USER_ID=userId['userId'])
     return jsonify({'saved':True})
 
 def transformArray(actualCoordinates, svgCoordinates):
@@ -92,6 +92,7 @@ def vowelChartCoordinates(vowels):
     for word, vwls in vowels.items():
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
+            print(word, maxAndMinOfFormants(vwl))
             if word == words[0]:
                 xFH = maxF2
                 yFH = minF1
@@ -105,12 +106,11 @@ def vowelChartCoordinates(vowels):
                 xBL = minF2
                 yBL = maxF1
 
-
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    padf = 0
-    padb = 10
+    padf = 100
+    padb = 100
     frontHigh = (xFH+padf,yFH-padf)
     backHigh = (xBH-padb,yBH-padb)
     frontLow = (xFL+padf,yFL+padf)
