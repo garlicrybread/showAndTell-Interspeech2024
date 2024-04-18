@@ -42,6 +42,11 @@ def freqToSVG():
     returns svg: list [xSVG, ySVG]
     '''
     # freq is a 3x1
+    def yToX(y):
+        '''assumes y to x is not a straight line'''
+        m = (fl[1] - fh[1]) / (fl[0] - fh[0])
+        b = fl[1] - m * fl[0]
+        return (y - b) / m
     freq = request.get_json()
     print(f'freq {freq}')
     tempList = [[freq['f2']],[freq['f1']],[1]]
@@ -49,11 +54,22 @@ def freqToSVG():
     # t is a 3x3
     t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
     x,y,w = np.dot(t,freq).tolist()
-    x = sum(x)
-    y = sum(y)
     w = sum(w)
-    data = {'svg': [x/w,y/w]}
-    print(data)
+    x = sum(x)/w
+    y = sum(y)/w
+
+    fh, bh, fl, bl = current_app.config['SVG_COORDINATES']
+    print(fh,bh,fl,bl)
+    if y < bh[1]:
+        print(f'y outside of bounds {y}')
+        y = bh[1]
+    elif y > bl[1]: y = bh[1]
+
+    leftBoundaryX = yToX(y)
+    if x < leftBoundaryX: x = leftBoundaryX
+    elif x > bh[0]: x = bh[0]
+
+    data = {'svg': [x,y]}
     return jsonify(data)
 
 @bp.route('/api/svgToConfig',methods=['POST'])
@@ -78,7 +94,7 @@ def audioToVwlFormants(path,file_name):
     sound = parselmouth.Sound(file)
 
     vowels = praat.run_file(sound, vocalToolKitDir + extractVwlFile,0,0)[0]
-    # TODO automate this step
+    # TODO after deadline automate this step
     # charlotte 65, 500, 5500, 4
     f0min = 65
     f0max = 500
@@ -87,10 +103,10 @@ def audioToVwlFormants(path,file_name):
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5500
+    formant_ceiling = 5000
     num_formants = 4
     # higher window length to deal with smoothing
-    window_len = 0.05
+    window_len = 0.025
     preemphasis = 100
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
@@ -114,17 +130,18 @@ def condenseFormantList(formantList,cal=False):
     if cal:
         return formantList
     condensed = []
-    num = 3
+    num = 2
     i = 0
     for i in range(0, int(length / num)):
         chunk = formantList[num * i:num * i + num]
         condensed.append(mean(chunk))
     # anything that was extra, append without change
-    if length % 3 != 0:
-        if length <= 2:
+    if length % num != 0:
+        if length <= num - 1:
             condensed.append(mean(formantList))
         else:
             condensed.append(mean(formantList[num * i + num : length+1]))
+
     return condensed
 
 def formantsToJsonFormat(f1List,f2List,cal=False):
@@ -157,6 +174,7 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     # Serializing json
+    print(data)
     return data
 
 def writeToJson(path, jsonName, data):
