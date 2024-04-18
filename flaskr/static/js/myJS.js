@@ -42,21 +42,27 @@ export function toggleText(buttonId,cal='False') {
     } else {
         loader_number = 2;
     }
-    // Check the current text content of the button
-    if (button.textContent === "Start Recording") {
-        // Change the text content to "Don't click"
-        startRecording(buttonId,cal,buttonId);
-        console.log('Microphone Being used', stream);
-        button.textContent = "Stop Recording";
+
+    function changeToRecording() {
+        button.value = "Recording...";
         button.style.backgroundColor = "#78a9eb";
         startAnimation(loader_number);
+        //{showWaves && <div className="wave-animation"></div>}
+    }
+    // Check the current text content of the button
+    if (button.value !== "Recording...") {
+        // Change the text content to "Don't click"
+        button.value = "Calibrating...";
+        startRecording(buttonId,cal,buttonId);
+        console.log('Microphone Being used', stream);
+        setTimeout(changeToRecording,1250)
         //{showWaves && <div className="wave-animation"></div>}
     } else {
         stopRecording(buttonId);
         // Change the text content to "Click me!"
         console.log('Stopped Using mic:', stream);
         //addNewAudioBar(buttonId);
-        button.textContent = "Start Recording";
+        button.value = "Start Recording";
         button.style.backgroundColor = "";
         stopAnimation(loader_number);
     }
