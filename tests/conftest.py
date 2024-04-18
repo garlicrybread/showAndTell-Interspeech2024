@@ -58,8 +58,8 @@ def test_transform(app):
         ]
         # todo: determine svg's 0,0
         svgCoordinates = [
-            (0, 1), (1, 1),
-            (0, 0), (1, 0)
+            [50, 18.75], [350, 18.75],
+            [162.5, 281.22375], [350, 281.22375]
         ]
         src = np.asarray(actualCoordinates)
         dst = np.asarray(svgCoordinates)
@@ -68,3 +68,10 @@ def test_transform(app):
         actualY = t.params[1]
         actualW = t.params[2]
         return transformArray(actualCoordinates, svgCoordinates)
+@pytest.fixture
+def test_svgCoordinates(app):
+    svgCoordinates = [
+        [50, 18.75], [350, 18.75],
+        [162.5, 281.22375], [350, 281.22375]
+    ]
+    return svgCoordinates
