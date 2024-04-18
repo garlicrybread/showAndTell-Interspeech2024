@@ -45,7 +45,7 @@ async function drawVowelChart(){
     svgToClient(svgData);
 
     // Line properties
-    const color = "#a2c8db";
+    const color = "#3a3a3a";
     const strokeOpacity = 0.90;
     const strokeLinecap = "round";
     const strokeWidth = 3;
