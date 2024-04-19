@@ -34,9 +34,7 @@ def processCoordinateData():
 
 @bp.route('/api/saveUserId',methods=["POST"])
 def saveUserId():
-    print('in save user id')
     userId = request.get_json()
-    print(userId)
     current_app.config.update(USER_ID=userId['userId'])
     return jsonify({'saved':True})
 
@@ -92,7 +90,6 @@ def vowelChartCoordinates(vowels):
     for word, vwls in vowels.items():
         for vwl in vwls:
             maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
-            print(word, maxAndMinOfFormants(vwl))
             if word == words[0]:
                 xFH = maxF2
                 yFH = minF1
@@ -109,8 +106,8 @@ def vowelChartCoordinates(vowels):
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    padf = 10
-    padb = 10
+    padf = 50
+    padb = 50
     frontHigh = (xFH+padf,yFH-padf)
     backHigh = (xBH-padb,yBH-padb)
     frontLow = (xFL+padf,yFL+padf)
@@ -124,7 +121,6 @@ def jsonToVowelPoints(rootDirectory):
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
             if '.json' in file:
-                print(file)
                 with open(path+file,'r') as f:
                     data = json.load(f)
                     name,word,_ = file.split('-')
