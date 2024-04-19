@@ -25,12 +25,13 @@ dark:   #b30000
 
 "use strict";
 window.addEventListener("load", drawVowelChart);
-async function drawVowelChart(){
-    const svg = d3.select("svg");
+export async function drawVowelChart(svgId){
+    const svg = d3.select(`#svg-${svgId}`);
     const vwlChrtProperties = await svgGetPadding(svg);
     const paddingVwlChrt = vwlChrtProperties.padding;
     const svgWidth = vwlChrtProperties.width;
     const svgHeight = vwlChrtProperties.height;
+    console.log(svgHeight,svgWidth)
 
    // define x boundaries of vowel chart
     const xPadding = paddingVwlChrt.x;
