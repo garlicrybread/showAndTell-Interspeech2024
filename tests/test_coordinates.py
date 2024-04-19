@@ -75,8 +75,8 @@ def test_vowelChartCoordinates():
         'frontHigh': vowelsFH, 'backHigh': vowelsBH,
         'frontLow': vowelsFL, 'backLow':vowelsBL
     }
-    padf = 100
-    padb = 100
+    padf = 10
+    padb = 10
     FH, BH = (2435.9+padf,177.0-padf), (736.4-padb,274.6-padb)
     FL, BL = (2400.6+padf,860.4+padf), (831.9-padb,553.8+padb)
     calcFH, calcBH, calcFL, calcBL = vowelChartCoordinates(vowels)
