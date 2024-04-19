@@ -28,6 +28,9 @@ def processVwlData():
     f1List, f2List = audioToVwlFormants(path,filename)
     jsonName = filename.split('.')[0] + '.json'
     data = formantsToJsonFormat(f1List,f2List)
+    if data == []:
+        # unable to extract formants, probably didn't pick up voices but loud sounds instead
+        return 'empty'
     writeToJson(path,jsonName,data)
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
@@ -95,14 +98,14 @@ def audioToVwlFormants(path,file_name):
     # charlotte 65, 500, 5500, 4
     # dipayan 65, 300, 5500, 5
     f0min = 65
-    f0max = 300
+    f0max = 500
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
     formant_ceiling = 5500
-    num_formants = 5
+    num_formants = 4
     # higher window length to deal with smoothing
     window_len = 0.025
     preemphasis = 100
@@ -172,6 +175,8 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     # Serializing json
+    print('data')
+    print(data)
     return data
 
 def writeToJson(path, jsonName, data):

@@ -137,7 +137,20 @@ function audioToJson(filePath) {
 }
 
 function plotJson(filePath) {
-    drawVowels(filePath,filePath)
+    const messageElement = document.getElementById('message');
+
+    if (filePath === 'empty' || filePath === '/Quiet') {
+        messageElement.textContent = 'No vowels detected.'; // Display a user-friendly message
+        return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
+    }
+
+    try {
+        drawVowels(filePath);
+        messageElement.textContent = ''; // Clear message or provide a success message
+    } catch (error) {
+        console.error('Error drawing vowels:', error);
+        messageElement.textContent = 'Failed to process the file. Please check the console for more details.';
+    }
 }
 // function startRecording() {
 //     navigator.mediaDevices.getUserMedia({
