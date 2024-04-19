@@ -1,4 +1,7 @@
 let processingPath;
+// This will hold the last 5 elements (circles or paths).
+let elementsQueue = [];
+
 const sigProcName = 'signalProcessing'
 if (window.location.href.includes("/pronunciationVis/")) {
     processingPath = `/pronunciationVis/${sigProcName}`; // Set for remote
@@ -217,6 +220,7 @@ export async function drawVowels(dataL1Path) {
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
     const audioPath = dataL1Path.replace('.json', '.wav');
+
     const svg = d3.select("svg")
     const strokeLinecap = "round";
     const glideMakerL1 = d3.line()
@@ -229,56 +233,83 @@ export async function drawVowels(dataL1Path) {
     const strokeWidthDefault = 5;
     const strokeWidthHover = 8;
 
-    // Add arrow marker
-    svg.append("defs").append("marker")
-        .attr("id", "arrow")
-        .attr('color', colorSpa)
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 5)
-        .attr("markerWidth", 2)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("d", "M0,-5L10,0L0,5")
-        .attr("class", "arrowHead");
+    // Define the color array
+    const colors = ['#253494', '#2c7fb8', '#41b6c4', '#a1dab4', '#ffffcc']
 
-    d3.select("defs marker#arrow path")
-        .attr("fill", colorSpa); // Change "red" to the desired color
-
-    // connect the related ones!
     // Draw curves between related data points
     async function renderPaths() {
-        for (const vowel of dataL1) {
+        // Push the new vowel data onto the queue
+        // elementsQueue.push(uniqueId);
+        const temp = audioPath.split('/')
+        const uniqueId = temp[temp.length - 1].replaceAll('-','').replaceAll('_','').replace('.wav','')
+        const markerId = `arrow-${uniqueId}`
+
+        // add uniqueId to the beginning of the array
+        elementsQueue.unshift(uniqueId)
+        console.log(elementsQueue)
+        console.log(uniqueId)
+
+        // If we have more than 5 elements, remove the oldest one from the end
+        if (elementsQueue.length > 5) {
+            const oldestElementId = elementsQueue.pop();
+            console.log(elementsQueue)
+            console.log(oldestElementId)
+            svg.select(`#${oldestElementId}`).remove();
+        }
+
+
+        for (let i = 0; i < dataL1.length; i++)  {
+            const vowel = dataL1[i];
             if (Array.isArray(vowel.vwl) && vowel.vwl.length > 1) {
+                // Create a unique marker for each path
+                svg.append("defs").append("marker")
+                    .attr("id", markerId)           // Changed to create a unique marker ID based on the loop index
+                    .attr("viewBox", "0 -5 10 10")
+                    .attr("refX", 5)
+                    .attr("markerWidth", 2)
+                    .attr("markerHeight", 6)
+                    .attr("orient", "auto")
+                    .append("path")
+                        .attr("d", "M0,-5L10,0L0,5")    // No change here
+                        .attr("fill", colors[0]);
+
                 const pathData = await Promise.all(vowel.vwl.map(async d => ({
                     x: await freqToSVG(d, 'x'),
                     y: await freqToSVG(d, 'y')
                 })));
                 svg.append("path")
                     .datum(pathData)
+                    // .attr("id", uniqueId) // Add unique id to paths
+                    .attr("id",uniqueId)
+                    .attr('data-index', 0)  // Store the current index in the element's data
+                    .attr("class", "vowel-shape") // Add this class to paths
                     .attr("fill", "none")
-                    .attr("stroke", colorSpa)
+                    .attr("stroke", colors[0])
                     .attr("stroke-width", strokeWidthDefault)
                     .attr("stroke-linecap", strokeLinecap)
-                    .attr("marker-end", "url(#arrow)")
+                    .attr("marker-end", `url(#${markerId})`)
+                    // .attr("marker-end", `url(#arrow)`)
                     .attr("d", glideMakerL1)
+                    .on('click', function () {
+                        new Audio(audioPath).play();
+                    })
                     .on("mouseover", function () {
                         d3.select(this)
                             .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
                             .attr("stroke", hoverColor);   // Change stroke color on hover
-                            new Audio(audioPath).play();
                         // Change color of the arrowhead
-                        d3.select("#arrow")
-                            .select("path")
+                        d3.select(`#${markerId} path`)
                             .attr("fill", hoverColor);
                     })
                     .on("mouseout", function () {
-                        d3.select(this)
-                            .attr("stroke-width", strokeWidthDefault)  // Restore original stroke width
-                            .attr('stroke', colorSpa);
-                        d3.select('#arrow')
-                            .select('path')
-                            .attr('fill', colorSpa)
+                        let element = d3.select(this);
+                        let index = element.attr('data-index');  // Retrieve the index from element's data
+                        // Restore stroke width and color using the index
+                        element.attr("stroke-width", strokeWidthDefault)
+                               .attr('stroke', colors[index]);  // Use the index to get the original color
+
+                        // Assuming the arrow is to be restored to the same color
+                        d3.select(`#${markerId} path`).attr('fill',colors[index]);
                     });
             } else {
                 // Draw individual points if no related data points found
@@ -290,23 +321,38 @@ export async function drawVowels(dataL1Path) {
                 svg.append("circle")
                     .data([coord])
                     .join("circle")
+                    .attr("id", uniqueId) // Add unique id to paths
+                    .attr("class", "vowel-shape") // Add this class to paths
                     .attr("cx", d => d.cx)
                     .attr("cy", d => d.cy)
                     .attr("r", strokeWidthDefault)
-                    .attr("fill", colorSpa)
+                    .attr("fill", color)
+                    .on('click', function () {
+                        new Audio(audioPath).play();
+                    })
                     .on("mouseover", function () {
                         d3.select(this)
                             .attr("r", strokeWidthHover)  // Increase stroke width on hover
                             .attr("fill", hoverColor);   // Change stroke color on hover
-                            new Audio(audioPath).play();
                     })
                     .on("mouseout", function () {
                         d3.select(this)
                             .attr("r", strokeWidthDefault)  // Restore original stroke width
-                            .attr('fill', colorSpa);
+                            .attr('fill', color);
                     });
             }
         }
+        // Update the colors of all elements
+        console.log(elementsQueue)
+        elementsQueue.forEach((id, index) => {
+            svg.select(`#${id}`)
+                .transition()
+                .duration(500)
+                .attr('data-index', index)  // Store the current index in the element's data
+                // .attr('fill', colors[index])  // Set fill for circles
+                .attr('stroke', colors[index]);  // Set stroke for paths
+            d3.select(`#arrow-${id} path`).attr('fill',colors[index]);
+        });
     }
     renderPaths();
 }
@@ -346,14 +392,8 @@ async function svgToClient(data) {
     });
 }
 
-// function freqToSVG(d,axis) {
-//     console.log(typeof d.f1)
-//     console.log(typeof 41.93485)
-//     return 41.93485
-// }
 async function freqToSVG(freq,axis){
     // fetch json data
-    console.log("freq",freq)
     const urlPath = `${processingPath}/api/freqToSVG`
     const response = await fetch(urlPath, {
         method: 'POST',
