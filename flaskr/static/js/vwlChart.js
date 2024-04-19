@@ -33,6 +33,14 @@ export async function drawVowelChart(svgId){
     const svgHeight = vwlChrtProperties.height;
     console.log(svgHeight,svgWidth)
 
+    // Check for text elements in the SVG
+    const textElements = svg.selectAll('text');
+
+    // Log the presence of text elements
+    if (!textElements.empty()) {
+        return
+    }
+
    // define x boundaries of vowel chart
     const xPadding = paddingVwlChrt.x;
     const xWidth = svgWidth - 2*xPadding;
