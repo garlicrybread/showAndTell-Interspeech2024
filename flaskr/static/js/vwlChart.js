@@ -251,6 +251,7 @@ export async function drawVowels(dataL1Path) {
         if (elementsQueue.length > 5) {
             const oldestElementId = elementsQueue.pop();
             svg.select(`#${oldestElementId}`).remove();
+            svg.select(`#text-${oldestElementId}`).remove();
         }
 
 
@@ -274,7 +275,7 @@ export async function drawVowels(dataL1Path) {
                     y: await freqToSVG(d, 'y')
                 })));
                 console.log(pathData)
-                svg.append("path")
+                const pathElement = svg.append("path")
                     .datum(pathData)
                     // .attr("id", uniqueId) // Add unique id to paths
                     .attr("id",uniqueId)
@@ -308,6 +309,17 @@ export async function drawVowels(dataL1Path) {
                         // Assuming the arrow is to be restored to the same color
                         d3.select(`#${markerId} path`).attr('fill',colors[index]);
                     });
+                // Get the total length of the path and calculate the midpoint
+                    const totalLength = pathElement.node().getTotalLength();
+                    const midPoint = pathElement.node().getPointAtLength(totalLength / 2);
+
+                    // Add a text element at the midpoint but slightly above
+                    svg.append("text")
+                        .attr("x", midPoint.x)
+                        .attr("y", midPoint.y - 10)  // Adjust Y to position the text above the path
+                        .attr('id', `text-${uniqueId}`)
+                        .attr("text-anchor", "middle")
+                        .text(1);
             } else {
                 // Draw individual points if no related data points found
                 // Await the computation of x and y coordinates before appending the circle
@@ -315,7 +327,7 @@ export async function drawVowels(dataL1Path) {
                     cx: await freqToSVG(vowel.vwl[0], 'x'),
                     cy: await freqToSVG(vowel.vwl[0], 'y')
                 });
-                svg.append("circle")
+                const circleElement = svg.append("circle")
                     .data([coord])
                     .join("circle")
                     .attr("id", uniqueId) // Add unique id to paths
@@ -337,6 +349,12 @@ export async function drawVowels(dataL1Path) {
                             .attr("r", strokeWidthDefault)  // Restore original stroke width
                             .attr('fill', colors[0]);
                     });
+                svg.append("text")
+                    .attr('id', `text-${uniqueId}`)
+                    .attr("x", coord.cx)
+                    .attr("y", coord.cy - 15)  // Position the text above the circle
+                    .attr("text-anchor", "middle")
+                    .text("Label");
             }
         }
         // Update the colors of all elements
@@ -355,11 +373,13 @@ export async function drawVowels(dataL1Path) {
             if (element.node().nodeName === 'circle') {
                 // It's a circle, apply the 'fill' attribute
                 element.attr('fill', colors[index]);  // Set fill for circles
+                d3.select(`#text-${id}`).text(index+1);
             } else if (element.node().nodeName === 'path') {
                 // It's a path, apply the 'stroke' attribute
                 element.attr('stroke', colors[index]); // Set stroke for paths
                 // Also update the corresponding arrow marker color if it exists
                 d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
+                d3.select(`#text-${id}`).text(index+1);
             }
         });
     }
