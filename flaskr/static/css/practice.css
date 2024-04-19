@@ -1,0 +1,37 @@
+/* Style for the tabs list */
+.tab-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #f2f2f2;
+}
+
+/* Style for each tab */
+.tab {
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  margin-right: 5px;
+}
+
+/* Style for the active tab */
+.active-tab {
+  background-color: #ddd;
+}
+
+/* Style for the tab content */
+.tab-content {
+  display: none;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Style for the visible tab content */
+.visible {
+  display: flex;
+}

@@ -3,17 +3,7 @@
 
 {% block header %}
 <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
-   <style>
-        .tab-content {
-            display: none; /* Hide all content by default */
-        }
-        .active-content {
-            display: block; /* Show active content */
-        }
-        .tab {
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/practice.css') }}">
 {% endblock %}
 
 {% block content %}

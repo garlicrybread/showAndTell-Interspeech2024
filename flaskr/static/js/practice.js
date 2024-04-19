@@ -12,6 +12,7 @@ export function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "flex";
     evt.currentTarget.className += " active-content";
     // load vowel chart for tab
+    console.log(tabName)
     drawVowelChart(tabName);
 
 };

@@ -24,14 +24,13 @@ dark:   #b30000
 */
 
 "use strict";
-window.addEventListener("load", drawVowelChart);
+// window.addEventListener("load", drawVowelChart());
 export async function drawVowelChart(svgId){
     const svg = d3.select(`#svg-${svgId}`);
     const vwlChrtProperties = await svgGetPadding(svg);
     const paddingVwlChrt = vwlChrtProperties.padding;
     const svgWidth = vwlChrtProperties.width;
     const svgHeight = vwlChrtProperties.height;
-    console.log(svgHeight,svgWidth)
 
     // Check for text elements in the SVG
     const textElements = svg.selectAll('text');
