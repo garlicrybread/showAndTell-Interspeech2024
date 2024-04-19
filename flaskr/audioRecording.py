@@ -4,6 +4,7 @@ import os
 import numpy as np
 from flask import (Blueprint, jsonify, request, current_app)
 import librosa as lr
+import soundfile as sf
 
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
 DATA_DIR = MAIN_DIR + "flaskr/static/participantData/"
@@ -89,13 +90,12 @@ def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
         with open(DATA_DIR + new_file_name , "wb") as f:
             f.write(wav_data)
 
-        # audioData, sr = lr.load(DATA_DIR + new_file_name)
-        # # normalize audio data
-        # peakAmp = np.max(np.abs(audioData))
-        # scaleFactor = 0.9 / peakAmp
-        # audioData = audioData * scaleFactor
-        #
-        # lr.output.write_wav(DATA_DIR + new_file_name, audioData,sr=sr)
+        # Normalize audio
+        audio_data, fs = sf.read(DATA_DIR + new_file_name)  # Load audio at original SR
+        peak_amp = np.max(np.abs(audio_data))
+        scale_factor = 0.9 / peak_amp
+        normalized_audio = audio_data * scale_factor
+        sf.write(DATA_DIR + new_file_name, normalized_audio, fs)
 
         return DATA_DIR + new_file_name
     return "NoDataRecorded"
