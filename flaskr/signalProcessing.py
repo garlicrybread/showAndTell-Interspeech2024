@@ -25,7 +25,6 @@ def processVwlData():
     pathList = filePath.split('/')
     path = '/'.join(pathList[:len(pathList)-1]) + '/'
     filename = pathList[-1]
-    print(path,filename)
     f1List, f2List = audioToVwlFormants(path,filename)
     jsonName = filename.split('.')[0] + '.json'
     data = formantsToJsonFormat(f1List,f2List)
@@ -48,7 +47,6 @@ def freqToSVG():
         b = fl[1] - m * fl[0]
         return (y - b) / m
     freq = request.get_json()
-    print(f'freq {freq}')
     tempList = [[freq['f2']],[freq['f1']],[1]]
     freq = np.array(tempList)
     # t is a 3x3
@@ -59,11 +57,10 @@ def freqToSVG():
     y = sum(y)/w
 
     fh, bh, fl, bl = current_app.config['SVG_COORDINATES']
-    print(fh,bh,fl,bl)
     if y < bh[1]:
         print(f'y outside of bounds {y}')
         y = bh[1]
-    elif y > bl[1]: y = bh[1]
+    elif y > bl[1]: y = bl[1]
 
     leftBoundaryX = yToX(y)
     if x < leftBoundaryX: x = leftBoundaryX
@@ -96,15 +93,16 @@ def audioToVwlFormants(path,file_name):
     vowels = praat.run_file(sound, vocalToolKitDir + extractVwlFile,0,0)[0]
     # TODO after deadline automate this step
     # charlotte 65, 500, 5500, 4
+    # dipayan 65, 300, 5500, 5
     f0min = 65
-    f0max = 500
+    f0max = 300
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5000
-    num_formants = 4
+    formant_ceiling = 5500
+    num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
     preemphasis = 100
@@ -154,8 +152,8 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
         vwlF2 = f2List[prev_idx + 1]
         absDiffF1 = abs(vwlF1 - prevVwlF1)
         absDiffF2 = abs(vwlF2 - prevVwlF2)
-        diff = 100
-        if absDiffF1 >= diff and absDiffF2 >= diff:
+        diff = 200
+        if (absDiffF1 >= diff or absDiffF2 >= diff) and not cal:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List))
     data = []
@@ -174,7 +172,6 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
             data.append(vwlsDict)
         prev_idx = idx_vwls[i + 1]
     # Serializing json
-    print(data)
     return data
 
 def writeToJson(path, jsonName, data):
@@ -183,7 +180,6 @@ def writeToJson(path, jsonName, data):
     # Writing to json
     with open(path+jsonName, "w") as outfile:
         outfile.write(json_object)
-    print(f'json filename {path+jsonName}')
 
 
 
