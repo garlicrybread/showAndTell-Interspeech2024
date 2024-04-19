@@ -216,33 +216,9 @@ export async function drawVowels(dataL1Path) {
     // fetch json data
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
+    const audioPath = dataL1Path.replace('.json', '.wav');
     const svg = d3.select("svg")
-    // const vwlChrtProperties = await svgGetPadding(svg);
-    // const svgXOrigin = vwlChrtProperties.xOrigin;
-    // const svgYOrigin = vwlChrtProperties.yOrigin;
-    // const svgWidth = vwlChrtProperties.width;
-    // const svgHeight = vwlChrtProperties.height;
-    // const padding = vwlChrtProperties.padding;
     const strokeLinecap = "round";
-    // const xWidth = svgWidth - 2 * padding.x;
-    // const yHeight = svgHeight - 2 * padding.y;
-    // const slope = (0.9999 * yHeight) / (0.375 * xWidth);
-    // const pad = 15;
-    // const xrangeL1 = [coordinatesL1[0][1]+pad, coordinatesL1[0][0]-pad];
-    // const yrangeL1 = [coordinatesL1[1][0]-pad, coordinatesL1[1][1]+pad];
-    // convert frequencies to svg scale
-    // const f1ToYCoordinatesL1 = d3.scaleLinear()
-    //     .domain(yrangeL1)
-    //     .range([padding.y, svgHeight - padding.y])
-    //     .clamp(true)
-    // function f2ToXCoordinatesL1(d) {
-    //     const y = f1ToYCoordinatesL1(d.f1);
-    //     const toXCoor = d3.scaleLinear()
-    //         .domain(xrangeL1)
-    //         .range([(y + 2 * padding.x) / slope, svgWidth - padding.x])
-    //     .clamp(true)
-    //     return toXCoor(d.f2)
-    // }
     const glideMakerL1 = d3.line()
         .x(d => d.x)
         .y(d => d.y)
@@ -273,13 +249,11 @@ export async function drawVowels(dataL1Path) {
     // Draw curves between related data points
     async function renderPaths() {
         for (const vowel of dataL1) {
-            if (Array.isArray(vowel.vwl)) {
+            if (Array.isArray(vowel.vwl) && vowel.vwl.length > 1) {
                 const pathData = await Promise.all(vowel.vwl.map(async d => ({
                     x: await freqToSVG(d, 'x'),
                     y: await freqToSVG(d, 'y')
                 })));
-                console.log('pathData')
-                console.log(pathData)
                 svg.append("path")
                     .datum(pathData)
                     .attr("fill", "none")
@@ -292,6 +266,7 @@ export async function drawVowels(dataL1Path) {
                         d3.select(this)
                             .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
                             .attr("stroke", hoverColor);   // Change stroke color on hover
+                            new Audio(audioPath).play();
                         // Change color of the arrowhead
                         d3.select("#arrow")
                             .select("path")
@@ -305,63 +280,34 @@ export async function drawVowels(dataL1Path) {
                             .select('path')
                             .attr('fill', colorSpa)
                     });
+            } else {
+                // Draw individual points if no related data points found
+                // Await the computation of x and y coordinates before appending the circle
+                const coord = await Promise.resolve({
+                    cx: await freqToSVG(vowel.vwl[0], 'x'),
+                    cy: await freqToSVG(vowel.vwl[0], 'y')
+                });
+                svg.append("circle")
+                    .data([coord])
+                    .join("circle")
+                    .attr("cx", d => d.cx)
+                    .attr("cy", d => d.cy)
+                    .attr("r", strokeWidthDefault)
+                    .attr("fill", colorSpa)
+                    .on("mouseover", function () {
+                        d3.select(this)
+                            .attr("r", strokeWidthHover)  // Increase stroke width on hover
+                            .attr("fill", hoverColor);   // Change stroke color on hover
+                            new Audio(audioPath).play();
+                    })
+                    .on("mouseout", function () {
+                        d3.select(this)
+                            .attr("r", strokeWidthDefault)  // Restore original stroke width
+                            .attr('fill', colorSpa);
+                    });
             }
         }
     }
-    // dataL1.forEach(vowel => {
-    //     if (Array.isArray(vowel.vwl)) {
-    //         const pathData = vowel.vwl.map(async d => ({
-    //             x: await freqToSVG(d, 'x'),
-    //             y: await freqToSVG(d, 'y')
-    //         }));
-    //         const resolvedPathData = await Promise.all(pathData);
-    //         svg.append("path")
-    //             .datum(resolvedPathData)
-    //             .attr("fill", "none")
-    //             .attr("stroke", colorSpa)
-    //             .attr("stroke-width", strokeWidthDefault)
-    //             .attr("stroke-linecap", strokeLinecap)
-    //             .attr("marker-end", "url(#arrow)")
-    //             .attr("d", glide)
-    //             .on("mouseover", function () {
-    //                 d3.select(this)
-    //                     .attr("stroke-width", strokeWidthHover)  // Increase stroke width on hover
-    //                     .attr("stroke", hoverColor);   // Change stroke color on hover
-    //                 // Change color of the arrowhead
-    //                 d3.select("#arrow")
-    //                     .select("path")
-    //                     .attr("fill", hoverColor);
-    //             })
-    //             .on("mouseout", function () {
-    //                 d3.select(this)
-    //                     .attr("stroke-width", strokeWidthDefault)  // Restore original stroke width
-    //                     .attr('stroke', colorSpa);
-    //                 d3.select('#arrow')
-    //                     .select('path')
-    //                     .attr('fill', colorSpa)
-    //             });
-    //     } else {
-    //         // Draw individual points if no related data points found
-    //         svg.append("circle")
-    //             .data([d.vwl])
-    //             .join("circle")
-    //             .attr("cx", d => f2ToXCoordinatesL1(d))
-    //             .attr("cy", d => f1ToYCoordinatesL1(d.f1))
-    //             .attr("r", strokeWidthDefault)
-    //             .attr("fill", colorSpa)
-    //             .on("mouseover", function () {
-    //                 d3.select(this)
-    //                     .attr("r", strokeWidthHover)  // Increase stroke width on hover
-    //                     .attr("fill", hoverColor);   // Change stroke color on hover
-    //             })
-    //             .on("mouseout", function () {
-    //                 d3.select(this)
-    //                     .attr("r", strokeWidthDefault)  // Restore original stroke width
-    //                     .attr('fill', colorSpa);
-    //             });
-    //     }
-    // });
-
     renderPaths();
 }
 
@@ -407,6 +353,7 @@ async function svgToClient(data) {
 // }
 async function freqToSVG(freq,axis){
     // fetch json data
+    console.log("freq",freq)
     const urlPath = `${processingPath}/api/freqToSVG`
     const response = await fetch(urlPath, {
         method: 'POST',
@@ -416,14 +363,8 @@ async function freqToSVG(freq,axis){
         body: JSON.stringify(freq)
     });
     const svg = await response.json();
-    console.log('in freqTOSVG')
-    console.log(svg)
     if (axis === 'x') {
-        console.log(`returning x ${svg['svg'][1]}`)
-        console.log(typeof svg.svg[1])
         return svg.svg[0]
     }
-    console.log(svg.svg[0])
-    console.log(typeof svg.svg[0])
     return svg.svg[1]
 }
