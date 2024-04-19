@@ -109,8 +109,8 @@ def vowelChartCoordinates(vowels):
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)
-    padf = 100
-    padb = 100
+    padf = 10
+    padb = 10
     frontHigh = (xFH+padf,yFH-padf)
     backHigh = (xBH-padb,yBH-padb)
     frontLow = (xFL+padf,yFL+padf)
