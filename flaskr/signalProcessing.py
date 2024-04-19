@@ -154,7 +154,7 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
         vwlF2 = f2List[prev_idx + 1]
         absDiffF1 = abs(vwlF1 - prevVwlF1)
         absDiffF2 = abs(vwlF2 - prevVwlF2)
-        diff = 200
+        diff = 100
         if absDiffF1 >= diff and absDiffF2 >= diff:
             idx_vwls.append(prev_idx + 1)
     idx_vwls.append(len(f1List))
