@@ -246,14 +246,10 @@ export async function drawVowels(dataL1Path) {
 
         // add uniqueId to the beginning of the array
         elementsQueue.unshift(uniqueId)
-        console.log(elementsQueue)
-        console.log(uniqueId)
 
         // If we have more than 5 elements, remove the oldest one from the end
         if (elementsQueue.length > 5) {
             const oldestElementId = elementsQueue.pop();
-            console.log(elementsQueue)
-            console.log(oldestElementId)
             svg.select(`#${oldestElementId}`).remove();
         }
 
@@ -277,6 +273,7 @@ export async function drawVowels(dataL1Path) {
                     x: await freqToSVG(d, 'x'),
                     y: await freqToSVG(d, 'y')
                 })));
+                console.log(pathData)
                 svg.append("path")
                     .datum(pathData)
                     // .attr("id", uniqueId) // Add unique id to paths
@@ -326,7 +323,7 @@ export async function drawVowels(dataL1Path) {
                     .attr("cx", d => d.cx)
                     .attr("cy", d => d.cy)
                     .attr("r", strokeWidthDefault)
-                    .attr("fill", color)
+                    .attr("fill", colors[0])
                     .on('click', function () {
                         new Audio(audioPath).play();
                     })
@@ -338,20 +335,32 @@ export async function drawVowels(dataL1Path) {
                     .on("mouseout", function () {
                         d3.select(this)
                             .attr("r", strokeWidthDefault)  // Restore original stroke width
-                            .attr('fill', color);
+                            .attr('fill', colors[0]);
                     });
             }
         }
         // Update the colors of all elements
+        console.log('elementsQueue')
         console.log(elementsQueue)
         elementsQueue.forEach((id, index) => {
-            svg.select(`#${id}`)
-                .transition()
+            // Select the element by its ID
+            const element = svg.select(`#${id}`);
+
+            // Perform a transition to animate properties
+            element.transition()
                 .duration(500)
-                .attr('data-index', index)  // Store the current index in the element's data
-                // .attr('fill', colors[index])  // Set fill for circles
-                .attr('stroke', colors[index]);  // Set stroke for paths
-            d3.select(`#arrow-${id} path`).attr('fill',colors[index]);
+                .attr('data-index', index); // Store the current index in the element's data
+            console.log(element)
+            // Check if the element is a 'path' or 'circle' by inspecting the nodeName
+            if (element.node().nodeName === 'circle') {
+                // It's a circle, apply the 'fill' attribute
+                element.attr('fill', colors[index]);  // Set fill for circles
+            } else if (element.node().nodeName === 'path') {
+                // It's a path, apply the 'stroke' attribute
+                element.attr('stroke', colors[index]); // Set stroke for paths
+                // Also update the corresponding arrow marker color if it exists
+                d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
+            }
         });
     }
     renderPaths();
@@ -394,6 +403,7 @@ async function svgToClient(data) {
 
 async function freqToSVG(freq,axis){
     // fetch json data
+    console.log('frequency', freq)
     const urlPath = `${processingPath}/api/freqToSVG`
     const response = await fetch(urlPath, {
         method: 'POST',
