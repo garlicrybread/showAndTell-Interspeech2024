@@ -3,23 +3,85 @@
 
 {% block header %}
 <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+   <style>
+        .tab-content {
+            display: none; /* Hide all content by default */
+        }
+        .active-content {
+            display: block; /* Show active content */
+        }
+        .tab {
+            cursor: pointer;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <div class="flex-col">
-        <div class="flex-row">
-            <h1>Example Words</h1>
-            <p>heed, four, blue</p>
-        </div>
-        <input type="button" id="myButton" value="record audio">
+    <div class="tabs">
+        <div class="tab" onclick="openTab(event, 'pair1')">Pair 1</div>
+        <div class="tab" onclick="openTab(event, 'pair2')">Pair 2</div>
+        <div class="tab" onclick="openTab(event, 'pair3')">Pair 3</div>
+        <!-- Add more tabs as needed -->
     </div>
-    <hr>
-    <div class="flex-col">
-        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
+
+    <!-- Tab content for Pair 1 -->
+    <div id="pair1" class="tab-content">
+        <!-- Include the content layout from the first picture -->
+        <!-- Your existing content structure for Example Words -->
+        <div class="flex-row">
+            <div class="flex-col">
+                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="myButton" value="record audio">
+            </div>
+            <hr>
+            <div id="message"></div>
+            <div class="flex-col">
+                <svg id="svg-pair1" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <!-- Recordings and loader would go here, if applicable -->
+            <div id="recordingsList"></div>
+        </div>
+    </div>
+
+    <!-- Tab content for Pair 2 -->
+    <div id="pair2" class="tab-content">
+        <!-- Repeat the same structure for Pair 2 -->
+        <div class="flex-row">
+            <div class="flex-col">
+                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="myButton" value="record audio">
+            </div>
+            <hr>
+            <div id="message"></div>
+            <div class="flex-col">
+                <svg id="svg-pair2" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <!-- Recordings and loader would go here, if applicable -->
+            <div id="recordingsList"></div>
+        </div>
+    </div>
+
+    <!-- Tab content for Pair 3 -->
+    <div id="pair3" class="tab-content">
+        <!-- Repeat the same structure for Pair 3 -->
+        <div class="flex-row">
+            <div class="flex-col">
+                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="myButton" value="record audio">
+            </div>
+            <hr>
+            <div id="message"></div>
+            <div class="flex-col">
+                <svg id="svg-pair3" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <!-- Recordings and loader would go here, if applicable -->
+            <div id="recordingsList"></div>
+        </div>
     </div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/practice.js') }}"></script>
 {#    <script type="module" src="../../static/js/myJS.js"></script>#}
 
 
