@@ -301,7 +301,7 @@ export async function drawVowels(dataL1Path) {
                     })
                     .on("mouseout", function () {
                         let element = d3.select(this);
-                        let index = element.attr('data-index');  // Retrieve the index from element's data
+                        let index = element.attr('data-index');  // retrieve the index from element's data
                         // Restore stroke width and color using the index
                         element.attr("stroke-width", strokeWidthDefault)
                                .attr('stroke', colors[index]);  // Use the index to get the original color
@@ -345,9 +345,10 @@ export async function drawVowels(dataL1Path) {
                             .attr("fill", hoverColor);   // Change stroke color on hover
                     })
                     .on("mouseout", function () {
-                        d3.select(this)
-                            .attr("r", strokeWidthDefault)  // Restore original stroke width
-                            .attr('fill', colors[0]);
+                        let element = d3.select(this);
+                        let index = element.attr('data-index');  // retrieve the index from element's data
+                        element.attr("r", strokeWidthDefault)  // Restore original stroke width
+                            .attr('fill', colors[index]);
                     });
                 svg.append("text")
                     .attr('id', `text-${uniqueId}`)
