@@ -111,6 +111,10 @@ function startRecording(word,cal,btnID) {
 
 function audioToJson(filePath) {
     console.log(`filePath ${filePath}`)
+    if (filePath === '/Quiet') {
+        messageElement.textContent = 'No sounds detected.'; // Display a user-friendly message
+        return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
+    }
 
     fetch(`${processingPath}/api/processVwlData`, {
         method: 'POST',
@@ -139,7 +143,7 @@ function audioToJson(filePath) {
 function plotJson(filePath) {
     const messageElement = document.getElementById('message');
 
-    if (filePath === 'empty' || filePath === '/Quiet') {
+    if (filePath === 'empty') {
         messageElement.textContent = 'No vowels detected.'; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
