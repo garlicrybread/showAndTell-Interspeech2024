@@ -32,9 +32,10 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export function toggleText(buttonId,cal='False') {
+export function toggleText(buttonId,svgId,cal='False') {
     console.log('toggling button')
     console.log(`${buttonId}`)
+    console.log(`${svgId}`)
     var button = document.getElementById(buttonId);
     var loader_number;
     if (buttonId == "myButton") {
@@ -53,7 +54,7 @@ export function toggleText(buttonId,cal='False') {
     if (button.value !== "Recording...") {
         // Change the text content to "Don't click"
         button.value = "Calibrating...";
-        startRecording(buttonId,cal,buttonId);
+        startRecording(buttonId,cal,buttonId, svgId);
         console.log('Microphone Being used', stream);
         setTimeout(changeToRecording,1250)
         //{showWaves && <div className="wave-animation"></div>}
@@ -69,7 +70,7 @@ export function toggleText(buttonId,cal='False') {
     console.log('end of toggling')
 }
 
-function startRecording(word,cal,btnID) {
+function startRecording(word,cal,btnID,svgId) {
     // Prepare the data to be sent to the server
     // todo: request data should not be hardcoded
     // todo: display wait notification to users
@@ -100,7 +101,7 @@ function startRecording(word,cal,btnID) {
         // put the text back to record
         toggleText(btnID)
         if ( cal === 'False') {
-            audioToJson(filePath)
+            audioToJson(filePath, svgId)
         }
     })
     .catch(error => {
@@ -109,9 +110,9 @@ function startRecording(word,cal,btnID) {
     });
 }
 
-function audioToJson(filePath) {
+function audioToJson(filePath, svgId) {
     console.log(`filePath ${filePath}`)
-    if (filePath['gotAudio'] === '/Quiet') {
+    if (filePath['gotAudio'] === 'Quiet') {
         messageElement.textContent = 'No sounds detected.'; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
@@ -132,7 +133,7 @@ function audioToJson(filePath) {
     .then(relfilepath => {
         // Handle success
         console.log('Formants extracted successfully:',relfilepath);
-        plotJson(relfilepath)
+        plotJson(relfilepath,svgId)
     })
     .catch(error => {
         // Handle errors
@@ -140,16 +141,16 @@ function audioToJson(filePath) {
     });
 }
 
-function plotJson(filePath) {
+function plotJson(filePath, svgId) {
     const messageElement = document.getElementById('message');
-
+    console.log('in plotJson', svgId)
     if (filePath === 'empty') {
         messageElement.textContent = 'No vowels detected.'; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
 
     try {
-        drawVowels(filePath);
+        drawVowels(filePath, svgId);
         messageElement.textContent = ''; // Clear message or provide a success message
     } catch (error) {
         console.error('Error drawing vowels:', error);

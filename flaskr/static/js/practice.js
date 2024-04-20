@@ -1,4 +1,36 @@
  import {drawVowelChart} from "../../static/js/vwlChart.js";
+ import {toggleText} from "./myJS.js";
+
+ const p11btn = 'p11'
+ const p12btn = 'p12'
+ const p21btn = 'p21'
+ const p22btn = 'p22'
+ const p31btn = 'p31'
+ const p32btn = 'p32'
+ // define strings for svg ids
+ const svgP1 = 'pair1'
+ const svgP2 = 'pair2'
+ const svgP3 = 'pair3'
+ document.getElementById(p11btn).addEventListener("click", function () {
+     toggleText(p11btn, svgP1);
+ });
+ document.getElementById(p12btn).addEventListener("click", function () {
+     toggleText(p12btn, svgP1);
+ });
+
+ document.getElementById(p21btn).addEventListener("click", function () {
+     toggleText(p21btn, svgP2);
+ });
+ document.getElementById(p22btn).addEventListener("click", function () {
+     toggleText(p22btn, svgP2);
+ });
+
+ document.getElementById(p31btn).addEventListener("click", function () {
+     toggleText(p31btn, svgP3);
+ });
+ document.getElementById(p32btn).addEventListener("click", function () {
+     toggleText(p32btn, svgP3);
+ });
 
 // JavaScript function to open a tab
 export function openTab(evt, tabName) {
@@ -8,9 +40,15 @@ export function openTab(evt, tabName) {
         tabcontent[i].style.display = "none";
     }
 
+    // Get all elements with class="tab" and remove the class "active-tab"
+      var tablinks = document.getElementsByClassName("tab");
+      for (var i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active-tab", "");
+      }
+
     // Show the current tab, and add an "active-content" class to the button that opened the tab
     document.getElementById(tabName).style.display = "flex";
-    evt.currentTarget.className += " active-content";
+    evt.currentTarget.className += " active-tab";
     // load vowel chart for tab
     console.log(tabName)
     drawVowelChart(tabName);
@@ -19,6 +57,6 @@ export function openTab(evt, tabName) {
 
  // Optionally open the first tab by default on page load
  document.addEventListener('DOMContentLoaded', (event) => {
-     openTab(event, 'pair1'); // Change 'pair1' to the ID of the first tab content
+     drawVowelChart('pair1'); // Change 'pair1' to the ID of the first tab content
  });
 window.openTab = openTab

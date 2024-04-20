@@ -223,13 +223,13 @@ export async function drawVowelChart(svgId){
         .attr("stroke-width", strokeWidth);
 }
 
-export async function drawVowels(dataL1Path) {
+export async function drawVowels(dataL1Path, svgId) {
     // fetch json data
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
     const audioPath = dataL1Path.replace('.json', '.wav');
-
-    const svg = d3.select("svg")
+    console.log('in draw vowels', svgId)
+    const svg = d3.select(`#svg-${svgId}`);
     const strokeLinecap = "round";
     const glideMakerL1 = d3.line()
         .x(d => d.x)
