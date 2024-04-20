@@ -2,26 +2,29 @@
 {% extends 'base.html' %}
 
 {% block header %}
+    <div class="flex-col-left">
+        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    </div>
 <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/practice.css') }}">
 {% endblock %}
 
 {% block content %}
     <div class="tabs">
-        <div class="tab" onclick="openTab(event, 'pair1')">Pair 1</div>
+        <div class="tab active-tab" onclick="openTab(event, 'pair1')">Pair 1</div>
         <div class="tab" onclick="openTab(event, 'pair2')">Pair 2</div>
         <div class="tab" onclick="openTab(event, 'pair3')">Pair 3</div>
         <!-- Add more tabs as needed -->
     </div>
 
     <!-- Tab content for Pair 1 -->
-    <div id="pair1" class="tab-content">
+    <div id="pair1" class="tab-content visible" style="display: flex">
         <!-- Include the content layout from the first picture -->
         <!-- Your existing content structure for Example Words -->
         <div class="flex-row">
             <div class="flex-col">
-                <input type="button" id="myButton" value="record audio">
-                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="p11" value="record audio">
+                <input type="button" id="p12" value="record audio">
             </div>
             <hr>
             <div id="message"></div>
@@ -34,12 +37,12 @@
     </div>
 
     <!-- Tab content for Pair 2 -->
-    <div id="pair2" class="tab-content">
+    <div id="pair2" class="tab-content" style="display: none">
         <!-- Repeat the same structure for Pair 2 -->
         <div class="flex-row">
             <div class="flex-col">
-                <input type="button" id="myButton" value="record audio">
-                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="p21" value="record audio">
+                <input type="button" id="p22" value="record audio">
             </div>
             <hr>
             <div id="message"></div>
@@ -52,12 +55,12 @@
     </div>
 
     <!-- Tab content for Pair 3 -->
-    <div id="pair3" class="tab-content">
+    <div id="pair3" class="tab-content" style="display: none;">
         <!-- Repeat the same structure for Pair 3 -->
         <div class="flex-row">
             <div class="flex-col">
-                <input type="button" id="myButton" value="record audio">
-                <input type="button" id="myButton" value="record audio">
+                <input type="button" id="p31" value="record audio">
+                <input type="button" id="p32" value="record audio">
             </div>
             <hr>
             <div id="message"></div>

@@ -10,22 +10,23 @@
 
 /* Style for each tab */
 .tab {
-  border: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 0px;
   padding: 10px;
   cursor: pointer;
-  background-color: #f9f9f9;
-  margin-right: 5px;
+  background-color: #c7eae5;
 }
 
 /* Style for the active tab */
 .active-tab {
-  background-color: #ddd;
+  background-color: #f9f9f9;
+  border-bottom: 0px;
 }
 
 /* Style for the tab content */
 .tab-content {
   display: none;
-  border: 1px solid #ccc;
+  /*border: 1px solid #ccc;*/
   border-top: none;
   padding: 10px;
   background-color: #f9f9f9;
