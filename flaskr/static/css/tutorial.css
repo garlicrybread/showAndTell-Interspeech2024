@@ -4,3 +4,36 @@ img {
     height: auto; /* Maintain aspect ratio */
     margin: 1em;
 }
+
+/* all flex col children have max width of 50% */
+.flex-col > * {
+    flex: 1; /* This makes each child flex and take up an equal amount of space */
+}
+
+.flex-col > .vowel-chart {
+    flex: 2; /* This makes each child flex and take up an equal amount of space */
+}
+.flex-col > .flex-row {
+    margin: 0;
+}
+
+.vowel-chart {
+  flex: 2; /* This allows the item to grow and shrink but bases it at 50% */
+  display: flex; /* Makes the child also a flex container */
+  justify-content: center; /* Centers the child content horizontally */
+  align-items: center; /* Centers the child content vertically */
+}
+.face-cutaway {
+    flex: 1; /* This allows the item to grow and shrink but bases it at 50% */
+    display: flex; /* Makes the child also a flex container */
+    justify-content: center; /* Centers the child content horizontally */
+    align-items: center; /* Centers the child content vertically */
+}
+
+.face-cutaway img {
+    max-width: 75%; /* Maximum width of the image */
+    margin-right: 1em;
+    margin-left: 0em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}

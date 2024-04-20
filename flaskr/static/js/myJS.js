@@ -32,7 +32,7 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export function toggleText(buttonId,svgId,cal='False') {
+export function toggleText(buttonId,svgId='NA',cal='False') {
     console.log('toggling button')
     console.log(`${buttonId}`)
     console.log(`${svgId}`)
@@ -145,7 +145,6 @@ export function audioToJson(filePath, svgId,spa=false) {
 
 function plotJson(filePath, svgId,spa=false) {
     const messageElement = document.getElementById('message');
-    console.log('in plotJson', svgId)
     if (filePath === 'empty') {
         messageElement.textContent = 'No vowels detected.'; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere

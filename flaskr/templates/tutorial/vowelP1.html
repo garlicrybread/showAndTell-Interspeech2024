@@ -50,13 +50,13 @@
             <p>
                 Click on the pictures to hear the vowel for the corresponding approximate position of the tongue.
             </p>
+            <input id="p1" type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP2')">
         </div>
-        <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP2')">
     </div>
     <div id="message"></div>
 
 
-    <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
+{#    <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>#}
     <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
 
 {% endblock %}

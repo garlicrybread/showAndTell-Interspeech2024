@@ -233,6 +233,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
     const audioPath = dataL1Path.replace('.json', '.wav');
     console.log('in draw vowels', svgId)
     const svg = d3.select(`#svg-${svgId}`);
+    console.log('svg first', svg)
     const strokeLinecap = "round";
     const glideMakerL1 = d3.line()
         .x(d => d.x)
@@ -261,9 +262,9 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
         const markerId = `arrow-${uniqueId}`
         const alpha = ['A','B'];
         // Check if there is anything in the id
-        const textElements = svg.select(`#${uniqueId}`);
+        const svgElements = svg.select(`#${uniqueId}`);
 
-        if (!textElements.empty()) {
+        if (!svgElements.empty()) {
             return
         }
         console.log(uniqueId)
@@ -281,6 +282,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                 svg.select(`#text-${oldestElementId}`).remove();
             }
         }
+        console.log('elementsQueue',elementsQueue)
         let label;
         if (spa) {
             label = 'A';
@@ -308,7 +310,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                     x: await freqToSVG(d, 'x'),
                     y: await freqToSVG(d, 'y')
                 })));
-                console.log(pathData)
+                console.log('pathData',pathData,svg)
                 const pathElement = svg.append("path")
                     .datum(pathData)
                     // .attr("id", uniqueId) // Add unique id to paths
@@ -320,6 +322,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                     .attr("stroke-width", strokeWidthDefault)
                     .attr("stroke-linecap", strokeLinecap)
                     .attr("marker-end", `url(#${markerId})`)
+                    .attr('cursor','pointer')
                     // .attr("marker-end", `url(#arrow)`)
                     .attr("d", glideMakerL1)
                     .on('click', function () {
@@ -343,7 +346,9 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                         // Assuming the arrow is to be restored to the same color
                         d3.select(`#${markerId} path`).attr('fill',colors[index]);
                     });
-                // Get the total length of the path and calculate the midpoint
+                    // Get the total length of the path and calculate the midpoint
+                    console.log(pathElement, svgId, svg)
+                    console.log('svg',svg)
                     const totalLength = pathElement.node().getTotalLength();
                     const midPoint = pathElement.node().getPointAtLength(totalLength / 2);
 
@@ -371,6 +376,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                     .attr("cy", d => d.cy)
                     .attr("r", strokeWidthDefault)
                     .attr("fill", colors[0])
+                    .attr('cursor','pointer')
                     .on('click', function () {
                         new Audio(audioPath).play();
                     })

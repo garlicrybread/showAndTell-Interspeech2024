@@ -1,0 +1,42 @@
+vowelP3.html<!-- Template: auth/login.html -->
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <p>
+        Now that you’ve played around with the chart, let’s unpack what the axes mean.
+    </p>
+    <p>
+        The horizontal axis represents where the tip of the tongue is in the mouth, either near the front of the mouth
+        or the back.
+    </p>
+    <p>
+       Try recording the word "feed" or “hat”. They will show up on the left side of the chart, since they are fronted
+        vowels.
+    </p>
+    <p></p>
+    <div class="flex-col">
+        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
+    </div>
+    <div class="flex-col">
+        <div class="flex-row">
+            <h1>Example Words</h1>
+            <p>feed, hat, get</p>
+        </div>
+        <input type="button" value="record audio">
+    </div>
+    <div class="flex-col-right">
+        <input type="button" class="next-btn" value=">" idnum="" >
+    </div>
+
+
+
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script type="module" src="../../static/js/vwlChart.js"></script>
+</form>
+{% endblock %}

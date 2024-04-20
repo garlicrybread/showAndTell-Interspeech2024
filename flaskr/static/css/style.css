@@ -55,9 +55,13 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .flex-row {
     display: flex; flex-direction: column;
     margin: auto; padding: 0.005em; margin-top: 1em;
-    justify-content: space-evenly;
+    /*justify-content: space-evenly;*/
     /*border-right: 1px solid lightgray;*/
 }
+/*.flex-row > * {*/
+/*    flex: 1; !* This makes each child flex and take up an equal amount of space *!*/
+/*    max-width: 50%; !* This limits the width of each child to 50% of the parent *!*/
+/*}*/
 .flex-col-right {margin-left: auto;}
 .flex-row > flex-col-left {margin-left: 1em;}
 .border {border: 1px solid #8fa484}

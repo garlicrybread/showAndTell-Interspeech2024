@@ -17,16 +17,16 @@ homeNavBtn.addEventListener('click', function () {
 });
 
 frontHighBtn.addEventListener('click', function () {
-    toggleText('frontHigh','True')
+    toggleText('frontHigh','NA','True')
 });
 backHighBtn.addEventListener('click', function () {
-    toggleText('backHigh', 'True')
+    toggleText('backHigh', 'NA','True')
 });
 frontLowBtn.addEventListener('click', function () {
-    toggleText('frontLow', 'True')
+    toggleText('frontLow', 'NA','True')
 });
 backLowBtn.addEventListener('click', function () {
-    toggleText('backLow', 'True')
+    toggleText('backLow', 'NA','True')
 });
 
 calibrateBtn.addEventListener('click', function () {

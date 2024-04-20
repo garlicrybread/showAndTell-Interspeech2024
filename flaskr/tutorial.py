@@ -22,3 +22,19 @@ def vowelP1():
 @bp.route('/vowelP2', methods=('GET', 'POST'))
 def vowelP2():
     return render_template('tutorial/vowelP2.html')
+
+@bp.route('/vowelP3', methods=('GET', 'POST'))
+def vowelP3():
+    return render_template('tutorial/vowelP3.html')
+
+@bp.route('/vowelP4', methods=('GET', 'POST'))
+def vowelP4():
+    return render_template('tutorial/vowelP4.html')
+
+@bp.route('/vowelP5', methods=('GET', 'POST'))
+def vowelP5():
+    return render_template('tutorial/vowelP5.html')
+
+@bp.route('/vowelP6', methods=('GET', 'POST'))
+def vowelP6():
+    return render_template('tutorial/vowelP6.html')
