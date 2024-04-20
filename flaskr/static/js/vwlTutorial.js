@@ -1,9 +1,14 @@
 import {navigateToRoute, toggleText} from "./myJS.js";
-
-document.getElementById("vowelP1").addEventListener("click", function () {
-    toggleText("vowelP1");
-});
+// import {openTab} from "./practice.js";
 
 homeNavBtn.addEventListener('click', function () {
     navigateToRoute('')
 });
+
+function playSound(audioFileId) {
+    var audio = document.getElementById(audioFileId);
+    audio.play();
+}
+
+window.playSound = playSound
+window.navigateToRoute = navigateToRoute

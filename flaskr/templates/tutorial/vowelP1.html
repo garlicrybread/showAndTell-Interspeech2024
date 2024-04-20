@@ -6,43 +6,55 @@
         <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
     </div>
     <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
 {% block content %}
-    <p>
-       Vowel charts represent the tongue position when saying a vowel.
-        In this tutorial, we will practice saying words to build intuition on how to read a vowel chart.
-    </p>
-    <p>
-        To get started, record the example words or words of your choice! Notice how the position of your tongue
-        affects where the vowel will appear on the chart.
-    </p>
     <div class="flex-col">
         <div class="flex-row">
-            <h1>Example Words</h1>
-            <p>heed, four, blue</p>
+            <div class="flex-row">
+                <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
+                     alt="tongue height for front high vowel"
+                     onclick="playSound('frontHigh')">
+                <label>'ee' as in 'heat'</label>
+                <audio id="frontHigh" src="{{ url_for('static', filename='audio/frontHigh.wav') }}"></audio>
+            </div>
+            <div class="flex-row">
+                <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}"
+                     alt="tongue height for back high vowel"
+                     onclick="playSound('backHigh')">
+                <audio id="backHigh" src="{{ url_for('static', filename='audio/backHigh.wav') }}"></audio>
+                <label>'oo' as in 'hoot'</label>
+            </div>
         </div>
-        <input type="button" id="vowelP1" value="record audio">
+        <div class="flex-row">
+            <div class="flex-row">
+                <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}"
+                     alt="tongue height for front low vowel"
+                     onclick="playSound('frontLow')">
+                <label>'ae' as in 'hat' </label>
+                <audio id="frontLow" src="{{ url_for('static', filename='audio/frontLow.wav') }}"></audio>
+            </div>
+            <div class="flex-row">
+                <img src="{{ url_for('static', filename='images/backLow-faceCutaway.png') }}"
+                     alt="tongue height for back low vowel"
+                     onclick="playSound('backLow')">
+                <label>'a' as in 'awe'</label>
+                <audio id="backLow" src="{{ url_for('static', filename='audio/backLow.wav') }}"></audio>
+            </div>
+        </div>
+        <div class="flex-row">
+            <p>
+                Vowels are formed by the position of the tongue in the mouth.
+            </p>
+            <p>
+                Click on the pictures to hear the vowel for the corresponding approximate position of the tongue.
+            </p>
+        </div>
+        <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP2')">
     </div>
-    <hr>
     <div id="message"></div>
-    <div class="flex-col">
-        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
-    </div>
 
-
-
-    {#        <input type="button" class="next-btn" value=">" idnum="" >#}
-
-    <div id="recordingsList"></div>
-
-    <div class="loader loader1">
-        <span class="stroke"></span>
-        <span class="stroke"></span>
-        <span class="stroke"></span>
-        <span class="stroke"></span>
-        <span class="stroke"></span>
-    </div>
 
     <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>

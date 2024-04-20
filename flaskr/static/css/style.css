@@ -108,8 +108,8 @@ input[type=button].next-btn {align-self: flex-end; justify-content: center; widt
 
 /* keep images from exploding over the edge of the page */
 img {
-            max-width: 100%; /* Maximum width of the image */
-            height: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Maximum width of the image */
+    height: auto; /* Maintain aspect ratio */
     margin: 1em;
 }
 

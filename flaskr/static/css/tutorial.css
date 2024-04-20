@@ -1,0 +1,6 @@
+img {
+    cursor: pointer; /* To indicate the images are clickable */
+    max-width: 100%; /* Maximum width of the image */
+    height: auto; /* Maintain aspect ratio */
+    margin: 1em;
+}
