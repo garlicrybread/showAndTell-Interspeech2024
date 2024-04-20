@@ -31,12 +31,13 @@
                     <audio id="frontHigh" src="{{ url_for('static', filename='audio/frontHigh.wav') }}"></audio>
                 </div>
                 <div class="flex-row">
-                    <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}"
-                         alt="tongue height for back high vowel"
-                         onclick="playSound('backHigh')">
-                    <audio id="backHigh" src="{{ url_for('static', filename='audio/backHigh.wav') }}"></audio>
-                    <label>'oo' as in 'hoot'</label>
+                    <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}"
+                         alt="tongue height for front low vowel"
+                         onclick="playSound('frontLowImg')">
+                    <label>'ae' as in 'hat' </label>
+                    <audio id="frontLowImg" src="{{ url_for('static', filename='audio/frontLow.wav') }}"></audio>
                 </div>
+                <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP1')">
             </div>
             <div class="flex-row vowel-chart">
                 <div id="message"></div>
@@ -46,11 +47,11 @@
             </div>
             <div class="flex-row">
                 <div class="flex-row">
-                    <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}"
-                         alt="tongue height for front low vowel"
-                         onclick="playSound('frontLowImg')">
-                    <label>'ae' as in 'hat' </label>
-                    <audio id="frontLowImg" src="{{ url_for('static', filename='audio/frontLow.wav') }}"></audio>
+                    <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}"
+                         alt="tongue height for back high vowel"
+                         onclick="playSound('backHigh')">
+                    <audio id="backHigh" src="{{ url_for('static', filename='audio/backHigh.wav') }}"></audio>
+                    <label>'oo' as in 'hoot'</label>
                 </div>
                 <div class="flex-row">
                     <img src="{{ url_for('static', filename='images/backLow-faceCutaway.png') }}"
@@ -59,9 +60,9 @@
                     <label>'a' as in 'awe'</label>
                     <audio id="backLowImg" src="{{ url_for('static', filename='audio/backLow.wav') }}"></audio>
                 </div>
+                <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP3')">
             </div>
         </div>
-            <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP3')">
     </div>
     <div id="message"></div>
     <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
