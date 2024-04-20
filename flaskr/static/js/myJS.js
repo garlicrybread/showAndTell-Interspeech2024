@@ -110,7 +110,7 @@ function startRecording(word,cal,btnID,svgId) {
     });
 }
 
-export function audioToJson(filePath, svgId) {
+export function audioToJson(filePath, svgId,spa=false) {
     console.log(`filePath ${filePath}`, typeof filePath)
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
@@ -135,7 +135,7 @@ export function audioToJson(filePath, svgId) {
     .then(relfilepath => {
         // Handle success
         console.log('Formants extracted successfully:',relfilepath);
-        plotJson(relfilepath,svgId)
+        plotJson(relfilepath,svgId,spa)
     })
     .catch(error => {
         // Handle errors
@@ -143,7 +143,7 @@ export function audioToJson(filePath, svgId) {
     });
 }
 
-function plotJson(filePath, svgId) {
+function plotJson(filePath, svgId,spa=false) {
     const messageElement = document.getElementById('message');
     console.log('in plotJson', svgId)
     if (filePath === 'empty') {
@@ -152,7 +152,7 @@ function plotJson(filePath, svgId) {
     }
 
     try {
-        drawVowels(filePath, svgId);
+        drawVowels(filePath, svgId, spa);
         messageElement.textContent = ''; // Clear message or provide a success message
     } catch (error) {
         console.error('Error drawing vowels:', error);

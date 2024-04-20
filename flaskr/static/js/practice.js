@@ -60,10 +60,10 @@ export function openTab(evt, tabName) {
     drawVowelChart(tabName);
     var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
     var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
-    audioToJson(data,tabName);
+    audioToJson(data,tabName,true);
     spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
     data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
-    audioToJson(data,tabName);
+    audioToJson(data,tabName,true);
 
 };
 

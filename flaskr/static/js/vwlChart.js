@@ -1,6 +1,7 @@
 let processingPath;
 // This will hold the last 5 elements (circles or paths).
 let elementsQueue = [];
+let spaQueue = [];
 
 const sigProcName = 'signalProcessing'
 if (window.location.href.includes("/pronunciationVis/")) {
@@ -238,13 +239,18 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
         .y(d => d.y)
         .curve(d3.curveCardinal);
 
-    const colorSpa = 'green';
     const hoverColor = 'green';
     const strokeWidthDefault = 5;
     const strokeWidthHover = 8;
+    console.log('spa',spa)
 
-    // Define the color array
-    const colors = ['#253494', '#2c7fb8', '#41b6c4', '#a1dab4', '#ffffcc']
+    let colors;
+    if (spa){
+        colors = ['#fc8d59'];
+    } else {
+        // Define the color array
+        colors = ['#253494', '#2c7fb8', '#41b6c4', '#a1dab4', '#ffffcc'];
+    }
 
     // Draw curves between related data points
     async function renderPaths() {
@@ -253,21 +259,33 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
         const temp = audioPath.split('/')
         const uniqueId = temp[temp.length - 1].replaceAll('-','').replaceAll('_','').replace('.wav','')
         const markerId = `arrow-${uniqueId}`
-        // Check if there is any text within the SVG
+        const alpha = ['A','B'];
+        // Check if there is anything in the id
         const textElements = svg.select(`#${uniqueId}`);
 
         if (!textElements.empty()) {
             return
         }
+        console.log(uniqueId)
+        if (spa) {
+            // add uniqueId to the beginning of the array
+            spaQueue.unshift(uniqueId)
+        } else {
+            // add uniqueId to the beginning of the array
+            elementsQueue.unshift(uniqueId)
 
-        // add uniqueId to the beginning of the array
-        elementsQueue.unshift(uniqueId)
-
-        // If we have more than 5 elements, remove the oldest one from the end
-        if (elementsQueue.length > 5) {
-            const oldestElementId = elementsQueue.pop();
-            svg.select(`#${oldestElementId}`).remove();
-            svg.select(`#text-${oldestElementId}`).remove();
+            // If we have more than 5 elements, remove the oldest one from the end
+            if (elementsQueue.length > 5) {
+                const oldestElementId = elementsQueue.pop();
+                svg.select(`#${oldestElementId}`).remove();
+                svg.select(`#text-${oldestElementId}`).remove();
+            }
+        }
+        let label;
+        if (spa) {
+            label = 'A';
+        } else {
+            label = 1;
         }
 
 
@@ -335,7 +353,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                         .attr("y", midPoint.y - 10)  // Adjust Y to position the text above the path
                         .attr('id', `text-${uniqueId}`)
                         .attr("text-anchor", "middle")
-                        .text(1);
+                        .text(label);
             } else {
                 // Draw individual points if no related data points found
                 // Await the computation of x and y coordinates before appending the circle
@@ -371,34 +389,59 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                     .attr("x", coord.cx)
                     .attr("y", coord.cy - 15)  // Position the text above the circle
                     .attr("text-anchor", "middle")
-                    .text("Label");
+                    .text(label);
             }
         }
         // Update the colors of all elements
-        console.log('elementsQueue')
-        console.log(elementsQueue)
-        elementsQueue.forEach((id, index) => {
-            // Select the element by its ID
-            const element = svg.select(`#${id}`);
+        if (spa) {
+            console.log(spaQueue)
+            spaQueue.forEach((id, index) => {
+                // Select the element by its ID
+                const element = svg.select(`#${id}`);
 
-            // Perform a transition to animate properties
-            element.transition()
-                .duration(500)
-                .attr('data-index', index); // Store the current index in the element's data
-            console.log(element)
-            // Check if the element is a 'path' or 'circle' by inspecting the nodeName
-            if (element.node().nodeName === 'circle') {
-                // It's a circle, apply the 'fill' attribute
-                element.attr('fill', colors[index]);  // Set fill for circles
-                d3.select(`#text-${id}`).text(index+1);
-            } else if (element.node().nodeName === 'path') {
-                // It's a path, apply the 'stroke' attribute
-                element.attr('stroke', colors[index]); // Set stroke for paths
-                // Also update the corresponding arrow marker color if it exists
-                d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
-                d3.select(`#text-${id}`).text(index+1);
-            }
-        });
+                // Perform a transition to animate properties
+                // element.transition()
+                //     .duration(500)
+                //     .attr('data-index', index); // Store the current index in the element's data
+                console.log(element)
+                // Check if the element is a 'path' or 'circle' by inspecting the nodeName
+                if (element.node().nodeName === 'circle') {
+                    // It's a circle, apply the 'fill' attribute
+                    element.attr('fill', colors[0]);  // Set fill for circles
+                    d3.select(`#text-${id}`).text(alpha[index]);
+                } else if (element.node().nodeName === 'path') {
+                    // It's a path, apply the 'stroke' attribute
+                    element.attr('stroke', colors[0]); // Set stroke for paths
+                    // Also update the corresponding arrow marker color if it exists
+                    d3.select(`#arrow-${id} path`).attr('fill', colors[0]);
+                    d3.select(`#text-${id}`).text(alpha[index]);
+                }
+            });
+
+        } else {
+            elementsQueue.forEach((id, index) => {
+                // Select the element by its ID
+                const element = svg.select(`#${id}`);
+
+                // Perform a transition to animate properties
+                element.transition()
+                    .duration(500)
+                    .attr('data-index', index); // Store the current index in the element's data
+                console.log(element)
+                // Check if the element is a 'path' or 'circle' by inspecting the nodeName
+                if (element.node().nodeName === 'circle') {
+                    // It's a circle, apply the 'fill' attribute
+                    element.attr('fill', colors[index]);  // Set fill for circles
+                    d3.select(`#text-${id}`).text(index+1);
+                } else if (element.node().nodeName === 'path') {
+                    // It's a path, apply the 'stroke' attribute
+                    element.attr('stroke', colors[index]); // Set stroke for paths
+                    // Also update the corresponding arrow marker color if it exists
+                    d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
+                    d3.select(`#text-${id}`).text(index+1);
+                }
+            });
+        }
     }
     renderPaths();
 }
