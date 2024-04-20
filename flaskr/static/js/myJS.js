@@ -110,9 +110,11 @@ function startRecording(word,cal,btnID,svgId) {
     });
 }
 
-function audioToJson(filePath, svgId) {
-    console.log(`filePath ${filePath}`)
-    if (filePath['gotAudio'] === 'Quiet') {
+export function audioToJson(filePath, svgId) {
+    console.log(`filePath ${filePath}`, typeof filePath)
+    const obj = JSON.parse(filePath);
+    // Check if "gotAudio" is "Quiet"
+    if (obj["gotAudio"] === "Quiet") {
         messageElement.textContent = 'No sounds detected.'; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }

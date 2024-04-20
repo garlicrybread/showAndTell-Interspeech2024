@@ -8,6 +8,8 @@ if (window.location.href.includes("/pronunciationVis/")) {
 } else {
     processingPath = "/"+sigProcName; // Set for local
 }
+
+
 /*
 main colors for vowel chart
 blue (L2)
@@ -223,7 +225,7 @@ export async function drawVowelChart(svgId){
         .attr("stroke-width", strokeWidth);
 }
 
-export async function drawVowels(dataL1Path, svgId) {
+export async function drawVowels(dataL1Path, svgId,spa=false) {
     // fetch json data
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
@@ -251,6 +253,12 @@ export async function drawVowels(dataL1Path, svgId) {
         const temp = audioPath.split('/')
         const uniqueId = temp[temp.length - 1].replaceAll('-','').replaceAll('_','').replace('.wav','')
         const markerId = `arrow-${uniqueId}`
+        // Check if there is any text within the SVG
+        const textElements = svg.select(`#${uniqueId}`);
+
+        if (!textElements.empty()) {
+            return
+        }
 
         // add uniqueId to the beginning of the array
         elementsQueue.unshift(uniqueId)
@@ -332,8 +340,8 @@ export async function drawVowels(dataL1Path, svgId) {
                 // Draw individual points if no related data points found
                 // Await the computation of x and y coordinates before appending the circle
                 const coord = await Promise.resolve({
-                    cx: await freqToSVG(vowel.vwl[0], 'x'),
-                    cy: await freqToSVG(vowel.vwl[0], 'y')
+                    cx: await freqToSVG(vowel.vwl[0], 'x',spa),
+                    cy: await freqToSVG(vowel.vwl[0], 'y',spa)
                 });
                 const circleElement = svg.append("circle")
                     .data([coord])
@@ -430,16 +438,17 @@ async function svgToClient(data) {
     });
 }
 
-async function freqToSVG(freq,axis){
+async function freqToSVG(freq,axis,spa=false){
     // fetch json data
     console.log('frequency', freq)
     const urlPath = `${processingPath}/api/freqToSVG`
+    const data = {'freq':freq, 'spa':spa}
     const response = await fetch(urlPath, {
         method: 'POST',
         headers: {
             'Content-Type':'application/json'
         },
-        body: JSON.stringify(freq)
+        body: JSON.stringify(data)
     });
     const svg = await response.json();
     if (axis === 'x') {

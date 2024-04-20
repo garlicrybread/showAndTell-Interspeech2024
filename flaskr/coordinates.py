@@ -17,7 +17,11 @@ dataDir = 'flaskr/static/participantData/'
 
 @bp.route('/api/processCoordinateData', methods=["POST"])
 def processCoordinateData():
-    id = current_app.config['USER_ID']
+    spa = request.get_json()['spa']
+    if spa:
+        id = 'spaM0'
+    else:
+        id = current_app.config['USER_ID']
     rootDirectory = dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
     for path, dir, files in os.walk(rootDirectory):
@@ -29,7 +33,10 @@ def processCoordinateData():
                 writeToJson(path, jsonName, data)
     vowels = jsonToVowelPoints(rootDirectory)
     coordinates = vowelChartCoordinates(vowels)
-    transformArray(coordinates,svg)
+    if spa:
+        transformArray(coordinates, svg, True)
+    else:
+        transformArray(coordinates,svg)
     return jsonify({'success':True})
 
 @bp.route('/api/saveUserId',methods=["POST"])
@@ -38,7 +45,7 @@ def saveUserId():
     current_app.config.update(USER_ID=userId['userId'])
     return jsonify({'saved':True})
 
-def transformArray(actualCoordinates, svgCoordinates):
+def transformArray(actualCoordinates, svgCoordinates, spa=False):
     '''
     takes in vowel coordinates and coordinates of the SVG
     - calculates the transform using a projective transform
@@ -58,7 +65,10 @@ def transformArray(actualCoordinates, svgCoordinates):
     y = t.params[1].tolist()
     w = t.params[2].tolist()
     transform = [x,y,w]
-    current_app.config.update(TRANSFORM_FREQ_SVG=transform)
+    if spa:
+        current_app.config.update(TRANSFORM_SPA=transform)
+    else:
+        current_app.config.update(TRANSFORM_FREQ_SVG=transform)
     return transform
 
 def maxAndMinOfFormants(data):

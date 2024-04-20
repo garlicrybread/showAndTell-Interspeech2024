@@ -1,5 +1,12 @@
- import {drawVowelChart} from "../../static/js/vwlChart.js";
- import {toggleText} from "./myJS.js";
+ import {drawVowelChart, drawVowels} from "../../static/js/vwlChart.js";
+ import {audioToJson, navigateToRoute, toggleText} from "./myJS.js";
+
+ // home nav button
+ const homeNavBtn = document.getElementById('homeNavBtn');
+ homeNavBtn.addEventListener('click', function () {
+     navigateToRoute('')
+ });
+
 
  const p11btn = 'p11'
  const p12btn = 'p12'
@@ -50,8 +57,13 @@ export function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "flex";
     evt.currentTarget.className += " active-tab";
     // load vowel chart for tab
-    console.log(tabName)
     drawVowelChart(tabName);
+    var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
+    var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+    audioToJson(data,tabName);
+    spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
+    data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
+    audioToJson(data,tabName);
 
 };
 

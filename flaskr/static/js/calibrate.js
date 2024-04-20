@@ -31,15 +31,17 @@ backLowBtn.addEventListener('click', function () {
 
 calibrateBtn.addEventListener('click', function () {
     processCoordinateData()
+    processCoordinateData(true)
 });
 button.addEventListener("click", saveUserId);
 
-function processCoordinateData() {
+function processCoordinateData(spa=false) {
     fetch(`${calPath}/api/processCoordinateData`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
+        body: JSON.stringify({'spa':spa})
     })
     .then(response => {
         if (!response.ok) {

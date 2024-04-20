@@ -42,6 +42,7 @@ def create_app(test_config=None):
             TESTING=True,
             MONGO_URI=f"{MONGODB}/testProVis",  # MongoDB connection string for testing
             TRANSFORM_FREQ_SVG= None,
+            TRANSFORM_SPA= None,
             SVG_COORDINATES=None,
             USER_ID=None
         )
@@ -51,6 +52,7 @@ def create_app(test_config=None):
             SECRET_KEY='dev',
             MONGO_URI=f"{MONGODB}/pronunciation_vis",  # MongoDB connection string for production
             TRANSFORM_FREQ_SVG = None,
+            TRANSFORM_SPA= None,
             SVG_COORDINATES = None,
             USER_ID = None
         )
