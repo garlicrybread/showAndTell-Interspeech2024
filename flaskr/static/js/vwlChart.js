@@ -246,7 +246,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
 
     let colors;
     if (spa){
-        colors = ['#fc8d59'];
+        colors = ['#fc8d59','#fc8d59'];
     } else {
         // Define the color array
         colors = ['#253494', '#2c7fb8', '#41b6c4', '#a1dab4', '#ffffcc'];
@@ -365,6 +365,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                     .data([coord])
                     .join("circle")
                     .attr("id", uniqueId) // Add unique id to paths
+                    .attr('data-index', 0)  // Store the current index in the element's data
                     .attr("class", "vowel-shape") // Add this class to paths
                     .attr("cx", d => d.cx)
                     .attr("cy", d => d.cy)
