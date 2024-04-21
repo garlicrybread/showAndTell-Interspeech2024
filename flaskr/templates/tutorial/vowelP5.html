@@ -1,42 +1,46 @@
-vowelP3.html<!-- Template: auth/login.html -->
+<!-- Template: auth/login.html -->
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <div class="flex-col-left">
+        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    </div>
+    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
 {% block content %}
-<form method="post">
-    <p>
-        Now that you’ve played around with the chart, let’s unpack what the axes mean.
-    </p>
-    <p>
-        The horizontal axis represents where the tip of the tongue is in the mouth, either near the front of the mouth
-        or the back.
-    </p>
-    <p>
-       Try recording the word "feed" or “hat”. They will show up on the left side of the chart, since they are fronted
-        vowels.
-    </p>
-    <p></p>
-    <div class="flex-col">
-        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
-    </div>
-    <div class="flex-col">
-        <div class="flex-row">
-            <h1>Example Words</h1>
-            <p>feed, hat, get</p>
+    <div class="flex-row">
+    <h3>Mimicking a Teacher's Vowels </h3>
+        <p>
+            Your goal is to get closer to the teacher's vowels (plotted in orange) using the following steps.
+        </p>
+        <ol> <!-- This is the tag for an ordered list -->
+            <li>Listen to the teacher’s recording</li> <!-- Each item in the list is also wrapped in an <li> tag -->
+            <li>Record your own</li>
+            <li>Repeat!</li>
+        </ol>
+        <div class="flex-col">
+            <div class="flex-col vowel-chart">
+                <div id="message"></div>
+                <svg id="svg-tutP5" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <div class="flex-row">
+                <input type="button" id="tutP5Btn" value="record audio">
+            </div>
         </div>
-        <input type="button" value="record audio">
+        <div class="flex-col">
+            <div class="flex-col-left">
+                <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP4')">
+            </div>
+            <div class="flex-col-right">
+                <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP6')">
+            </div>
+        </div>
+        <hr>
+        <!-- Recordings and loader would go here, if applicable -->
+        <div id="recordingsList"></div>
     </div>
-    <div class="flex-col-right">
-        <input type="button" class="next-btn" value=">" idnum="" >
-    </div>
 
-
-
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script type="module" src="../../static/js/vwlChart.js"></script>
-</form>
+    <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
 {% endblock %}

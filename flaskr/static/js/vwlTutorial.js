@@ -28,6 +28,22 @@ if (hasQueryParam('vowelP4')) {
         toggleText('tutP4Btn','tutP4')
     });
 }
+if (hasQueryParam('vowelP5')) {
+    document.addEventListener('DOMContentLoaded', (event) => {
+         const svgId = 'tutP5';
+         drawVowelChart(svgId); // Change 'pair1' to the ID of the first tab content
+         var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${svgId}0/spaM0-${svgId}`;
+         var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+         audioToJson(data,svgId,true);
+         spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${svgId}1/spaM0-${svgId}`;
+         data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
+         audioToJson(data,svgId,true);
+    });
+    const tutP5Btn = document.getElementById('tutP5Btn');
+    tutP5Btn.addEventListener('click', function () {
+        toggleText('tutP5Btn','tutP5')
+    });
+}
 
 // export function showImg(evt, vwlName) {
 //     // get image specific to vowel pressed
