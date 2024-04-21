@@ -10,32 +10,36 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
-    <p>
-        Now that you’ve played around with the chart, let’s unpack what the axes mean.
-    </p>
-    <p>
-        The horizontal axis represents where the tip of the tongue is in the mouth, either near the front of the mouth
-        or the back.
-    </p>
-    <p>
-       Try recording the word "feed" or “hat”. They will show up on the left side of the chart, since they are fronted
-        vowels.
-    </p>
-    <p></p>
     <div class="flex-row">
+        <p>
+            Let’s focus on the tongue tip (horizontal axis).<br><br>
+
+            Try recording the word "beet" then “boot” and be aware of your tongue tip in your mouth.<br><br>
+
+            Notice that the vowels show up on the left and right sides of the chart.<br><br>
+
+        </p>
         <div class="flex-col">
-            <input type="button" id="tutP3Btn" value="record audio">
+            <div class="flex-col vowel-chart">
+                <div id="message"></div>
+                <svg id="svg-tutP3" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <div class="flex-row">
+                <input type="button" id="tutP3Btn" value="record audio">
+            </div>
+        </div>
+        <div class="flex-col">
+            <div class="flex-col-left">
+                <input id="p33" type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP2')">
+            </div>
+            <div class="flex-col-right">
+                <input id="p33" type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP4')">
+            </div>
         </div>
         <hr>
-        <div id="message"></div>
-        <div class="flex-col">
-            <svg id="svg-tutP3" width=100% length="auto" viewBox="0,0,400,300"></svg>
-        </div>
         <!-- Recordings and loader would go here, if applicable -->
         <div id="recordingsList"></div>
     </div>
 
     <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
-</form>
 {% endblock %}

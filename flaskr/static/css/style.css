@@ -48,14 +48,14 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 .flex-col {
     flex-direction: row;
-    margin: auto; justify-content: space-around;
+    justify-content: space-around;
     align-content: space-evenly;
 }
 /*.flex-col input {display: flex; flex-direction: column; flex-wrap: wrap; justify-content: space-around}*/
 .flex-row {
     display: flex; flex-direction: column;
-    margin: auto; padding: 0.005em; margin-top: 1em;
-    /*justify-content: space-evenly;*/
+    padding: 0.005em; margin-top: 1em;
+    justify-content: space-evenly;
     /*border-right: 1px solid lightgray;*/
 }
 /*.flex-row > * {*/
@@ -63,7 +63,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 /*    max-width: 50%; !* This limits the width of each child to 50% of the parent *!*/
 /*}*/
 .flex-col-right {margin-left: auto;}
-.flex-row > flex-col-left {margin-left: 1em;}
+.flex-col-left {margin-left: 1em;}
 .border {border: 1px solid #8fa484}
 div > summary { display: flex; justify-content: center; margin-bottom: 5px}
 
