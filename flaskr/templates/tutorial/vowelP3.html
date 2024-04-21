@@ -2,7 +2,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <div class="flex-col-left">
+        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    </div>
+    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -19,24 +23,19 @@
         vowels.
     </p>
     <p></p>
-    <div class="flex-col">
-        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
-    </div>
-    <div class="flex-col">
-        <div class="flex-row">
-            <h1>Example Words</h1>
-            <p>feed, hat, get</p>
+    <div class="flex-row">
+        <div class="flex-col">
+            <input type="button" id="tutP3Btn" value="record audio">
         </div>
-        <input type="button" value="record audio">
+        <hr>
+        <div id="message"></div>
+        <div class="flex-col">
+            <svg id="svg-tutP3" width=100% length="auto" viewBox="0,0,400,300"></svg>
+        </div>
+        <!-- Recordings and loader would go here, if applicable -->
+        <div id="recordingsList"></div>
     </div>
-    <div class="flex-col-right">
-        <input type="button" class="next-btn" value=">" idnum="" >
-    </div>
 
-
-
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script type="module" src="../../static/js/vwlChart.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
 </form>
 {% endblock %}
