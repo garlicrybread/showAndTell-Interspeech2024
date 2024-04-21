@@ -15,6 +15,31 @@ function hasQueryParam(paramName) {
     return window.location.href.includes(paramName);
 }
 
+if (!hasQueryParam('vowelP1')) {
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const svgId = document.getElementsByTagName('svg')[0].id;
+        const id = svgId.replace('svg-', '')
+        drawVowelChart(id); // Change 'pair1' to the ID of the first tab content
+        if (id === 'tutP2') {
+            const path = '../../static/audio'
+            const fhPath = `${path}/frontHigh.json`;
+            const bhPath = `${path}/backHigh.json`;
+            const flPath = `${path}/frontLow.json`;
+            const blPath = `${path}/backLow.json`;
+            // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+            try {
+                drawVowels(fhPath, id);
+                drawVowels(bhPath, id);
+                drawVowels(flPath, id);
+                drawVowels(blPath, id);
+                // messageElement.textContent = ''; // Clear message or provide a success message
+            } catch (error) {
+                console.error('Error drawing vowels:', error);
+                messageElement.textContent = 'Failed to process the file. Please check the console for more details.';
+            }
+        }
+    });
+}
 // Usage
 if (hasQueryParam('vowelP3')) {
     const tutP3Btn = document.getElementById('tutP3Btn');
@@ -42,6 +67,12 @@ if (hasQueryParam('vowelP5')) {
     const tutP5Btn = document.getElementById('tutP5Btn');
     tutP5Btn.addEventListener('click', function () {
         toggleText('tutP5Btn','tutP5')
+    });
+}
+if (hasQueryParam('vowelP6')) {
+    const pracNavBtn = document.getElementById('practiceNavBtn')
+    pracNavBtn.addEventListener("click", function() {
+        navigateToRoute('practice/chart');
     });
 }
 
@@ -72,31 +103,6 @@ if (hasQueryParam('vowelP5')) {
 //     audioToJson(data,tabName,true);
 //
 // };
-if (!hasQueryParam('vowelP1')) {
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const svgId = document.getElementsByTagName('svg')[0].id;
-        const id = svgId.replace('svg-', '')
-        drawVowelChart(id); // Change 'pair1' to the ID of the first tab content
-        if (id === 'tutP2') {
-            const path = '../../static/audio'
-            const fhPath = `${path}/frontHigh.json`;
-            const bhPath = `${path}/backHigh.json`;
-            const flPath = `${path}/frontLow.json`;
-            const blPath = `${path}/backLow.json`;
-            // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
-            try {
-                drawVowels(fhPath, id);
-                drawVowels(bhPath, id);
-                drawVowels(flPath, id);
-                drawVowels(blPath, id);
-                // messageElement.textContent = ''; // Clear message or provide a success message
-            } catch (error) {
-                console.error('Error drawing vowels:', error);
-                messageElement.textContent = 'Failed to process the file. Please check the console for more details.';
-            }
-        }
-    });
-}
 
 window.playSound = playSound
 window.navigateToRoute = navigateToRoute

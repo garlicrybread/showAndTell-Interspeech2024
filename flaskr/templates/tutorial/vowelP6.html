@@ -15,10 +15,15 @@
             <p>
                 That’s all! Let’s sum up what you learned.
             </p>
-
+            <ol> <!-- This is the tag for an ordered list -->
+                <li>A vowel chart represents the position of the tongue in the mouth</li> <!-- Each item in the list is also wrapped in an <li> tag -->
+                <li>The horizontal axis is the tongue tip position</li>
+                <li>The vertical axis is the tongue height</li>
+            </ol>
+            <p>Now put this knowledge to practice!</p>
         </div>
         <div class="flex-col">
-            <div class="flex-row">
+            <div class="flex-row face-cutaway">
                 <div class="flex-row">
                     <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
                          alt="tongue height for front high vowel"
@@ -32,16 +37,16 @@
                          onclick="playSound('frontLowImg')">
                     <label>'ae' as in 'hat' </label>
                     <audio id="frontLowImg" src="{{ url_for('static', filename='audio/frontLow.wav') }}"></audio>
+                    <input type="button" class="back-btn" value="< back" onclick="navigateToRoute('tutorial/vowelP3')">
                 </div>
-                <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP1')">
             </div>
             <div class="flex-row vowel-chart">
                 <div id="message"></div>
-                <div class="flex-col vowel-chart">
-                    <svg id="svg-tutP2" width=100% length="auto" viewBox="0,0,400,300"></svg>
+                <div class="flex-col">
+                    <svg id="svg-tutP6" width=100% length="auto" viewBox="0,0,400,300"></svg>
                 </div>
             </div>
-            <div class="flex-row">
+            <div class="flex-row face-cutaway">
                 <div class="flex-row">
                     <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}"
                          alt="tongue height for back high vowel"
@@ -56,7 +61,7 @@
                     <label>'a' as in 'awe'</label>
                     <audio id="backLowImg" src="{{ url_for('static', filename='audio/backLow.wav') }}"></audio>
                 </div>
-                <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP3')">
+                <input type="button" id="practiceNavBtn" value="practice">
             </div>
         </div>
     </div>

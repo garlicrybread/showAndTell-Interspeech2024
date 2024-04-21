@@ -12,6 +12,7 @@ img {
 
 .flex-col > .vowel-chart {
     flex: 2; /* This makes each child flex and take up an equal amount of space */
+    height: auto;
 }
 .flex-col > .flex-row {
     margin: 0;
