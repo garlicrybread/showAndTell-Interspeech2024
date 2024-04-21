@@ -22,6 +22,12 @@ if (hasQueryParam('vowelP3')) {
         toggleText('tutP3Btn','tutP3')
     });
 }
+if (hasQueryParam('vowelP4')) {
+    const tutP4Btn = document.getElementById('tutP4Btn');
+    tutP4Btn.addEventListener('click', function () {
+        toggleText('tutP4Btn','tutP4')
+    });
+}
 
 // export function showImg(evt, vwlName) {
 //     // get image specific to vowel pressed

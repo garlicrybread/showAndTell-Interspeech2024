@@ -1,39 +1,43 @@
-vowelP3.html<!-- Template: auth/login.html -->
+<!-- Template: auth/login.html -->
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <div class="flex-col-left">
+        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    </div>
+    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
 {% block content %}
-<form method="post">
-    <p>
-        Let’s focus on the tongue tip (horizontal axis).
+    <div class="flex-row">
+    <h3>Tongue Height (vertical axis)</h3>
+        <p>
+            Try recording the word "beet" then “bat” and be aware of your tongue height.  <br><br>
 
-        Try recording the word "beet" then “boot” and be aware of your tongue tip in your mouth.
-
-        Notice that the vowels show up on the left and right sides of the chart.
-
-    </p>
-    <p></p>
-    <div class="flex-col">
-        <svg width=75% length="auto" viewBox="0,0,400,300"></svg>
-    </div>
-    <div class="flex-col">
-        <div class="flex-row">
-            <h1>Example Words</h1>
-            <p>feed, hat, get</p>
+            Notice that the vowels show up near the top and bottom of the chart.<br><br>
+        </p>
+        <div class="flex-col">
+            <div class="flex-col vowel-chart">
+                <div id="message"></div>
+                <svg id="svg-tutP4" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <div class="flex-row">
+                <input type="button" id="tutP4Btn" value="record audio">
+            </div>
         </div>
-        <input type="button" value="record audio">
+        <div class="flex-col">
+            <div class="flex-col-left">
+                <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP3')">
+            </div>
+            <div class="flex-col-right">
+                <input type="button" class="next-btn" value=">" onclick="navigateToRoute('tutorial/vowelP5')">
+            </div>
+        </div>
+        <hr>
+        <!-- Recordings and loader would go here, if applicable -->
+        <div id="recordingsList"></div>
     </div>
-    <div class="flex-col-right">
-        <input type="button" class="next-btn" value=">" idnum="" >
-    </div>
 
-
-
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script type="module" src="../../static/js/vwlChart.js"></script>
-</form>
+    <script type="module" src="{{ url_for('static', filename='js/vwlTutorial.js') }}"></script>
 {% endblock %}
