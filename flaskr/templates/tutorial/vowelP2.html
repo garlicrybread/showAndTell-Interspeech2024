@@ -2,10 +2,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <div class="flex-col-left">
-        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    <div class="flex-col">
+        <h2>{% block title %}Tutorial (2 of 6) {% endblock %}</h2>
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
     </div>
-    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 

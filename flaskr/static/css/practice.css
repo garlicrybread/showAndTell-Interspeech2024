@@ -30,6 +30,7 @@
   border-top: none;
   padding: 10px;
   background-color: #f9f9f9;
+  justify-content: space-evenly;
 }
 
 /* Style for the visible tab content */

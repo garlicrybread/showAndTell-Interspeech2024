@@ -9,12 +9,18 @@ img {
 /*.flex-col > * {*/
 /*    flex: 1; !* This makes each child flex and take up an equal amount of space *!*/
 /*}*/
-
+.vowel-chart {
+    margin-right: 5em;
+    margin-left: 5em;
+}
 .flex-col > .vowel-chart {
     flex: 2; /* This makes each child flex and take up an equal amount of space */
     height: auto;
 }
 .flex-col > .flex-row {
+    margin: 0;
+}
+.nav-btns {
     margin: 0;
 }
 .flex-col > .flex-col-right {margin-left: auto;}
@@ -40,3 +46,4 @@ img {
     margin-top: 0em;
     margin-bottom: 0em;
 }
+

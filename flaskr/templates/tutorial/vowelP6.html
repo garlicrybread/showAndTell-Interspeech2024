@@ -2,10 +2,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <div class="flex-col-left">
-        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    <div class="flex-col">
+        <h2>{% block title %}Tutorial (6 of 6) {% endblock %}</h2>
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
     </div>
-    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
@@ -37,7 +39,7 @@
                          onclick="playSound('frontLowImg')">
                     <label>'ae' as in 'hat' </label>
                     <audio id="frontLowImg" src="{{ url_for('static', filename='audio/frontLow.wav') }}"></audio>
-                    <input type="button" class="back-btn" value="< back" onclick="navigateToRoute('tutorial/vowelP3')">
+                    <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP3')">
                 </div>
             </div>
             <div class="flex-row vowel-chart">

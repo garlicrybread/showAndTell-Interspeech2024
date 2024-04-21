@@ -2,13 +2,16 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Speaker Calibration{% endblock %}</h2>
+    <div class="flex-col">
+        <h2>{% block title %}Speaker Calibration{% endblock %}</h2>
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
+    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calibration.css') }}">
 {% endblock %}
 
 {% block content %}
-    <div class="flex-col-left">
-        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
-    </div>
     <p>Record the following words and sounds, then click 'calibrate!'.</p>
     {#    User Id input field and button    #}
     <form>
@@ -22,22 +25,22 @@
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
                  alt="tongue height for front high vowel">
-            <label>beet</label>
+            <label>heat</label>
             <input type="button" id="frontHigh" value="Start Recording">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}" alt="tongue height for back high vowel">
-            <label>owl sound (hoo)</label>
+            <label>hoot</label>
             <input type="button" id="backHigh" value="Start Recording">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}" alt="tongue height for front low vowel">
-            <label>bat</label>
+            <label>hat</label>
             <input type="button" id="frontLow" value="Start Recording">
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/backLow-faceCutaway.png') }}" alt="tongue height for back low vowel">
-            <label>crow sound (caw)</label>
+            <label>awe</label>
             <input type="button" id="backLow" value="Start Recording">
         </div>
     </div>

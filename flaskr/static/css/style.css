@@ -30,7 +30,7 @@ nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 .content { padding: 0 1rem 1rem; }
-.content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
+.content > header { border-bottom: 1px solid lightgray;  align-items: flex-end; }
 .content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
 .content > header h2 { flex: auto; margin: 1rem 0 0.25rem 0; font-size: large}
 
@@ -50,7 +50,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
     flex-direction: row;
     justify-content: space-around;
     align-content: space-evenly;
-    /*margin: auto;*/
+    margin: auto;
 }
 /*.flex-col input {display: flex; flex-direction: column; flex-wrap: wrap; justify-content: space-around}*/
 .flex-row {
@@ -103,6 +103,7 @@ input[type=button] {
     border: none;
     border-radius: 5px;
     justify-content: center;
+    margin-top: 2em;
 }
 input[type=button]:hover:not(:disabled) { background-color: #8e81b1; }
 input[type=button]:active:not(:disabled) { background-color: #b6aece; }
@@ -166,7 +167,7 @@ img {
 .stroke:nth-child(6) {
     animation-delay: 0.1s;
 }
-
+label {text-align: center}
 /*svg {*/
 
 /*}*/

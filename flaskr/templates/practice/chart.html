@@ -2,18 +2,20 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <div class="flex-col-left">
-        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    <div class="flex-col">
+        <h2>{% block title %}Practice{% endblock %}</h2>
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
     </div>
-    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/practice.css') }}">
 {% endblock %}
 
 {% block content %}
     <div class="tabs">
-        <div class="tab active-tab" onclick="openTab(event, 'pair1')">Pair 1</div>
-        <div class="tab" onclick="openTab(event, 'pair2')">Pair 2</div>
-        <div class="tab" onclick="openTab(event, 'pair3')">Pair 3</div>
+        <div class="tab active-tab" onclick="openTab(event, 'pair1')">credo / crudo</div>
+        <div class="tab" onclick="openTab(event, 'pair2')">deuda / duda</div>
+        <div class="tab" onclick="openTab(event, 'pair3')">paso / peso</div>
         <!-- Add more tabs as needed -->
     </div>
 
@@ -24,7 +26,6 @@
         <div class="flex-row">
             <div class="flex-col">
                 <input type="button" id="p11" value="record audio">
-                <input type="button" id="p12" value="record audio">
             </div>
             <hr>
             <div id="message"></div>
@@ -42,7 +43,6 @@
         <div class="flex-row">
             <div class="flex-col">
                 <input type="button" id="p21" value="record audio">
-                <input type="button" id="p22" value="record audio">
             </div>
             <hr>
             <div id="message"></div>
@@ -60,7 +60,6 @@
         <div class="flex-row">
             <div class="flex-col">
                 <input type="button" id="p31" value="record audio">
-                <input type="button" id="p32" value="record audio">
             </div>
             <hr>
             <div id="message"></div>

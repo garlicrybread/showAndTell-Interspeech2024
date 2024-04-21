@@ -2,10 +2,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <div class="flex-col-left">
-        <input type="button" class="nav-btn" id="homeNavBtn" value="< Home" >
+    <div class="flex-col">
+        <h2>{% block title %}Tutorial (4 of 6) {% endblock %}</h2>
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
     </div>
-    <h2>{% block title %}Vowel Chart Tutorial{% endblock %}</h2>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial.css') }}">
 {% endblock %}
 
@@ -17,7 +19,7 @@
 
             Notice that the vowels show up near the top and bottom of the chart.<br><br>
         </p>
-        <div class="flex-col">
+        <div class="flex-col vowel-chart">
             <div class="flex-col vowel-chart">
                 <div id="message"></div>
                 <svg id="svg-tutP4" width=100% length="auto" viewBox="0,0,400,300"></svg>
@@ -26,7 +28,7 @@
                 <input type="button" id="tutP4Btn" value="record audio">
             </div>
         </div>
-        <div class="flex-col">
+        <div class="flex-col nav-btns">
             <div class="flex-col-left">
                 <input type="button" class="back-btn" value="<" onclick="navigateToRoute('tutorial/vowelP3')">
             </div>

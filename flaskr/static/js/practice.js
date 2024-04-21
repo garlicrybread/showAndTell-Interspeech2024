@@ -21,23 +21,23 @@
  document.getElementById(p11btn).addEventListener("click", function () {
      toggleText(p11btn, svgP1);
  });
- document.getElementById(p12btn).addEventListener("click", function () {
-     toggleText(p12btn, svgP1);
- });
+ // document.getElementById(p12btn).addEventListener("click", function () {
+ //     toggleText(p12btn, svgP1);
+ // });
 
  document.getElementById(p21btn).addEventListener("click", function () {
      toggleText(p21btn, svgP2);
  });
- document.getElementById(p22btn).addEventListener("click", function () {
-     toggleText(p22btn, svgP2);
- });
+ // document.getElementById(p22btn).addEventListener("click", function () {
+ //     toggleText(p22btn, svgP2);
+ // });
 
  document.getElementById(p31btn).addEventListener("click", function () {
      toggleText(p31btn, svgP3);
  });
- document.getElementById(p32btn).addEventListener("click", function () {
-     toggleText(p32btn, svgP3);
- });
+ // document.getElementById(p32btn).addEventListener("click", function () {
+ //     toggleText(p32btn, svgP3);
+ // });
 
 // JavaScript function to open a tab
 export function openTab(evt, tabName) {
