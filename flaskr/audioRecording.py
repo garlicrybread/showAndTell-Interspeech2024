@@ -91,6 +91,7 @@ def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
             f.write(wav_data)
 
         # Normalize audio
+        # this is for boosting ;) just for you Dipayan
         audio_data, fs = sf.read(DATA_DIR + new_file_name)  # Load audio at original SR
         peak_amp = np.max(np.abs(audio_data))
         scale_factor = 0.9 / peak_amp
