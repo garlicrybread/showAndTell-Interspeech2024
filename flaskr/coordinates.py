@@ -33,6 +33,7 @@ def processCoordinateData():
                 writeToJson(path, jsonName, data)
     vowels = jsonToVowelPoints(rootDirectory)
     coordinates = vowelChartCoordinates(vowels)
+
     if spa:
         transformArray(coordinates, svg, True)
     else:
