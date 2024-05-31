@@ -88,8 +88,8 @@ def mean(l):
         return sum(l) / len(l)
 
 def audioToVwlFormants(path,file_name):
-    vocalToolKitDir = '~/plugin_VocalToolkit/'
-    extractVwlFile = "extractvowels.praat"
+    vocalToolKitDir = '~/PraatVocalToolkit_oneVwl/plugin_VocalToolkit/'
+    extractVwlFile = "extractOnevowel.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
     samplerate, data = wavfile.read(file)
@@ -109,7 +109,7 @@ def audioToVwlFormants(path,file_name):
     # retreive formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
     formant_ceiling = 5500
-    num_formants = 4
+    num_formants = 6
     # higher window length to deal with smoothing
     window_len = 0.025
     preemphasis = 100
@@ -127,6 +127,7 @@ def audioToVwlFormants(path,file_name):
         if f1 > 0:
             f1_list.append(f1)
             f2_list.append(f2)
+    print(f1_list,f2_list)
     return f1_list, f2_list
 
 def condenseFormantList(formantList,cal=False):
