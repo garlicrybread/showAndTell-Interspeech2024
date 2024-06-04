@@ -1,5 +1,6 @@
-import {navigateToRoute, calPath} from "./myJS.js";
+import {navigateToRoute, calPath, audioToJson} from "./myJS.js";
 import {toggleText} from './myJS.js';
+import {drawVowelChart} from "./vwlChart.js";
 
 
 console.log('in vowelCalibration')
@@ -11,6 +12,10 @@ const backLowBtn = document.getElementById('backLow');
 const calibrateBtn = document.getElementById('calibrateBtn')
 const button = document.getElementById('btnUserId')
 
+document.addEventListener('DOMContentLoaded', (event) => {
+    const name = 'calibrate';
+    drawVowelChart(name); // Change 'pair1' to the ID of the first tab content
+});
 
 homeNavBtn.addEventListener('click', function () {
     navigateToRoute('')
