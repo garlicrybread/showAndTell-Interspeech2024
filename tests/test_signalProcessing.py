@@ -154,7 +154,7 @@ def test_freqToSVG(app, test_transform, client, test_svgCoordinates):
         freq = [1400,400]
         actualSVG = transform(t,freq)
         url = 'signalProcessing.freqToSVG'
-        data = {'f1':freq[1],'f2':freq[0]}
+        data = {'freq':{'f1':freq[1],'f2':freq[0]},'spa':False}
         response = client.post(url_for(url), data=json.dumps(data), content_type='application/json')
 
         # Assert that the response status code is 200 (success)
@@ -169,7 +169,7 @@ def test_freqToSVG(app, test_transform, client, test_svgCoordinates):
         # outside the y boundary
         freq = [2500.3,210.43]
         actualSVG = transform(t,freq)
-        data = {'f1': freq[1], 'f2': freq[0]}
+        data = {'freq':{'f1': freq[1], 'f2': freq[0]},'spa':False}
         response = client.post(url_for(url), data=json.dumps(data), content_type='application/json')
         calcSVG = response.json['svg']
         assert type(calcSVG) == list
