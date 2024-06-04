@@ -83,6 +83,12 @@ def svgToConfig():
     print(f'\ncurrent app {current_app.config["SVG_COORDINATES"]}\n')
     return jsonify({'success':True})
 
+@bp.route('/api/getSvgCoordinates',methods=['GET'])
+def getSvgCoordinates():
+    coordinates = current_app.config['SVG_COORDINATES']
+    return jsonify({'coordinates':coordinates})
+
+
 def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)

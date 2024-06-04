@@ -489,6 +489,20 @@ async function svgToClient(data) {
     });
 }
 
+export async function getSvgCoordinates() {
+    const urlPath = `${processingPath}/api/getSvgCoordinates`
+    const response = await fetch(urlPath, {
+        method: 'GET',
+        headers: {
+            'Content-Type':'application/json'
+        },
+    });
+    const data = await response.json();
+    console.log("---");
+    console.log(data.coordinates);
+    return data.coordinates;
+}
+
 async function freqToSVG(freq,axis,spa=false){
     // fetch json data
     console.log('frequency', freq)
