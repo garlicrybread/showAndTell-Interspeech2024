@@ -88,8 +88,9 @@ def mean(l):
         return sum(l) / len(l)
 
 def audioToVwlFormants(path,file_name):
-    vocalToolKitDir = '~/PraatVocalToolkit_oneVwl/plugin_VocalToolkit/'
-    extractVwlFile = "extractOnevowel.praat"
+    # vocalToolKitDir = '~/plugin_VocalToolkit/'
+    vocalToolKitDir = homeDir #+'plugin_VocalToolkit/'
+    extractVwlFile = "extractFirstvowel.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
     samplerate, data = wavfile.read(file)
