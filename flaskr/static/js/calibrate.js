@@ -1,6 +1,6 @@
 import {navigateToRoute, calPath, audioToJson} from "./myJS.js";
 import {toggleText} from './myJS.js';
-import {drawVowelChart} from "./vwlChart.js";
+import {drawVowelChart, getSvgCoordinates} from "./vwlChart.js";
 
 
 console.log('in vowelCalibration')
@@ -15,6 +15,7 @@ const button = document.getElementById('btnUserId')
 document.addEventListener('DOMContentLoaded', (event) => {
     const name = 'calibrate';
     drawVowelChart(name); // Change 'pair1' to the ID of the first tab content
+    circlesOnEdges(name);
 });
 
 homeNavBtn.addEventListener('click', function () {
@@ -85,5 +86,22 @@ async function saveUserId() {
     .catch(error => {
         // Handle errors
         console.error('Error saving userid:', error);
+    });
+}
+
+async function circlesOnEdges(svgId) {
+    const svg = d3.select(`#svg-${svgId}`);
+    const coordinates = await getSvgCoordinates();
+    console.log('coordinates');
+    console.log(coordinates)
+    const circleRadius = 5;
+    const circleColor = "#AF6868";
+
+    coordinates.forEach(([x, y]) => {
+        svg.append("circle")
+            .attr("cx", x)
+            .attr("cy", y)
+            .attr("r", circleRadius)
+            .attr("fill", circleColor);
     });
 }
