@@ -13,7 +13,8 @@ from flaskr.signalProcessing import (
 from pprint import pprint
 bp = Blueprint('vowelCalibration', __name__, url_prefix='/vowelCalibration')
 
-dataDir = 'flaskr/static/participantData/'
+flaskrPath = f'{os.getcwd()}/flaskr/'
+dataDir = 'static/participantData/'
 
 @bp.route('/api/processCoordinateData', methods=["POST"])
 def processCoordinateData():
@@ -22,18 +23,18 @@ def processCoordinateData():
         id = 'spaM0'
     else:
         id = current_app.config['USER_ID']
-    rootDirectory = dataDir + id + '/vowelCalibration/'
+    rootDirectory = flaskrPath + dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
             if '.wav' in file:
+                print(f'in file {file}')
                 f1, f2 = audioToVwlFormants(path, file)
                 jsonName = f"{file.split('.')[0]}-vwlCal.json"
                 data = formantsToJsonFormat(f1, f2, True)
                 writeToJson(path, jsonName, data)
     vowels = jsonToVowelPoints(rootDirectory)
     coordinates = vowelChartCoordinates(vowels)
-
     if spa:
         transformArray(coordinates, svg, True)
     else:
@@ -68,6 +69,9 @@ def transformArray(actualCoordinates, svgCoordinates, spa=False):
     transform = [x,y,w]
     if spa:
         current_app.config.update(TRANSFORM_SPA=transform)
+        spaFilePath = flaskrPath + dataDir + 'vowelCalibration/spaTransform.txt'
+        with open(flaskrPath+dataDir+'spaM0/vowelCalibration/spaTransform.txt', 'w') as f:
+            f.write(str(current_app.config['TRANSFORM_SPA']))
     else:
         current_app.config.update(TRANSFORM_FREQ_SVG=transform)
     return transform
