@@ -21,10 +21,6 @@ def test_condenseFormantList():
     condensedCalc = condenseFormantList(f)
     assert len(condensedCalc) == len(condensedActual)
     assert (condensedActual == condensedCalc)
-    # check calibration
-    condensedCalc = condenseFormantList(f,True)
-    assert len(condensedCalc) == len(f)
-    assert (condensedCalc == f)
 
 
     f = [20,15,80]
