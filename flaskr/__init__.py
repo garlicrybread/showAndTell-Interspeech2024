@@ -31,7 +31,8 @@ MONGODB = os.environ.get("MONGODB_URI")
 # for mongodb Compass local connection: mongodb://localhost:27017
 # MONGODB = "mongodb://127.0.0.1"
 # conn_str = config("MONGODB_URI")
-
+flaskrPath = f'{os.getcwd()}/flaskr/'
+dataDir = 'static/participantData/'
 def create_app(test_config=None):
 
     # create and configure the app
@@ -62,6 +63,14 @@ def create_app(test_config=None):
         app.config['MONGO'] = PyMongo(app)  # Initialize Flask-PyMongo with the app
     else:
         raise Exception("No MONGO_URI configuration found.")
+
+    # read in the spanish transform if the file exists
+    spaFilePath = flaskrPath + dataDir + 'spaM0/vowelCalibration/spaTransform.txt'
+    if os.path.exists(spaFilePath):
+        with open(spaFilePath) as f:
+            transformSpa = f.read()
+            print(transformSpa)
+
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
