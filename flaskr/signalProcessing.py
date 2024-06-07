@@ -16,7 +16,8 @@ from flask import (Blueprint, request, current_app, jsonify)
 import numpy as np
 
 homeDir = f'{os.getcwd()}/'
-dataDir = 'flaskr/static/participantData/'
+flaskrDir = f'{os.getcwd()}/flaskr/'
+dataDir = 'static/participantData/'
 bp = Blueprint('signalProcessing', __name__, url_prefix='/signalProcessing')
 
 @bp.route('/api/processVwlData', methods=["POST"])
@@ -95,7 +96,7 @@ def mean(l):
 
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
-    vocalToolKitDir = homeDir #+'plugin_VocalToolkit/'
+    vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
     extractVwlFile = "extractFirstvowel.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
@@ -137,11 +138,8 @@ def audioToVwlFormants(path,file_name):
     print(f1_list,f2_list)
     return f1_list, f2_list
 
-def condenseFormantList(formantList,cal=False):
-    # If calibration, we need to retain the mins and maxes
+def condenseFormantList(formantList):
     length = len(formantList)
-    if cal:
-        return formantList
     condensed = []
     num = 2
     i = 0
@@ -158,34 +156,21 @@ def condenseFormantList(formantList,cal=False):
     return condensed
 
 def formantsToJsonFormat(f1List,f2List,cal=False):
-    idx_vwls = [0]
-    # go through formants in f1 and f2 and get the starting indexes for each vowel depending on how big the abs
-    # difference between two formants is
-    for prev_idx, vwlF1 in enumerate(f1List[1:]):
-        prevVwlF1 = f1List[prev_idx]
-        prevVwlF2 = f2List[prev_idx]
-        vwlF2 = f2List[prev_idx + 1]
-        absDiffF1 = abs(vwlF1 - prevVwlF1)
-        absDiffF2 = abs(vwlF2 - prevVwlF2)
-        diff = 200
-        if (absDiffF1 >= diff or absDiffF2 >= diff) and not cal:
-            idx_vwls.append(prev_idx + 1)
-    idx_vwls.append(len(f1List))
     data = []
-    # go through the index list; only takes the first vowel
-    prev_idx = 0
-    for i, idx in enumerate(idx_vwls[1:2]):
-        vwlsDict = {"vwl": []}
-        tempF1 = condenseFormantList(f1List[prev_idx:idx],cal)
-        tempF2 = condenseFormantList(f2List[prev_idx:idx],cal)
-        for vwl_idx in range(len(tempF1)):
-            f1_vwl = tempF1[vwl_idx]
-            f2_vwl = tempF2[vwl_idx]
-            tempDict = {"f1": f1_vwl, "f2": f2_vwl}
-            vwlsDict["vwl"].append(tempDict)
-        if vwlsDict['vwl'] != []:
-            data.append(vwlsDict)
-        prev_idx = idx_vwls[i + 1]
+    # condense the formant lists and write to json format
+    vwlsDict = {"vwl": []}
+    if not cal:
+        f1List = condenseFormantList(f1List)
+        f2List = condenseFormantList(f2List)
+
+    for vwl_idx in range(len(f1List)):
+        f1_vwl = f1List[vwl_idx]
+        f2_vwl = f2List[vwl_idx]
+        tempDict = {"f1": f1_vwl, "f2": f2_vwl}
+        vwlsDict["vwl"].append(tempDict)
+    if vwlsDict['vwl'] != []:
+        data.append(vwlsDict)
+
     # Serializing json
     print('data')
     print(data)
@@ -203,7 +188,7 @@ def writeToJson(path, jsonName, data):
 if __name__ == '__main__': # pragma: no cover
     start_time = time.time()
     # hardcoded for now
-    rootDirectory = homeDir + dataDir
+    rootDirectory = flaskrDir + dataDir
     try:
         idx = sys.argv.index('-id')+1
         id = sys.argv[idx]
