@@ -89,7 +89,7 @@ def mean(l):
 
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
-    vocalToolKitDir = homeDir #+'plugin_VocalToolkit/'
+    vocalToolKitDir = homeDir+"flaskr/plugin_VocalToolkit/"
     extractVwlFile = "extractFirstvowel.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
@@ -114,11 +114,15 @@ def audioToVwlFormants(path,file_name):
     # higher window length to deal with smoothing
     window_len = 0.025
     preemphasis = 100
+
+    #[Dip] We will put this section under a function and then analyze the values ( our metric ) to select the optimal num_formant 
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
+             
     numPoints = praat.call(pointProcess, "Get number of points")
     f1_list = []
     f2_list = []
+    # f_3,4..7 = []
     for point in range(0, numPoints):
         point += 1
         t = praat.call(pointProcess, "Get time from index", point)
@@ -129,6 +133,7 @@ def audioToVwlFormants(path,file_name):
             f1_list.append(f1)
             f2_list.append(f2)
     print(f1_list,f2_list)
+    # Do the standard deviation and our metric to select our 
     return f1_list, f2_list
 
 def condenseFormantList(formantList,cal=False):
