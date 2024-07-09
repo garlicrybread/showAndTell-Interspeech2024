@@ -32,6 +32,11 @@ def processVwlData():
     if data == []:
         # unable to extract formants, probably didn't pick up voices but loud sounds instead
         return 'empty'
+    print('------')
+    print(filename)
+    print(f"data processVwlData {data}")
+    print('------\n')
+
     writeToJson(path,jsonName,data)
     id,word,_ = jsonName.split('-')
     relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
@@ -59,6 +64,7 @@ def freqToSVG():
         t = np.array(current_app.config['TRANSFORM_SPA'])
     else:
         t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
+    print(f"freq to svg {t}, {current_app.config['TRANSFORM_SPA']}")
     x,y,w = np.dot(t,freq).tolist()
     w = sum(w)
     x = sum(x)/w
@@ -96,8 +102,9 @@ def mean(l):
 
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
+    print(f'\n in audioToVwlFormants {file_name}')
     vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
-    extractVwlFile = "extractFirstvowel.praat"
+    extractVwlFile = "extractvowelsNoViewAndEdit.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
     samplerate, data = wavfile.read(file)
@@ -105,7 +112,35 @@ def audioToVwlFormants(path,file_name):
 
     sound = parselmouth.Sound(file)
 
-    vowels = praat.run_file(sound, vocalToolKitDir + extractVwlFile,0,0)[0]
+    # run file returns [sound object, text grid object]
+    vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
+    intervals = grid.to_tgt().tiers[0].intervals
+    # determine if vowel sounds are one continuous sound
+    def cleanIntervalText(text):
+        textTotalTime = text.split("ob")[1]
+        textTimeSplit = textTotalTime.split("to")
+        textIntList = [float(text.replace("_",".")) for text in textTimeSplit]
+        return textIntList
+    intervalsInt = [cleanIntervalText(inter.text) for inter in intervals]
+    max = 0.05
+    sounds = {}
+    currInter = intervalsInt[1]
+    keyIdx = 1
+    if len(intervalsInt) > 1:
+        prevInter = intervalsInt[0]
+        sounds[f'vwl{keyIdx}'] = [0]
+        for i in range(1,len(intervals)):
+            diff = abs(currInter[0]-prevInter[1])
+            if diff < max and f'vwl{keyIdx}' not in sounds:
+                sounds[f'vwl{keyIdx}'] = [i-1,i]
+            elif diff < max:
+                sounds[f'vwl{keyIdx}'].append(i)
+            elif i not in sounds[f'vwl{keyIdx}']:
+                keyIdx+=1
+                sounds[f'vwl{keyIdx}'] = [i]
+            prevInter = currInter
+            currInter = intervalsInt[i]
+    print(sounds)
     # TODO after deadline automate this step
     # charlotte 65, 500, 5500, 4
     # dipayan 65, 300, 5500, 5
@@ -114,9 +149,9 @@ def audioToVwlFormants(path,file_name):
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
-    # retreive formants of vowels
+    # retrieve formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5500
+    formant_ceiling = 5000
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
@@ -124,18 +159,35 @@ def audioToVwlFormants(path,file_name):
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
     numPoints = praat.call(pointProcess, "Get number of points")
-    f1_list = []
-    f2_list = []
-    for point in range(0, numPoints):
-        point += 1
-        t = praat.call(pointProcess, "Get time from index", point)
-        f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
-        f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-        # filter out "nan"
-        if f1 > 0:
-            f1_list.append(f1)
-            f2_list.append(f2)
-    print(f1_list,f2_list)
+    # get vowel either first or second
+    i = 1
+    noFormant = True
+    while noFormant == True and i <= 2:
+        f1_list = []
+        f2_list = []
+        fromIdx = sounds[f'vwl{i}'][0]
+        fromTime = intervals[fromIdx].start_time
+        toIdx = sounds[f'vwl{i}'][-1]
+        toTime = intervals[toIdx].end_time
+        print(fromIdx, fromTime,toTime)
+        if 'pair11' in file_name:
+            print(f'numPoints {numPoints}')
+        for point in range(0, numPoints):
+            point += 1
+            t = praat.call(pointProcess, "Get time from index", point)
+            if t >= fromTime and t <= toTime:
+                f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+                f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+                # filter out "nan"
+                if 'pair11' in file_name:
+                    print(f'f1 {f1}, f2 {f2}, {file_name}')
+                if f1 > 0:
+                    f1_list.append(f1)
+                    f2_list.append(f2)
+        if len(f1_list) != 0:
+            False
+        i+=1
+    print("formant lists: ",f1_list,f2_list)
     return f1_list, f2_list
 
 def condenseFormantList(formantList):
@@ -159,9 +211,9 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
     data = []
     # condense the formant lists and write to json format
     vwlsDict = {"vwl": []}
-    if not cal:
-        f1List = condenseFormantList(f1List)
-        f2List = condenseFormantList(f2List)
+    # if not cal:
+    #     f1List = condenseFormantList(f1List)
+    #     f2List = condenseFormantList(f2List)
 
     for vwl_idx in range(len(f1List)):
         f1_vwl = f1List[vwl_idx]
