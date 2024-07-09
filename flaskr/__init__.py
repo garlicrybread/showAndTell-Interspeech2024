@@ -92,7 +92,10 @@ def create_app(test_config=None):
     # login_manager = LoginManager()
     # login_manager.init_app(app)
     # check to make sure we are at the correct directory level
-    if "flaskr" not in os.listdir(os.getcwd()):
+    cwd = os.getcwd()
+    ls = os.listdir(cwd)
+    print(cwd,ls)
+    if "flaskr" not in ls and "test" not in cwd:
         print("moving into proVISweb")
         os.chdir(os.path.join(os.getcwd(),"pronunciation_VIS_web"))
 
