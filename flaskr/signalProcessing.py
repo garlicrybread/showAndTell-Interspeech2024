@@ -124,11 +124,11 @@ def audioToVwlFormants(path,file_name):
     intervalsInt = [cleanIntervalText(inter.text) for inter in intervals]
     max = 0.05
     sounds = {}
-    currInter = intervalsInt[1]
     keyIdx = 1
+    sounds[f'vwl{keyIdx}'] = [0]
     if len(intervalsInt) > 1:
+        currInter = intervalsInt[1]
         prevInter = intervalsInt[0]
-        sounds[f'vwl{keyIdx}'] = [0]
         for i in range(1,len(intervals)):
             diff = abs(currInter[0]-prevInter[1])
             if diff < max and f'vwl{keyIdx}' not in sounds:
@@ -140,29 +140,28 @@ def audioToVwlFormants(path,file_name):
                 sounds[f'vwl{keyIdx}'] = [i]
             prevInter = currInter
             currInter = intervalsInt[i]
-    print(sounds)
     # TODO after deadline automate this step
     # charlotte 65, 500, 5500, 4
     # dipayan 65, 300, 5500, 5
-    f0min = 65
-    f0max = 500
+    f0min = 75
+    f0max = 600
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retrieve formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5000
+    formant_ceiling = 5500
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
-    preemphasis = 100
+    preemphasis = 50
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
     numPoints = praat.call(pointProcess, "Get number of points")
     # get vowel either first or second
     i = 1
     noFormant = True
-    while noFormant == True and i <= 2:
+    while noFormant == True and (i <= 2 or i <= len(sounds)):
         f1_list = []
         f2_list = []
         fromIdx = sounds[f'vwl{i}'][0]
@@ -185,8 +184,9 @@ def audioToVwlFormants(path,file_name):
                     f1_list.append(f1)
                     f2_list.append(f2)
         if len(f1_list) != 0:
-            False
+            noFormant = False
         i+=1
+        print(noFormant)
     print("formant lists: ",f1_list,f2_list)
     return f1_list, f2_list
 
