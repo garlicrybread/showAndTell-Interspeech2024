@@ -2,7 +2,7 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
+    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson, audioToVwlFormants
 )
 from flask import (current_app, url_for)
 import json
@@ -170,39 +170,36 @@ def test_audioToVwlFormants(app,client):
     # DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
     id = 'testData'
     word = 'audio'
-    filename1 = f'{id}-{word}-0000'
-    path1 = DATA_DIR + f'{id}/{word}/{filename1}.wav'
+    filename1 = f'{id}-{word}-0000.wav'
+    path1 = DATA_DIR + f'{id}/{word}/'
     data = {'gotAudio': path1}
 
     # second file to test
     word = 'aaudiioo'
-    filename2 = f'{id}-{word}-0000'
-    path2 = DATA_DIR + f'{id}/{word}/{filename2}.wav'
+    filename2 = f'{id}-{word}-0000.wav'
+    path2 = DATA_DIR + f'{id}/{word}/'
     data2 = {'gotAudio': path2}
 
     # second file to test
     word = 'crudo'
-    filename3 = f'{id}-{word}-0000'
-    path3 = DATA_DIR + f'{id}/{word}/{filename3}.wav'
+    filename3 = f'{id}-{word}-0000.wav'
+    path3 = DATA_DIR + f'{id}/{word}/'
     data3 = {'gotAudio': path3}
     with app.app_context():
-        response = client.post(url_for('signalProcessing.processVwlData'), json=data)
-        assert response.status_code == 200
-        relPath = response.data.decode('utf-8')
-        assert relPath == f'../../static/participantData/{id}/bag/{filename1}.json'
+        actualf1List, actualf2List = audioToVwlFormants(path1,filename1)
+        assert len(actualf1List) == len(actualf2List)
+        assert len(actualf1List) != 0
+        assert len(actualf1List) == 10
 
-        # check for another file to be sure
-        response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
-        assert response.status_code == 200
-        relPath = response.data.decode('utf-8')
-        assert relPath == f'../../static/participantData/{id}/bag/{filename2}.json'
+        actualf1List, actualf2List = audioToVwlFormants(path2,filename2)
+        assert len(actualf1List) == len(actualf2List)
+        assert len(actualf1List) != 0
+        assert len(actualf1List) == 42
 
-        # test edge case of consonant classified as first vowel
-        response = client.post(url_for('signalProcessing.processVwlData'), json=data3)
-        assert response.status_code == 200
-        relPath = response.data.decode('utf-8')
-        assert relPath == f'../../static/participantData/{id}/bag/{filename3}.json'
-
+        actualf1List, actualf2List = audioToVwlFormants(path3,filename3)
+        assert len(actualf1List) == len(actualf2List)
+        assert len(actualf1List) != 0
+        assert len(actualf1List) == 6
 
 def test_writeToJson():
     text = "I am written"
