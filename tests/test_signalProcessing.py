@@ -10,6 +10,43 @@ import json
 DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
 
 
+
+def test_processVwlData(app,client):
+    # DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
+    id = 'testData'
+    word1 = 'audio'
+    filename1 = f'{id}-{word1}-0000'
+    path1 = DATA_DIR + f'{id}/{word1}/{filename1}.wav'
+    data = {'gotAudio': path1}
+
+    # second file to test
+    word2 = 'aaudiioo'
+    filename2 = f'{id}-{word2}-0000'
+    path2 = DATA_DIR + f'{id}/{word2}/{filename2}.wav'
+    data2 = {'gotAudio': path2}
+
+    # second file to test
+    word3 = 'crudo'
+    filename3 = f'{id}-{word3}-0000'
+    path3 = DATA_DIR + f'{id}/{word3}/{filename3}.wav'
+    data3 = {'gotAudio': path3}
+    with app.app_context():
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/{word1}/{filename1}.json'
+
+        # check for another file to be sure
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/{word2}/{filename2}.json'
+
+        # test edge case of consonant classified as first vowel
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data3)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/{word3}/{filename3}.json'
 def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
@@ -102,6 +139,7 @@ def test_formantsToJsonFormat(app, test_transform):
                  }]
         calcdata = formantsToJsonFormat(f1,f2,True)
 
+
         # make sure data was calculated correctly
         for idx, pair in enumerate(data[0]['vwl']):
             calcpair = calcdata[0]['vwl'][idx]
@@ -128,26 +166,43 @@ def test_formantsToJsonFormat(app, test_transform):
             for key in pair:
                 assert calcpair[key] == pair[key]
 
-# TODO: record more test data files
-# def test_audioToVwlFormants(app,client):
-#     id = 'testData'
-#     filename1 = 'testData-bag-2024_04_03_110633'
-#     filename2 = 'testData-bag-2024_04_10_102243'
-#     path1 = DATA_DIR + f'{id}/bag/{filename1}.wav'
-#     path2 = DATA_DIR + f'{id}/bag/{filename2}.wav'
-#     data = {'gotAudio': path1}
-#     data2 = {'gotAudio': path2}
-#     with app.app_context():
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data)
-#         assert response.status_code == 200
-#         relPath = response.data.decode('utf-8')
-#         assert relPath == f'../../static/participantData/{id}/bag/{filename1}.json'
-#
-#         # check for another file to be sure
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
-#         assert response.status_code == 200
-#         relPath = response.data.decode('utf-8')
-#         assert relPath == f'../../static/participantData/{id}/bag/{filename2}.json'
+def test_audioToVwlFormants(app,client):
+    # DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
+    id = 'testData'
+    word = 'audio'
+    filename1 = f'{id}-{word}-0000'
+    path1 = DATA_DIR + f'{id}/{word}/{filename1}.wav'
+    data = {'gotAudio': path1}
+
+    # second file to test
+    word = 'aaudiioo'
+    filename2 = f'{id}-{word}-0000'
+    path2 = DATA_DIR + f'{id}/{word}/{filename2}.wav'
+    data2 = {'gotAudio': path2}
+
+    # second file to test
+    word = 'crudo'
+    filename3 = f'{id}-{word}-0000'
+    path3 = DATA_DIR + f'{id}/{word}/{filename3}.wav'
+    data3 = {'gotAudio': path3}
+    with app.app_context():
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/bag/{filename1}.json'
+
+        # check for another file to be sure
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/bag/{filename2}.json'
+
+        # test edge case of consonant classified as first vowel
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data3)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/bag/{filename3}.json'
+
 
 def test_writeToJson():
     text = "I am written"
