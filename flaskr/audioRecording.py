@@ -35,9 +35,9 @@ def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
         r.adjust_for_ambient_noise(source, duration=1)
         print(f"Please say {word}")
         # timeout after 5 seconds of not hearing anything and let user know that there was a timeout
-        timeout = 5.0
+        timeout = 4.0
         try:
-            audio = r.listen(source, timeout=timeout, phrase_time_limit=3.0)
+            audio = r.listen(source, timeout=timeout, phrase_time_limit=timeout)
             print("Heard you, just a moment\n")
             audioObtained = True
         except sr.WaitTimeoutError:
