@@ -201,9 +201,9 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
     data = []
     # condense the formant lists and write to json format
     vwlsDict = {"vwl": []}
-    # if not cal:
-    #     f1List = condenseFormantList(f1List)
-    #     f2List = condenseFormantList(f2List)
+    if not cal:
+        f1List = condenseFormantList(f1List)
+        f2List = condenseFormantList(f2List)
 
     for vwl_idx in range(len(f1List)):
         f1_vwl = f1List[vwl_idx]
