@@ -34,7 +34,7 @@ def processVwlData():
         return 'empty'
     print('------')
     print(filename)
-    print(f"data processVwlData {data}")
+    print(f"processVwlData")
     print('------\n')
 
     writeToJson(path,jsonName,data)
@@ -72,7 +72,6 @@ def freqToSVG():
 
     fh, bh, fl, bl = current_app.config['SVG_COORDINATES']
     if y < bh[1]:
-        print(f'y outside of bounds {y}')
         y = bh[1]
     elif y > bl[1]: y = bl[1]
 
@@ -87,7 +86,6 @@ def freqToSVG():
 def svgToConfig():
     svg = request.get_json()
     current_app.config.update(SVG_COORDINATES=svg)
-    print(f'\ncurrent app {current_app.config["SVG_COORDINATES"]}\n')
     return jsonify({'success':True})
 
 @bp.route('/api/getSvgCoordinates',methods=['GET'])
@@ -102,7 +100,6 @@ def mean(l):
 
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
-    print(f'\n in audioToVwlFormants {file_name}')
     vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
     extractVwlFile = "extractvowelsNoViewAndEdit.praat"
     file = path + file_name
@@ -168,9 +165,6 @@ def audioToVwlFormants(path,file_name):
         fromTime = intervals[fromIdx].start_time
         toIdx = sounds[f'vwl{i}'][-1]
         toTime = intervals[toIdx].end_time
-        print(fromIdx, fromTime,toTime)
-        if 'pair11' in file_name:
-            print(f'numPoints {numPoints}')
         for point in range(0, numPoints):
             point += 1
             t = praat.call(pointProcess, "Get time from index", point)
@@ -178,16 +172,12 @@ def audioToVwlFormants(path,file_name):
                 f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
                 f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
                 # filter out "nan"
-                if 'pair11' in file_name:
-                    print(f'f1 {f1}, f2 {f2}, {file_name}')
                 if f1 > 0:
                     f1_list.append(f1)
                     f2_list.append(f2)
         if len(f1_list) != 0:
             noFormant = False
         i+=1
-        print(noFormant)
-    print("formant lists: ",f1_list,f2_list)
     return f1_list, f2_list
 
 def condenseFormantList(formantList):
@@ -224,8 +214,6 @@ def formantsToJsonFormat(f1List,f2List,cal=False):
         data.append(vwlsDict)
 
     # Serializing json
-    print('data')
-    print(data)
     return data
 
 def writeToJson(path, jsonName, data):
