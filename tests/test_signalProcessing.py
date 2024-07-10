@@ -100,12 +100,16 @@ def test_formantsToJsonFormat(app, test_transform):
         # one vowel test
         f1 = [390.5, 365.0]
         f2 = [1800.6, 1760.9]
-        mf1 = mean(f1)
-        mf2 = mean(f2)
-        data = [{'vwl': [{ "f1": mf1, "f2": mf2 }] }]
+        mf1 = condenseFormantList(f1)
+        mf2 = condenseFormantList(f2)
+        data = [{'vwl': [{ "f1": mf1[0], "f2": mf2[0] }] }]
         calcdata = formantsToJsonFormat(f1,f2)
 
-        # make sure data was calculated correctly
+        # make sure data was saved correctly
+        # data = [{'vwl': [{ "f1": mf1, "f2": mf2 }] }]
+        assert type(data) == list
+        assert type(data[0]) == dict
+
         for idx, pair in enumerate(data[0]['vwl']):
             calcpair = calcdata[0]['vwl'][idx]
             for key in pair:
