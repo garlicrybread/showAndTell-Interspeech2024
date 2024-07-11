@@ -68,6 +68,7 @@ def test_transform(app):
         actualY = t.params[1]
         actualW = t.params[2]
         return transformArray(actualCoordinates, svgCoordinates)
+
 @pytest.fixture
 def test_svgCoordinates(app):
     svgCoordinates = [
