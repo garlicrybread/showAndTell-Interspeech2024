@@ -1,4 +1,5 @@
 import {drawVowels} from "./vwlChart.js";
+import {changeCircleColor} from "./calibrate.js";
 
 let mediaRecorders = []; // Array to store multiple media recorders
 let chunks = []; // Array to store chunks for each recorder
@@ -32,10 +33,8 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export function toggleText(buttonId,svgId='NA',cal='False') {
-    console.log('toggling button')
-    console.log(`${buttonId}`)
-    console.log(`${svgId}`)
+export function toggleText(buttonId,svgId='NA',cal=false) {
+    console.log(`toggle Text cal ${cal}`, typeof  cal)
     var button = document.getElementById(buttonId);
     var loader_number;
     if (buttonId == "myButton") {
@@ -72,8 +71,6 @@ export function toggleText(buttonId,svgId='NA',cal='False') {
 
 function startRecording(word,cal,btnID,svgId) {
     // Prepare the data to be sent to the server
-    // todo: request data should not be hardcoded
-    // todo: display wait notification to users
     var requestData = {
         word: word, // Provide the word you want to record
         debug: false, // Set debug mode if needed
@@ -96,13 +93,10 @@ function startRecording(word,cal,btnID,svgId) {
         return response.text();
     })
     .then(filePath => {
-        // Handle success
-        console.log('File recorded successfully:',filePath);
         // put the text back to record
         toggleText(btnID)
-        if ( cal === 'False') {
-            audioToJson(filePath, svgId)
-        }
+        console.log(`startRecording finished, cal ${cal}`)
+        audioToJson(filePath, svgId,false, cal)
     })
     .catch(error => {
         // Handle errors
@@ -110,8 +104,8 @@ function startRecording(word,cal,btnID,svgId) {
     });
 }
 
-export function audioToJson(filePath, svgId,spa=false) {
-    console.log(`filePath ${filePath}`, typeof filePath)
+export function audioToJson(filePath, svgId,spa=false,cal=false) {
+    console.log(`audio to json cal ${cal}`, typeof  cal)
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
     if (obj["gotAudio"] === "Quiet") {
@@ -119,12 +113,18 @@ export function audioToJson(filePath, svgId,spa=false) {
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
 
+    var requestData = {
+        filePath: obj['gotAudio'], // Provide the word you want to record
+        spa: spa, // Set debug mode if needed
+        cal: cal
+    };
+
     fetch(`${processingPath}/api/processVwlData`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: filePath
+        body: JSON.stringify(requestData)
     })
     .then(response => {
         if (!response.ok) {
@@ -132,10 +132,17 @@ export function audioToJson(filePath, svgId,spa=false) {
         }
         return response.text();
     })
-    .then(relfilepath => {
+    .then(data => {
         // Handle success
-        console.log('Formants extracted successfully:',relfilepath);
-        plotJson(relfilepath,svgId,spa)
+        const obj = JSON.parse(data)
+        const [relfilepath, location] = obj['data']
+        if (!cal) {
+            console.log('Formants extracted successfully:',relfilepath);
+            plotJson(relfilepath,svgId,spa)
+        } else {
+            console.log(`calibration, ${cal}, location: ${location}, ${relfilepath}`)
+            changeCircleColor('#svg-calibrate',location,'green')
+        }
     })
     .catch(error => {
         // Handle errors

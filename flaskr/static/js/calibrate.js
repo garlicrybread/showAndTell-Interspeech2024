@@ -23,16 +23,16 @@ homeNavBtn.addEventListener('click', function () {
 });
 
 frontHighBtn.addEventListener('click', function () {
-    toggleText('frontHigh','NA','True')
+    toggleText('frontHigh','NA',true)
 });
 backHighBtn.addEventListener('click', function () {
-    toggleText('backHigh', 'NA','True')
+    toggleText('backHigh', 'NA',true)
 });
 frontLowBtn.addEventListener('click', function () {
-    toggleText('frontLow', 'NA','True')
+    toggleText('frontLow', 'NA',true)
 });
 backLowBtn.addEventListener('click', function () {
-    toggleText('backLow', 'NA','True')
+    toggleText('backLow', 'NA',true)
 });
 
 calibrateBtn.addEventListener('click', function () {
@@ -97,11 +97,29 @@ async function circlesOnEdges(svgId) {
     const circleRadius = 5;
     const circleColor = "#AF6868";
 
-    coordinates.forEach(([x, y]) => {
+    // location goes from right to left top to bottom start at 0 and ending at 3
+    coordinates.forEach(([x, y],index) => {
         svg.append("circle")
             .attr("cx", x)
             .attr("cy", y)
             .attr("r", circleRadius)
-            .attr("fill", circleColor);
+            .attr("fill", circleColor)
+            .attr("id", `location-${index}`);
     });
 }
+
+// Function to change the color of a specific circle based on the location attribute
+export async function changeCircleColor(svgId, location, newColor) {
+    const svg = d3.select(`${svgId}`);
+    const name = `#location-${location}`
+    console.log(name, svgId)
+    const circle = svg.select(name);
+
+    // Debugging: Check if any circles are selected
+    console.log(`Selected circles: ${circle.size()}`);
+
+    circle.attr("fill", newColor);
+    svg.select(`#location-${location}`)
+        .attr("fill", newColor);
+}
+

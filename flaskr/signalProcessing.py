@@ -45,13 +45,17 @@ def processVwlData():
     print('------\n')
 
     writeToJson(path,jsonName,data)
+    id, word, _ = jsonName.split('-')
     if cal:
-        id, word = jsonName.split('-')
+        locations = ['frontHigh', 'backHigh', 'frontLow', 'backLow']
         relPath = f'../../static/participantData /{id}/vowelCalibration/{jsonName}'
     else:
-        id,word,_ = jsonName.split('-')
+        locations = [word]
         relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
-    return relPath
+    location = locations.index(word)
+    print(location)
+    data = {'data': [relPath,str(location)]}
+    return jsonify(data)
 
 @bp.route('/api/freqToSVG',methods=['POST'])
 def freqToSVG():
@@ -162,7 +166,7 @@ def maxAndMinOfFormants(f1List, f2List):
     minF2 = min(f2List)
     return maxF1, maxF2, minF1, minF2
 
-def audioToVwlFormants(path,file_name):
+def audioToVwlFormants(path,file_name,cal=False):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
     vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
     extractVwlFile = "extractvowelsNoViewAndEdit.praat"
@@ -174,10 +178,7 @@ def audioToVwlFormants(path,file_name):
     sound = parselmouth.Sound(file)
 
     # run file returns [sound object, text grid object]
-    print(file_name)
     vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
-    print(vowels, grid)
-    # grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)[0]
     intervals = grid.to_tgt().tiers[0].intervals
     # determine if vowel sounds are one continuous sound
     def cleanIntervalText(text):
