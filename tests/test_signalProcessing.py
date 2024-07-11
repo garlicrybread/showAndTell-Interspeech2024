@@ -2,7 +2,8 @@ import os
 
 import app
 from flaskr.signalProcessing import (
-    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson, audioToVwlFormants
+    freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
+    audioToVwlFormants, maxAndMinOfFormants, calAudioToVwl
 )
 from flask import (current_app, url_for)
 import json
@@ -17,19 +18,25 @@ def test_processVwlData(app,client):
     word1 = 'audio'
     filename1 = f'{id}-{word1}-0000'
     path1 = DATA_DIR + f'{id}/{word1}/{filename1}.wav'
-    data = {'gotAudio': path1}
+    data = {'filePath': path1, 'cal': False}
 
     # second file to test
     word2 = 'aaudiioo'
     filename2 = f'{id}-{word2}-0000'
     path2 = DATA_DIR + f'{id}/{word2}/{filename2}.wav'
-    data2 = {'gotAudio': path2}
+    data2 = {'filePath': path2, 'cal': False}
 
-    # second file to test
+    # third file to test
     word3 = 'crudo'
     filename3 = f'{id}-{word3}-0000'
     path3 = DATA_DIR + f'{id}/{word3}/{filename3}.wav'
-    data3 = {'gotAudio': path3}
+    data3 = {'filePath': path3, 'cal': False}
+
+    # calibration files to test
+    word4 = 'frontHigh'
+    filename4 = f'{id}-{word4}'
+    path4 = DATA_DIR + f'{id}/vowelCalibration/{filename4}.wav'
+    data4 = {'filePath': path4, 'cal': True}
     with app.app_context():
         response = client.post(url_for('signalProcessing.processVwlData'), json=data)
         assert response.status_code == 200
@@ -47,6 +54,14 @@ def test_processVwlData(app,client):
         assert response.status_code == 200
         relPath = response.data.decode('utf-8')
         assert relPath == f'../../static/participantData/{id}/{word3}/{filename3}.json'
+
+        # test case of vowel calibration FrontHigh
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data4)
+        assert response.status_code == 200
+        relPath = response.data.decode('utf-8')
+        assert relPath == f'../../static/participantData/{id}/vowelCalibration/{filename4}.json'
+
+
 def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
@@ -253,4 +268,33 @@ def test_freqToSVG(app, test_transform, client, test_svgCoordinates):
         assert type(calcSVG) == list
         assert len(calcSVG) == 2
         assert (calcSVG[0] == actualSVG[0] and calcSVG[1] == test_svgCoordinates[1][1])
+
+def test_calAudioToVwl():
+    id = 'testData'
+    # calibration files to test
+    word1 = 'frontHigh'
+    filename1 = f'{id}-{word1}.wav'
+    path1 = DATA_DIR + f'{id}/vowelCalibration/'
+    f1List, f2List = calAudioToVwl(path1,filename1)
+    assert len(f1List) == len(f2List)
+    assert len(f1List) == 2
+
+    # empty audio file to test fail case
+    word1 = 'snaps'
+    filename1 = f'{id}-{word1}.wav'
+    f1List, f2List = calAudioToVwl(path1,filename1)
+    assert len(f1List) == len(f2List)
+    assert len(f1List) == 0
+
+def test_maxAndMinOfFormants():
+    # test getting max and Min of formants basic
+    f1List = [1,10,20]
+    f2List = [200,100,2]
+    actualMaxF1,actualMaxF2,actualMinF1,actualMinF2 = 20,200,1,2
+    maxF1,maxF2,minF1,minF2 = maxAndMinOfFormants(f1List,f2List)
+    assert actualMaxF1 == maxF1
+    assert actualMaxF2 == maxF2
+    assert actualMinF1 == minF1
+    assert actualMinF2 == minF2
+
 
