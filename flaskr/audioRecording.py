@@ -25,7 +25,7 @@ def record():
 
 
 
-def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
+def recordFile(word, participantID, cal=False, debug=False):
     # obtain lang_files from the microphone
     import speech_recognition as sr
     r = sr.Recognizer()
@@ -72,7 +72,7 @@ def recordFile(word, participantID, debug=False, cal='False', secondTime=False):
         folderID = f"{participantID}/"
 
         # If we're gathering words for vowel calibration, save the files in the same folder.
-        if cal == 'True':
+        if cal:
             file_name = participantID + "-" + word
             folderWORD = f"vowelCalibration/"
             new_file_name = folderID + folderWORD + file_name + ".wav"
