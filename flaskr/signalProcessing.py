@@ -151,7 +151,7 @@ def calAudioToVwl(path, file_name):
     #     elif abs(minF1 - minF2) >= 1100:
     #         return [], []
     f1List = [maxF1, minF1]
-    f2List = [maxF1, minF1]
+    f2List = [maxF2, minF2]
 
     return f1List, f2List
 
