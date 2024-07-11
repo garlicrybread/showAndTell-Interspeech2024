@@ -22,12 +22,19 @@ bp = Blueprint('signalProcessing', __name__, url_prefix='/signalProcessing')
 
 @bp.route('/api/processVwlData', methods=["POST"])
 def processVwlData():
-    filePath = request.get_json()['gotAudio']
+    data = request.get_json()
+    print(data)
+    filePath = data['filePath']
+    cal = data['cal']
     pathList = filePath.split('/')
     path = '/'.join(pathList[:len(pathList)-1]) + '/'
     filename = pathList[-1]
-    f1List, f2List = audioToVwlFormants(path,filename)
-    jsonName = filename.split('.')[0] + '.json'
+    if cal:
+        f1List, f2List = calAudioToVwl(path, filename)
+        jsonName = filename.split('.')[0] + '-vwlCal.json'
+    else:
+        f1List, f2List = audioToVwlFormants(path,filename)
+        jsonName = filename.split('.')[0] + '.json'
     data = formantsToJsonFormat(f1List,f2List)
     if data == []:
         # unable to extract formants, probably didn't pick up voices but loud sounds instead
@@ -38,8 +45,12 @@ def processVwlData():
     print('------\n')
 
     writeToJson(path,jsonName,data)
-    id,word,_ = jsonName.split('-')
-    relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
+    if cal:
+        id, word = jsonName.split('-')
+        relPath = f'../../static/participantData /{id}/vowelCalibration/{jsonName}'
+    else:
+        id,word,_ = jsonName.split('-')
+        relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     return relPath
 
 @bp.route('/api/freqToSVG',methods=['POST'])
@@ -98,6 +109,59 @@ def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
 
+def calAudioToVwl(path, file_name):
+    # id, word = file_name.split('-')
+    # word = word.replace('.wav','')
+    f1List, f2List = audioToVwlFormants(path, file_name)
+    if len(f1List) == 0:
+        return [], []
+    # words = ['frontHigh','backHigh','frontLow', 'backLow']
+    maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(f1List,f2List)
+    # F = Front, B = Back, H = High, L = Low
+    # if word == words[0]:
+    #     # make sure maxF2 and minF1 are acceptable for frontHigh
+    #     if minF1 >= 1000:
+    #         return [], []
+    #     elif maxF2 >= 3000:
+    #         return [], []
+    #     elif maxF2 - minF1 <= 2000:
+    #         return [], []
+    # elif word == words[1]:
+    #     # make sure maxF2 and minF1 are acceptable for backHigh
+    #     if minF1 <= 1500:
+    #         return [], []
+    #     elif minF2 <= 1500:
+    #         return [], []
+    #     elif abs(minF1 - minF2) >= 1000:
+    #         return [], []
+    # elif word == words[2]:
+    #     # make sure maxF2 and maxF1 are acceptable for frontLow
+    #     if maxF1 >= 1000:
+    #         return [], []
+    #     elif maxF2 >= 2500:
+    #         return [], []
+    #     elif abs(minF1 - minF2) >= 1500:
+    #         return [], []
+    # else:
+    #     # make sure minF2 and maxF1 are acceptable for backLow
+    #     if maxF1 >= 500:
+    #         return [], []
+    #     elif minF2 >= 3000:
+    #         return [], []
+    #     elif abs(minF1 - minF2) >= 1100:
+    #         return [], []
+    f1List = [maxF1, minF1]
+    f2List = [maxF1, minF1]
+
+    return f1List, f2List
+
+def maxAndMinOfFormants(f1List, f2List):
+    maxF1 = max(f1List)
+    minF1 = min(f1List)
+    maxF2 = max(f2List)
+    minF2 = min(f2List)
+    return maxF1, maxF2, minF1, minF2
+
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
     vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
@@ -110,7 +174,10 @@ def audioToVwlFormants(path,file_name):
     sound = parselmouth.Sound(file)
 
     # run file returns [sound object, text grid object]
+    print(file_name)
     vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
+    print(vowels, grid)
+    # grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)[0]
     intervals = grid.to_tgt().tiers[0].intervals
     # determine if vowel sounds are one continuous sound
     def cleanIntervalText(text):
@@ -156,29 +223,31 @@ def audioToVwlFormants(path,file_name):
                           preemphasis)
     numPoints = praat.call(pointProcess, "Get number of points")
     # get vowel either first or second
-    i = 1
-    noFormant = True
-    while noFormant == True and (i <= 2 or i <= len(sounds)):
-        f1_list = []
-        f2_list = []
-        fromIdx = sounds[f'vwl{i}'][0]
-        fromTime = intervals[fromIdx].start_time
-        toIdx = sounds[f'vwl{i}'][-1]
-        toTime = intervals[toIdx].end_time
-        for point in range(0, numPoints):
-            point += 1
-            t = praat.call(pointProcess, "Get time from index", point)
-            if t >= fromTime and t <= toTime:
-                f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
-                f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-                # filter out "nan"
-                if f1 > 0:
-                    f1_list.append(f1)
-                    f2_list.append(f2)
-        if len(f1_list) != 0:
-            noFormant = False
-        i+=1
-    return f1_list, f2_list
+    if len(intervals) != 0:
+        for i in range(1,len(intervals)+1):
+            print('information')
+            print(i, len(sounds), len(intervals))
+            f1_list = []
+            f2_list = []
+            fromIdx = sounds[f'vwl{i}'][0]
+            print(fromIdx)
+            fromTime = intervals[fromIdx].start_time
+            toIdx = sounds[f'vwl{i}'][-1]
+            toTime = intervals[toIdx].end_time
+            for point in range(0, numPoints):
+                point += 1
+                t = praat.call(pointProcess, "Get time from index", point)
+                if t >= fromTime and t <= toTime:
+                    f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+                    f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+                    # filter out "nan"
+                    if f1 > 0:
+                        f1_list.append(f1)
+                        f2_list.append(f2)
+            if len(f1_list) != 0:
+                return f1_list, f2_list
+    return [], []
+
 
 def condenseFormantList(formantList):
     length = len(formantList)
