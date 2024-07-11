@@ -70,6 +70,8 @@ export function toggleText(buttonId,svgId='NA',cal=false) {
 }
 
 function startRecording(word,cal,btnID,svgId) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = "";
     // Prepare the data to be sent to the server
     var requestData = {
         word: word, // Provide the word you want to record
@@ -105,11 +107,12 @@ function startRecording(word,cal,btnID,svgId) {
 }
 
 export function audioToJson(filePath, svgId,spa=false,cal=false) {
+    const messageElement = document.getElementById('message');
     console.log(`audio to json cal ${cal}`, typeof  cal)
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
     if (obj["gotAudio"] === "Quiet") {
-        messageElement.textContent = 'No sounds detected.'; // Display a user-friendly message
+        messageElement.textContent = "We weren't able to hear anything! Try speaking louder."; // Display a user-friendly message
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
 
