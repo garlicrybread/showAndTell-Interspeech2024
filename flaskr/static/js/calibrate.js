@@ -3,43 +3,45 @@ import {toggleText} from './myJS.js';
 import {drawVowelChart, getSvgCoordinates} from "./vwlChart.js";
 
 
-console.log('in vowelCalibration')
-const homeNavBtn = document.getElementById('homeNavBtn');
-const frontHighBtn = document.getElementById('frontHigh');
-const backHighBtn = document.getElementById('backHigh');
-const frontLowBtn = document.getElementById('frontLow');
-const backLowBtn = document.getElementById('backLow');
-const calibrateBtn = document.getElementById('calibrateBtn')
-const button = document.getElementById('btnUserId')
+if (window.location.href.includes("/vowelCalibration")) {
+    console.log('in vowelCalibration')
+    const homeNavBtn = document.getElementById('homeNavBtn');
+    const frontHighBtn = document.getElementById('frontHigh');
+    const backHighBtn = document.getElementById('backHigh');
+    const frontLowBtn = document.getElementById('frontLow');
+    const backLowBtn = document.getElementById('backLow');
+    const calibrateBtn = document.getElementById('calibrateBtn')
+    const button = document.getElementById('btnUserId')
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    const name = 'calibrate';
-    drawVowelChart(name); // Change 'pair1' to the ID of the first tab content
-    circlesOnEdges(name);
-});
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const name = 'calibrate';
+        drawVowelChart(name); // Change 'pair1' to the ID of the first tab content
+        circlesOnEdges(name);
+    });
 
-homeNavBtn.addEventListener('click', function () {
-    navigateToRoute('')
-});
+    homeNavBtn.addEventListener('click', function () {
+        navigateToRoute('')
+    });
 
-frontHighBtn.addEventListener('click', function () {
-    toggleText('frontHigh','NA',true)
-});
-backHighBtn.addEventListener('click', function () {
-    toggleText('backHigh', 'NA',true)
-});
-frontLowBtn.addEventListener('click', function () {
-    toggleText('frontLow', 'NA',true)
-});
-backLowBtn.addEventListener('click', function () {
-    toggleText('backLow', 'NA',true)
-});
+    frontHighBtn.addEventListener('click', function () {
+        toggleText('frontHigh', 'NA', true)
+    });
+    backHighBtn.addEventListener('click', function () {
+        toggleText('backHigh', 'NA', true)
+    });
+    frontLowBtn.addEventListener('click', function () {
+        toggleText('frontLow', 'NA', true)
+    });
+    backLowBtn.addEventListener('click', function () {
+        toggleText('backLow', 'NA', true)
+    });
 
-calibrateBtn.addEventListener('click', function () {
-    processCoordinateData()
-    processCoordinateData(true)
-});
-button.addEventListener("click", saveUserId);
+    calibrateBtn.addEventListener('click', function () {
+        processCoordinateData()
+        processCoordinateData(true)
+    });
+    button.addEventListener("click", saveUserId);
+}
 
 function processCoordinateData(spa=false) {
     fetch(`${calPath}/api/processCoordinateData`, {
