@@ -8,7 +8,7 @@ from flask import (
 )
 
 from flaskr.signalProcessing import (
-    audioToVwlFormants, formantsToJsonFormat, writeToJson
+    audioToVwlFormants, formantsToJsonFormat, writeToJson, maxAndMinOfFormants
 )
 from pprint import pprint
 bp = Blueprint('vowelCalibration', __name__, url_prefix='/vowelCalibration')
@@ -19,21 +19,24 @@ dataDir = 'static/participantData/'
 @bp.route('/api/processCoordinateData', methods=["POST"])
 def processCoordinateData():
     spa = request.get_json()['spa']
+    print(f'\n{spa, type(spa)}, spa')
     if spa:
         id = 'spaM0'
     else:
         id = current_app.config['USER_ID']
     rootDirectory = flaskrPath + dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
-    for path, dir, files in os.walk(rootDirectory):
-        for file in files:
-            if '.wav' in file:
-                print(f'in file {file}')
-                f1, f2 = audioToVwlFormants(path, file)
-                jsonName = f"{file.split('.')[0]}-vwlCal.json"
-                data = formantsToJsonFormat(f1, f2, True)
-                writeToJson(path, jsonName, data)
+    if not spa:
+        for path, dir, files in os.walk(rootDirectory):
+            for file in files:
+                if '.wav' in file:
+                    print(f'in file {file}')
+                    f1, f2 = audioToVwlFormants(path, file)
+                    jsonName = f"{file.split('.')[0]}-vwlCal.json"
+                    data = formantsToJsonFormat(f1, f2, True)
+                    writeToJson(path, jsonName, data)
     vowels = jsonToVowelPoints(rootDirectory)
+    print(f'in processCoordinateData {vowels}')
     coordinates = vowelChartCoordinates(vowels)
     if spa:
         transformArray(coordinates, svg, True)
@@ -75,28 +78,6 @@ def transformArray(actualCoordinates, svgCoordinates, spa=False):
     else:
         current_app.config.update(TRANSFORM_FREQ_SVG=transform)
     return transform
-
-def maxAndMinOfFormants(data):
-    maxF1 = data['vwl'][0]['f1']
-    maxF2 = data['vwl'][0]['f2']
-    minF1 = maxF1
-    minF2 = maxF2
-    f1 = 'f1'
-    f2 = 'f2'
-    for formants in data['vwl']:
-        # See if the f1 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f1] > maxF1:
-            maxF1 = formants[f1]
-        elif formants[f1] < minF1:
-            minF1 = formants[f1]
-        # See if the f2 formant is greater than the current max
-        # or if it is less than the current min
-        if formants[f2] > maxF2:
-            maxF2 = formants[f2]
-        elif formants[f2] < minF2:
-            minF2 = formants[f2]
-    return maxF1, maxF2, minF1, minF2
 
 def vowelChartCoordinates(vowels):
     ''' vowels is a dictionary {word: jsonFormatData} '''
