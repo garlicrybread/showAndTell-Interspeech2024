@@ -93,6 +93,48 @@ def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
 
+
+def analyzeformants(vowels,pointProcess):
+    time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
+    formant_ceiling = 5500
+    # higher window length to deal with smoothing
+    window_len = 0.025
+    preemphasis = 100
+
+    # num_formants = 5
+
+    ## Looping through the formant count
+    f_list_dict = {}
+    for num_formants in range(3,8):
+        formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
+                            preemphasis)
+                
+        numPoints = praat.call(pointProcess, "Get number of points")
+
+        ## Creating a list of list of for each formant
+        f_list_dict[num_formants] = [ [] for _ in range(num_formants) ]
+        
+
+        for point in range(0, numPoints):
+            point += 1
+            f_local = [ 0 for _ in range(num_formants)]
+            t = praat.call(pointProcess, "Get time from index", point)
+            for fmt in range(num_formants):
+                f_local[fmt] = praat.call(formants, "Get value at time", fmt+1, t, 'Hertz', 'Linear')
+            # f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+            # f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+            # filter out "nan"
+            if f_local[0] > 0:
+                for fmt in range(num_formants):
+                    f_list_dict[num_formants][fmt].append(f_local[fmt])
+                # f2_list.append(f2)
+
+    #### At this point we should have the formants and their values. Now analyze the values
+    # Analyze and then return the list of the two formants 
+
+
+    pass
+
 def audioToVwlFormants(path,file_name):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
     vocalToolKitDir = homeDir+"flaskr/plugin_VocalToolkit/"
