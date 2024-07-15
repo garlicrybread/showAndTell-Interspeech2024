@@ -81,24 +81,21 @@ def transformArray(actualCoordinates, svgCoordinates, spa=False):
 
 def vowelChartCoordinates(vowels):
     ''' vowels is a dictionary {word: jsonFormatData} '''
-    words = ['frontHigh','backHigh','frontLow', 'backLow']
     # F = Front, B = Back, H = High, L = Low
-    for word, vwls in vowels.items():
-        for vwl in vwls:
-            maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(vwl)
-            if word == words[0]:
-                xFH = maxF2
-                yFH = minF1
-            elif word == words[1]:
-                xBH = minF2
-                yBH = minF1
-            elif word == words[2]:
-                xFL = maxF2
-                yFL = maxF1
-            elif word == words[3]:
-                xBL = minF2
-                yBL = maxF1
+    # 0 - max formant, 1 - min formant
+    print('\nvowels')
+    print(vowels)
+    xFH = vowels['frontHigh']['f2List'][0]
+    yFH = vowels['frontHigh']['f1List'][1]
 
+    xBH = vowels['backHigh']['f2List'][1]
+    yBH = vowels['backHigh']['f1List'][1]
+
+    xFL = vowels['frontLow']['f2List'][0]
+    yFL = vowels['frontLow']['f1List'][0]
+
+    xBL= vowels['backLow']['f2List'][1]
+    yBL = vowels['backLow']['f1List'][0]
     # m = abs((yt - y1) / (xt - x1))
     # x3 = y4 / m
     # x range, y range (xmin, xmax, ymin, ymax)

@@ -40,45 +40,27 @@ def test_transformArray(app):
 
 def test_vowelChartCoordinates():
     # test the basic case
-    vowelsFH = [{'vwl': [{
-        "f1": 290.5,
-        "f2": 2300.6
-    },{
-        "f1": 177.0,
-        "f2": 2435.9
-    }]}]
+    # f1List = [maxF1, minF1]
+    # f2List = [maxF2, minF2]
+    f1min = 300
+    f1max = 800
+    f2min = 400
+    f2max = 3000
+    diff = 10
 
-    vowelsBH = [{'vwl': [{
-        "f1": 274.6,
-        "f2": 746.5
-    },{
-        "f1": 281.4,
-        "f2": 736.4
-    }]}]
+    vowelsFH = {"f1List":[f1min,f1min-diff],"f2List":[f2max,f2max-diff]}
+    vowelsBH = {"f1List":[f1min,f1min-diff],"f2List":[f2min,f2min-diff]}
+    vowelsFL = {"f1List":[f1max,f1max-diff],"f2List":[f2max,f2max-diff]}
+    vowelsBL = {"f1List":[f1max,f1max-diff],"f2List":[f2min,f2min-diff]}
 
-    vowelsFL = [{'vwl': [{
-        "f1": 860.4,
-        "f2": 2400.6
-    },{
-        "f1": 852.2,
-        "f2": 2393.6
-    }]}]
-
-    vowelsBL = [{'vwl': [{
-        "f1": 550.8,
-        "f2": 834.3
-    },{
-        "f1": 553.8,
-        "f2": 831.9
-    }]}]
     vowels = {
         'frontHigh': vowelsFH, 'backHigh': vowelsBH,
         'frontLow': vowelsFL, 'backLow':vowelsBL
     }
-    padf = 10
-    padb = 10
-    FH, BH = (2435.9+padf,177.0-padf), (736.4-padb,274.6-padb)
-    FL, BL = (2400.6+padf,860.4+padf), (831.9-padb,553.8+padb)
+    padf = 50
+    padb = 50
+    FH, BH = (f2max+padf,f1min-diff-padf), (f2min-diff-padb,f1min-diff-padb)
+    FL, BL = (f2max+padf,f1max+padf), (f2min-diff-padb,f1max+padb)
     calcFH, calcBH, calcFL, calcBL = vowelChartCoordinates(vowels)
     assert FH == calcFH
     assert BH == calcBH
@@ -88,7 +70,7 @@ def test_vowelChartCoordinates():
 def test_processCoordinateData(app,client,test_svgCoordinates):
     id = 'testData'
     path = DATA_DIR + f'{id}/vowelCalibration/'
-    data = {'gotAudio': path}
+    data = {'spa': path}
     with app.app_context():
         t = current_app.config['TRANSFORM_FREQ_SVG']
         current_app.config.update(SVG_COORDINATES=test_svgCoordinates)
