@@ -69,7 +69,6 @@ def create_app(test_config=None):
     if os.path.exists(spaFilePath):
         with open(spaFilePath) as f:
             transformSpa = f.read()
-            print(transformSpa)
 
 
     if test_config is None:
@@ -94,7 +93,6 @@ def create_app(test_config=None):
     # check to make sure we are at the correct directory level
     cwd = os.getcwd()
     ls = os.listdir(cwd)
-    print(cwd,ls)
     if "flaskr" not in ls and "test" not in cwd:
         print("moving into proVISweb")
         os.chdir(os.path.join(os.getcwd(),"pronunciation_VIS_web"))
