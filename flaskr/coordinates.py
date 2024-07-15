@@ -26,15 +26,6 @@ def processCoordinateData():
         id = current_app.config['USER_ID']
     rootDirectory = flaskrPath + dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
-    if not spa:
-        for path, dir, files in os.walk(rootDirectory):
-            for file in files:
-                if '.wav' in file:
-                    print(f'in file {file}')
-                    f1, f2 = audioToVwlFormants(path, file)
-                    jsonName = f"{file.split('.')[0]}-vwlCal.json"
-                    data = formantsToJsonFormat(f1, f2, True)
-                    writeToJson(path, jsonName, data)
     vowels = jsonToVowelPoints(rootDirectory)
     print(f'in processCoordinateData {vowels}')
     coordinates = vowelChartCoordinates(vowels)
@@ -113,8 +104,9 @@ def jsonToVowelPoints(rootDirectory):
     vowels = {}
     for path, dir, files in os.walk(rootDirectory):
         for file in files:
-            if '.json' in file:
+            if '-vwlCal.json' in file:
                 with open(path+file,'r') as f:
+                    print("file ", file)
                     data = json.load(f)
                     name,word,_ = file.split('-')
                     vowels[word] = data
