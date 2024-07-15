@@ -193,23 +193,6 @@ def test_formantsToJsonFormat(app, test_transform):
             for key in pair:
                 assert calcpair[key] == pair[key]
 
-        # two vowels test - cal
-        f1 = [390.5, 365.0, 150]
-        f2 = [1800.6, 1760.9, 1500]
-        data = [{'vwl': [{"f1": f1[0], "f2": f2[0]},
-                         {"f1": f1[1], 'f2': f2[1]},
-                         {"f1": f1[2], 'f2': f2[2]}
-                         ]
-                 }]
-        calcdata = formantsToJsonFormat(f1,f2,True)
-
-
-        # make sure data was calculated correctly
-        for idx, pair in enumerate(data[0]['vwl']):
-            calcpair = calcdata[0]['vwl'][idx]
-            for key in pair:
-                assert calcpair[key] == pair[key]
-
         # three "vowels" test
         f1 = [390.5, 365.0, 400, 410, 390, 180, 210, 240, 250, 500]
         f2 = [1800.6, 1760.9, 1720, 1705, 1700, 1400, 1450, 1425, 1450, 1610]

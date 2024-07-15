@@ -31,10 +31,11 @@ def processVwlData():
     if cal:
         f1List, f2List = calAudioToVwl(path, filename)
         jsonName = filename.split('.')[0] + '-vwlCal.json'
+        data = {"f1List":f1List,"f2List":f2List}
     else:
         f1List, f2List = audioToVwlFormants(path,filename)
         jsonName = filename.split('.')[0] + '.json'
-    data = formantsToJsonFormat(f1List,f2List,cal)
+        data = formantsToJsonFormat(f1List,f2List)
     if data == []:
         # unable to extract formants, probably didn't pick up voices but loud sounds instead
         return 'empty'
@@ -246,7 +247,6 @@ def audioToVwlFormants(path,file_name,cal=False):
                 return f1_list, f2_list
     return [], []
 
-
 def condenseFormantList(formantList):
     length = len(formantList)
     condensed = []
@@ -264,13 +264,12 @@ def condenseFormantList(formantList):
 
     return condensed
 
-def formantsToJsonFormat(f1List,f2List,cal=False):
-    data = []
+def formantsToJsonFormat(f1List,f2List):
     # condense the formant lists and write to json format
     vwlsDict = {"vwl": []}
-    if not cal:
-        f1List = condenseFormantList(f1List)
-        f2List = condenseFormantList(f2List)
+    data = []
+    f1List = condenseFormantList(f1List)
+    f2List = condenseFormantList(f2List)
 
     for vwl_idx in range(len(f1List)):
         f1_vwl = f1List[vwl_idx]
