@@ -36,7 +36,7 @@ def home():
 
 @bp.route('/vowelCalibration',methods=['GET'])
 def vowelCalibration():
-    return render_template('main/vowelCalibration.html')
+    return render_template('main/vowelCalibration.html',user_id=current_app.config['USER_ID'])
 
 
 # @bp.route("/google-callback", methods=["POST"])

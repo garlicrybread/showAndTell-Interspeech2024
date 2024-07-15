@@ -33,7 +33,7 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export function toggleText(buttonId,svgId='NA',cal=false) {
+export async function toggleText(buttonId,svgId='NA',cal=false) {
     console.log(`toggle Text cal ${cal}`, typeof  cal)
     var button = document.getElementById(buttonId);
     var loader_number;
@@ -67,6 +67,7 @@ export function toggleText(buttonId,svgId='NA',cal=false) {
         stopAnimation(loader_number);
     }
     console.log('end of toggling')
+    return 'done'
 }
 
 function startRecording(word,cal,btnID,svgId) {
@@ -135,16 +136,16 @@ export function audioToJson(filePath, svgId,spa=false,cal=false) {
         }
         return response.text();
     })
-    .then(data => {
+    .then(async data => {
         // Handle success
         const obj = JSON.parse(data)
         const [relfilepath, location] = obj['data']
         if (!cal) {
-            console.log('Formants extracted successfully:',relfilepath);
-            plotJson(relfilepath,svgId,spa)
+            console.log('Formants extracted successfully:', relfilepath);
+            plotJson(relfilepath, svgId, spa)
         } else {
             console.log(`calibration, ${cal}, location: ${location}, ${relfilepath}`)
-            changeCircleColor('#svg-calibrate',location,'green')
+            await changeCircleColor('#svg-calibrate', location, 'green');
         }
     })
     .catch(error => {

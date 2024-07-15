@@ -5,6 +5,7 @@ import {drawVowelChart, getSvgCoordinates} from "./vwlChart.js";
 
 if (window.location.href.includes("/vowelCalibration")) {
     console.log('in vowelCalibration')
+    const notCalColor = "#AF6868"
     const homeNavBtn = document.getElementById('homeNavBtn');
     const frontHighBtn = document.getElementById('frontHigh');
     const backHighBtn = document.getElementById('backHigh');
@@ -13,34 +14,41 @@ if (window.location.href.includes("/vowelCalibration")) {
     const calibrateBtn = document.getElementById('calibrateBtn')
     const button = document.getElementById('btnUserId')
 
-    document.addEventListener('DOMContentLoaded', (event) => {
+    document.addEventListener('DOMContentLoaded', async (event) => {
         const name = 'calibrate';
         drawVowelChart(name); // Change 'pair1' to the ID of the first tab content
-        circlesOnEdges(name);
+        await circlesOnEdges(name, notCalColor);
     });
+
 
     homeNavBtn.addEventListener('click', function () {
         navigateToRoute('')
     });
-
-    frontHighBtn.addEventListener('click', function () {
-        toggleText('frontHigh', 'NA', true)
-    });
-    backHighBtn.addEventListener('click', function () {
-        toggleText('backHigh', 'NA', true)
-    });
-    frontLowBtn.addEventListener('click', function () {
-        toggleText('frontLow', 'NA', true)
-    });
-    backLowBtn.addEventListener('click', function () {
-        toggleText('backLow', 'NA', true)
-    });
-
-    calibrateBtn.addEventListener('click', function () {
-        processCoordinateData()
-        processCoordinateData(true)
-    });
     button.addEventListener("click", saveUserId);
+    // get user id from url param
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId')
+
+    // make sure user is registered
+    if (userId !== null) {
+        frontHighBtn.disabled = false;
+        backHighBtn.disabled = false;
+        frontLowBtn.disabled = false;
+        backLowBtn.disabled = false;
+        const svgName = '#svg-calibrate';
+        frontHighBtn.addEventListener('click', async function () {
+            await toggleText('frontHigh', 'NA', true);
+        });
+        backHighBtn.addEventListener('click', async function () {
+            await toggleText('backHigh', 'NA', true);
+        });
+        frontLowBtn.addEventListener('click', async function () {
+            await toggleText('frontLow', 'NA', true);
+        });
+        backLowBtn.addEventListener('click', async function () {
+            await toggleText('backLow', 'NA', true);
+        });
+    }
 }
 
 function processCoordinateData(spa=false) {
@@ -91,13 +99,11 @@ async function saveUserId() {
     });
 }
 
-async function circlesOnEdges(svgId) {
+async function circlesOnEdges(svgId, color) {
     const svg = d3.select(`#svg-${svgId}`);
     const coordinates = await getSvgCoordinates();
-    console.log('coordinates');
-    console.log(coordinates)
     const circleRadius = 5;
-    const circleColor = "#AF6868";
+    const circleColor = color;
 
     // location goes from right to left top to bottom start at 0 and ending at 3
     coordinates.forEach(([x, y],index) => {
@@ -114,14 +120,27 @@ async function circlesOnEdges(svgId) {
 export async function changeCircleColor(svgId, location, newColor) {
     const svg = d3.select(`${svgId}`);
     const name = `#location-${location}`
-    console.log(name, svgId)
     const circle = svg.select(name);
-
-    // Debugging: Check if any circles are selected
-    console.log(`Selected circles: ${circle.size()}`);
-
+    const disabledColor = circle.attr('fill');
     circle.attr("fill", newColor);
     svg.select(`#location-${location}`)
         .attr("fill", newColor);
-}
 
+    // check to see if all circles have been colored in
+    const loc = '#location-'
+    for (let i = 0; i <= 3; i++) {
+        var cir = svg.select(loc+i);
+        if (cir.size() === 0) {
+            return false
+        }
+        if (cir.attr('fill') === disabledColor) {
+            return false
+        }
+    }
+    const calibrateBtn = document.getElementById('calibrateBtn')
+    calibrateBtn.disabled = false;
+    calibrateBtn.addEventListener('click', function () {
+        processCoordinateData()
+        processCoordinateData(true)
+    });
+}
