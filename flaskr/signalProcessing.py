@@ -23,7 +23,6 @@ bp = Blueprint('signalProcessing', __name__, url_prefix='/signalProcessing')
 @bp.route('/api/processVwlData', methods=["POST"])
 def processVwlData():
     data = request.get_json()
-    print(data)
     filePath = data['filePath']
     cal = data['cal']
     pathList = filePath.split('/')
@@ -35,7 +34,7 @@ def processVwlData():
     else:
         f1List, f2List = audioToVwlFormants(path,filename)
         jsonName = filename.split('.')[0] + '.json'
-    data = formantsToJsonFormat(f1List,f2List)
+    data = formantsToJsonFormat(f1List,f2List,cal)
     if data == []:
         # unable to extract formants, probably didn't pick up voices but loud sounds instead
         return 'empty'
@@ -48,12 +47,11 @@ def processVwlData():
     id, word, _ = jsonName.split('-')
     if cal:
         locations = ['frontHigh', 'backHigh', 'frontLow', 'backLow']
-        relPath = f'../../static/participantData /{id}/vowelCalibration/{jsonName}'
+        relPath = f'../../static/participantData/{id}/vowelCalibration/{jsonName}'
     else:
         locations = [word]
         relPath = f'../../static/participantData/{id}/{word}/{jsonName}'
     location = locations.index(word)
-    print(location)
     data = {'data': [relPath,str(location)]}
     return jsonify(data)
 
@@ -107,7 +105,6 @@ def svgToConfig():
 def getSvgCoordinates():
     coordinates = current_app.config['SVG_COORDINATES']
     return jsonify({'coordinates':coordinates})
-
 
 def mean(l):
     if len(l) != 0:
