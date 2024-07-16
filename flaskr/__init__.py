@@ -22,6 +22,9 @@ from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 # Internal imports
 # from flaskr.user import User
+import ast
+
+from pprint import pprint
 
 # Configuration
 # GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
@@ -67,8 +70,11 @@ def create_app(test_config=None):
     # read in the spanish transform if the file exists
     spaFilePath = flaskrPath + dataDir + 'spaM0/vowelCalibration/spaTransform.txt'
     if os.path.exists(spaFilePath):
-        with open(spaFilePath) as f:
-            transformSpa = f.read()
+
+        with open(spaFilePath, 'r') as f:
+            transformSpaStr = f.read()
+        transformSpa = ast.literal_eval(transformSpaStr)
+        app.config['TRANSFORM_SPA'] = transformSpa
 
 
     if test_config is None:
