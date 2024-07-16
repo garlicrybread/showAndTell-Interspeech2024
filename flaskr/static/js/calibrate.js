@@ -51,7 +51,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     }
 }
 
-function processCoordinateData(spa=false) {
+function processCoordinateData(btn,spa=false) {
     fetch(`${calPath}/api/processCoordinateData`, {
         method: 'POST',
         headers: {
@@ -68,10 +68,14 @@ function processCoordinateData(spa=false) {
     .then(result => {
         // Handle success
         console.log('Formants extracted successfully:',result);
+        btn.value = 'Success!';
+        btn.style.backgroundColor = "green";
     })
     .catch(error => {
         // Handle errors
+        const messageElement = document.getElementById('calMessage')
         console.error('Error processing data:', error);
+        messageElement.textContent = 'Unable to calibrate. Please try re-recording the words!'
     });
 }
 async function saveUserId() {
@@ -140,7 +144,7 @@ export async function changeCircleColor(svgId, location, newColor) {
     const calibrateBtn = document.getElementById('calibrateBtn')
     calibrateBtn.disabled = false;
     calibrateBtn.addEventListener('click', function () {
-        processCoordinateData()
-        processCoordinateData(true)
+        processCoordinateData(calibrateBtn)
+        processCoordinateData(calibrateBtn,true)
     });
 }

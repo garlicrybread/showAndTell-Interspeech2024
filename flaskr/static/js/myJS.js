@@ -160,7 +160,6 @@ function plotJson(filePath, svgId,spa=false) {
     }
 
     try {
-        console.log('spa ', spa)
         drawVowels(filePath, svgId, spa);
         messageElement.textContent = ''; // Clear message or provide a success message
     } catch (error) {
