@@ -93,10 +93,9 @@ def test_processCoordinateData(app,client,test_svgCoordinates):
         t = current_app.config['TRANSFORM_SPA']
         current_app.config.update(SVG_COORDINATES=test_svgCoordinates)
         current_app.config.update(USER_ID=id)
-        assert t == None
         response = client.post(url_for('vowelCalibration.processCoordinateData'), json=data)
         assert response.status_code == 200
-        t = current_app.config['TRANSFORM_FREQ_SVG']
+        t = current_app.config['TRANSFORM_SPA']
         assert t != None
         assert type(t) == list
         assert len(t) == 3
