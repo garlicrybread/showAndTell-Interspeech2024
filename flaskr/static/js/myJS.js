@@ -109,7 +109,6 @@ function startRecording(word,cal,btnID,svgId) {
 
 export function audioToJson(filePath, svgId,spa=false,cal=false) {
     const messageElement = document.getElementById('message');
-    console.log(`audio to json cal ${cal}`, typeof  cal)
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
     if (obj["gotAudio"] === "Quiet") {
@@ -119,7 +118,6 @@ export function audioToJson(filePath, svgId,spa=false,cal=false) {
 
     var requestData = {
         filePath: obj['gotAudio'], // Provide the word you want to record
-        spa: spa, // Set debug mode if needed
         cal: cal
     };
 
@@ -162,6 +160,7 @@ function plotJson(filePath, svgId,spa=false) {
     }
 
     try {
+        console.log('spa ', spa)
         drawVowels(filePath, svgId, spa);
         messageElement.textContent = ''; // Clear message or provide a success message
     } catch (error) {

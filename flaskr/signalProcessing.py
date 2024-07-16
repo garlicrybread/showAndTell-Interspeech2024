@@ -71,14 +71,15 @@ def freqToSVG():
         return (y - b) / m
     freq = request.get_json()['freq']
     spa = request.get_json()['spa']
+    print('in freq to svg, spa ', spa)
     tempList = [[freq['f2']],[freq['f1']],[1]]
     freq = np.array(tempList)
     # t is a 3x3
     if spa:
+        print('using spa transform')
         t = np.array(current_app.config['TRANSFORM_SPA'])
     else:
         t = np.array(current_app.config['TRANSFORM_FREQ_SVG'])
-    print(f"freq to svg {t}, {current_app.config['TRANSFORM_SPA']}")
     x,y,w = np.dot(t,freq).tolist()
     w = sum(w)
     x = sum(x)/w

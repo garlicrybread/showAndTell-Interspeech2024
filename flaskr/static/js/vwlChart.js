@@ -229,12 +229,11 @@ export async function drawVowelChart(svgId){
 
 export async function drawVowels(dataL1Path, svgId,spa=false) {
     // fetch json data
+    console.log('spa in drawVowels ', spa)
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
     const audioPath = dataL1Path.replace('.json', '.wav');
-    console.log('in draw vowels', svgId)
     const svg = d3.select(`#svg-${svgId}`);
-    console.log('svg first', svg)
     const strokeLinecap = "round";
     const glideMakerL1 = d3.line()
         .x(d => d.x)
@@ -244,7 +243,6 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
     const hoverColor = 'green';
     const strokeWidthDefault = 5;
     const strokeWidthHover = 8;
-    console.log('spa',spa)
 
     let colors;
     if (spa){
@@ -308,8 +306,8 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                         .attr("fill", colors[0]);
 
                 const pathData = await Promise.all(vowel.vwl.map(async d => ({
-                    x: await freqToSVG(d, 'x'),
-                    y: await freqToSVG(d, 'y')
+                    x: await freqToSVG(d, 'x', spa),
+                    y: await freqToSVG(d, 'y', spa)
                 })));
                 console.log('pathData',pathData,svg)
                 const pathElement = svg.append("path")
@@ -402,6 +400,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
         }
         // Update the colors of all elements
         if (spa) {
+            console.log('spa!!!')
             console.log(spaQueue)
             spaQueue.forEach((id, index) => {
                 // Select the element by its ID
@@ -505,7 +504,7 @@ export async function getSvgCoordinates() {
 
 async function freqToSVG(freq,axis,spa=false){
     // fetch json data
-    console.log('frequency', freq)
+    console.log('frequency, spa', freq, spa, typeof spa)
     const urlPath = `${processingPath}/api/freqToSVG`
     const data = {'freq':freq, 'spa':spa}
     const response = await fetch(urlPath, {
