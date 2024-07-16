@@ -225,8 +225,6 @@ def audioToVwlFormants(path,file_name,cal=False):
     # get vowel either first or second
     if len(intervals) != 0:
         for i in range(1,len(intervals)+1):
-            print('information')
-            print(i, len(sounds), len(intervals))
             f1_list = []
             f2_list = []
             fromIdx = sounds[f'vwl{i}'][0]
@@ -249,6 +247,7 @@ def audioToVwlFormants(path,file_name,cal=False):
     return [], []
 
 def condenseFormantList(formantList):
+    # condenses the formant list / smooths it out
     length = len(formantList)
     condensed = []
     num = 2
@@ -262,25 +261,33 @@ def condenseFormantList(formantList):
             condensed.append(mean(formantList))
         else:
             condensed.append(mean(formantList[num * i + num : length+1]))
-
     return condensed
 
 def formantsToJsonFormat(f1List,f2List):
     # condense the formant lists and write to json format
     vwlsDict = {"vwl": []}
     data = []
-    f1List = condenseFormantList(f1List)
-    f2List = condenseFormantList(f2List)
+    print('f1list', f1List)
+    idx = len(f1List) + 1
+    for i in range(1,len(f1List)):
+        diff = 250
+        if abs(f1List[i] - f1List[i-1]) > diff or abs(f2List[i] - f2List[i-1]) > diff:
+            idx = i
+            break
+    f1List = condenseFormantList(f1List[:idx])
+    f2List = condenseFormantList(f2List[:idx])
 
     for vwl_idx in range(len(f1List)):
         f1_vwl = f1List[vwl_idx]
         f2_vwl = f2List[vwl_idx]
         tempDict = {"f1": f1_vwl, "f2": f2_vwl}
         vwlsDict["vwl"].append(tempDict)
+
     if vwlsDict['vwl'] != []:
         data.append(vwlsDict)
 
     # Serializing json
+    print('data', data)
     return data
 
 def writeToJson(path, jsonName, data):

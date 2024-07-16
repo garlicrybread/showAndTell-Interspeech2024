@@ -52,6 +52,7 @@ if (window.location.href.includes("/vowelCalibration")) {
 }
 
 function processCoordinateData(btn,spa=false) {
+    const messageElement = document.getElementById('calMessage')
     fetch(`${calPath}/api/processCoordinateData`, {
         method: 'POST',
         headers: {
@@ -70,12 +71,15 @@ function processCoordinateData(btn,spa=false) {
         console.log('Formants extracted successfully:',result);
         btn.value = 'Success!';
         btn.style.backgroundColor = "green";
+        messageElement.textContent = '';
     })
     .catch(error => {
         // Handle errors
-        const messageElement = document.getElementById('calMessage')
         console.error('Error processing data:', error);
         messageElement.textContent = 'Unable to calibrate. Please try re-recording the words!'
+        btn.value = 'Calibrate!';
+        btn.style.backgroundColor = "";
+        btn.disabled = true;
     });
 }
 async function saveUserId() {

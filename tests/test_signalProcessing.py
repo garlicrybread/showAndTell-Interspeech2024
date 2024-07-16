@@ -175,14 +175,13 @@ def test_formantsToJsonFormat(app, test_transform):
             for key in pair:
                 assert calcpair[key] == pair[key]
 
-        # two vowels test, should be seen as one
-        f1 = [390.5, 365.0, 150, 210, 240, 250]
-        f2 = [1800.6, 1760.9, 1500, 1450, 1425, 1450]
-        mf1 = condenseFormantList(f1)
-        mf2 = condenseFormantList(f2)
+        # testing f1 out of range, f2 fine
+        f1 = [500,550,650,1500]
+        f2 = [400,400,400,400]
+        mf1 = condenseFormantList(f1[:3])
+        mf2 = condenseFormantList(f2[:3])
         data = [{'vwl': [{"f1": mf1[0], "f2": mf2[0]},
-                         {"f1": mf1[1], 'f2': mf2[1]},
-                         {"f1": mf1[2], 'f2': mf2[2]}
+                         {"f1": mf1[1], 'f2': mf2[1]}
                          ]
         }]
         calcdata = formantsToJsonFormat(f1,f2)
@@ -193,17 +192,13 @@ def test_formantsToJsonFormat(app, test_transform):
             for key in pair:
                 assert calcpair[key] == pair[key]
 
-        # three "vowels" test
-        f1 = [390.5, 365.0, 400, 410, 390, 180, 210, 240, 250, 500]
-        f2 = [1800.6, 1760.9, 1720, 1705, 1700, 1400, 1450, 1425, 1450, 1610]
-        mf1 = condenseFormantList(f1)
-        mf2 = condenseFormantList(f2)
+        # testing f2 out of range, f1 fine
+        f1 = [500,500,500,500,500,500]
+        f2 = [2000,1900,1950,1850,1300,1400]
+        mf1 = condenseFormantList(f1[:5])
+        mf2 = condenseFormantList(f2[:5])
         data = [{'vwl': [{"f1": mf1[0], "f2": mf2[0] },
-                         {"f1": mf1[1], "f2": mf2[1] },
-                         {"f1": mf1[2], "f2": mf2[2] },
-                         {"f1": mf1[3], "f2": mf2[3]},
-                         {"f1": mf1[4], "f2": mf2[4]}]
-
+                         {"f1": mf1[1], "f2": mf2[1] }]
         }]
         calcdata = formantsToJsonFormat(f1,f2)
 
