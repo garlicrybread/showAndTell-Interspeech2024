@@ -36,9 +36,9 @@ def processVwlData():
         f1List, f2List = audioToVwlFormants(path,filename)
         jsonName = filename.split('.')[0] + '.json'
         data = formantsToJsonFormat(f1List,f2List)
-    if data == []:
+    if data == [] or f1List == []:
         # unable to extract formants, probably didn't pick up voices but loud sounds instead
-        return 'empty'
+        return jsonify({'data': ['empty','empty']})
     print('------')
     print(filename)
     print(f"processVwlData")

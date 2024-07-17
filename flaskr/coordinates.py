@@ -27,7 +27,6 @@ def processCoordinateData():
     rootDirectory = flaskrPath + dataDir + id + '/vowelCalibration/'
     svg = current_app.config['SVG_COORDINATES']
     vowels = jsonToVowelPoints(rootDirectory)
-    print(f'in processCoordinateData {vowels}')
     coordinates = vowelChartCoordinates(vowels)
     if spa:
         transformArray(coordinates, svg, True)
@@ -68,6 +67,7 @@ def transformArray(actualCoordinates, svgCoordinates, spa=False):
             f.write(str(current_app.config['TRANSFORM_SPA']))
     else:
         current_app.config.update(TRANSFORM_FREQ_SVG=transform)
+    print('transform \n', transform)
     return transform
 
 def vowelChartCoordinates(vowels):

@@ -47,6 +47,7 @@ def create_app(test_config=None):
             MONGO_URI=f"{MONGODB}/testProVis",  # MongoDB connection string for testing
             TRANSFORM_FREQ_SVG= None,
             TRANSFORM_SPA= None,
+            TRANSFORM_TUTORIAL= None,
             SVG_COORDINATES=None,
             USER_ID=None
         )
@@ -57,6 +58,7 @@ def create_app(test_config=None):
             MONGO_URI=f"{MONGODB}/pronunciation_vis",  # MongoDB connection string for production
             TRANSFORM_FREQ_SVG = None,
             TRANSFORM_SPA= None,
+            TRANSFORM_TUTORIAL = None,
             SVG_COORDINATES = None,
             USER_ID = None
         )
@@ -69,13 +71,17 @@ def create_app(test_config=None):
 
     # read in the spanish transform if the file exists
     spaFilePath = flaskrPath + dataDir + 'spaM0/vowelCalibration/spaTransform.txt'
-    if os.path.exists(spaFilePath):
-
+    tutFilePath = flaskrPath + dataDir + 'tutorial/vowelCalibration/tutTransform.txt'
+    if os.path.exists(spaFilePath) and os.path.exists(tutFilePath):
         with open(spaFilePath, 'r') as f:
             transformSpaStr = f.read()
         transformSpa = ast.literal_eval(transformSpaStr)
         app.config['TRANSFORM_SPA'] = transformSpa
 
+        with open(tutFilePath, 'r') as f:
+            transformTutStr = f.read()
+        transformTut = ast.literal_eval(transformTutStr)
+        app.config['TRANSFORM_TUTORIAL'] = transformTut
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

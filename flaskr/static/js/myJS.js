@@ -98,7 +98,6 @@ function startRecording(word,cal,btnID,svgId) {
     .then(filePath => {
         // put the text back to record
         toggleText(btnID)
-        console.log(`startRecording finished, cal ${cal}`)
         audioToJson(filePath, svgId,false, cal)
     })
     .catch(error => {
@@ -142,8 +141,12 @@ export function audioToJson(filePath, svgId,spa=false,cal=false) {
             console.log('Formants extracted successfully:', relfilepath);
             plotJson(relfilepath, svgId, spa)
         } else {
-            console.log(`calibration, ${cal}, location: ${location}, ${relfilepath}`)
-            await changeCircleColor('#svg-calibrate', location, 'green');
+            if (relfilepath === 'empty') {
+                const messageElement = document.getElementById('message');
+                messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
+            } else {
+                await changeCircleColor('#svg-calibrate', location, 'green');
+            }
         }
     })
     .catch(error => {
