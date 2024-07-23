@@ -98,7 +98,7 @@ function startRecording(word,cal,btnID,svgId) {
     .then(filePath => {
         // put the text back to record
         toggleText(btnID)
-        audioToJson(filePath, svgId,false, cal)
+        audioToJson(filePath, svgId,btnID,false, cal)
     })
     .catch(error => {
         // Handle errors
@@ -106,7 +106,7 @@ function startRecording(word,cal,btnID,svgId) {
     });
 }
 
-export function audioToJson(filePath, svgId,spa=false,cal=false) {
+export function audioToJson(filePath, svgId,btnID,spa=false,cal=false) {
     const messageElement = document.getElementById('message');
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
@@ -146,6 +146,14 @@ export function audioToJson(filePath, svgId,spa=false,cal=false) {
                 messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
             } else {
                 await changeCircleColor('#svg-calibrate', location, '#34eba4');
+                const btn = document.getElementById(btnID);
+                const successColor = '#34eba4';
+                btn.value = 'Record again';
+                btn.style.backgroundColor = successColor;
+                const audioPath = relfilepath.replace('-vwlCal.json','.wav');
+                console.log('audio file ', audioPath);
+                console.log(typeof audioPath);
+                new Audio(audioPath).play();
             }
         }
     })

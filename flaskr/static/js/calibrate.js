@@ -69,8 +69,9 @@ function processCoordinateData(btn,spa=false) {
     .then(result => {
         // Handle success
         console.log('Formants extracted successfully:',result);
+        const successColor = '#34eba4';
         btn.value = 'Success!';
-        btn.style.backgroundColor = "green";
+        btn.style.backgroundColor = successColor;
         messageElement.textContent = '';
     })
     .catch(error => {
@@ -133,7 +134,24 @@ export async function changeCircleColor(svgId, location, newColor) {
     circle.attr("fill", newColor);
     svg.select(`#location-${location}`)
         .attr("fill", newColor)
-        .attr('r',8);
+        .attr('r',10);
+
+    // Get the circle's center coordinates
+    const cx = +circle.attr('cx');
+    const cy = +circle.attr('cy');
+
+    // Remove any existing checkmarks (if any)
+    circle.selectAll("text").remove();
+
+    // Add a checkmark inside the circle
+    d3.select("svg").append("text")
+        .attr("x", cx) // Center the text horizontally at the circle's center
+        .attr("y", cy) // Center the text vertically at the circle's center
+        .attr("dy", ".35em") // Adjust vertical alignment
+        .attr("text-anchor", "middle") // Center align the text
+        .attr("font-size", 10) // Adjust font size as needed
+        .attr("fill", "black") // Adjust color as needed
+        .text("✔");
 
     // check to see if all circles have been colored in
     const loc = '#location-'

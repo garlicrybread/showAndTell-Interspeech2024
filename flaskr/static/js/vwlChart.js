@@ -232,6 +232,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
     console.log('spa in drawVowels ', spa)
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
+    console.log(dataL1Path);
     const audioPath = dataL1Path.replace('.json', '.wav');
     const svg = d3.select(`#svg-${svgId}`);
     const strokeLinecap = "round";
