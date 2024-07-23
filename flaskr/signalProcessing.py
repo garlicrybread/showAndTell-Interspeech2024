@@ -214,7 +214,7 @@ def audioToVwlFormants(path,file_name,cal=False):
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
     # retrieve formants of vowels
     time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5500
+    formant_ceiling = 5000
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
