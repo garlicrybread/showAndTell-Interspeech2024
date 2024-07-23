@@ -6,4 +6,15 @@ label {text-align: center}
     line-height: 1.2; /* Optional: Adjust the line height for better readability */
 }
 
-
+.vowel-chart {
+    flex: 2; /* This allows the item to grow and shrink but bases it at 50% */
+    display: flex; /* Makes the child also a flex container */
+    justify-content: center; /* Centers the child content horizontally */
+    align-items: center; /* Centers the child content vertically */
+}
+.face-cutaway {
+    flex: 1; /* This allows the item to grow and shrink but bases it at 50% */
+    display: flex; /* Makes the child also a flex container */
+    justify-content: center; /* Centers the child content horizontally */
+    align-items: center; /* Centers the child content vertically */
+}
