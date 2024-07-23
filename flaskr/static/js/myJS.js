@@ -145,7 +145,7 @@ export function audioToJson(filePath, svgId,spa=false,cal=false) {
                 const messageElement = document.getElementById('message');
                 messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
             } else {
-                await changeCircleColor('#svg-calibrate', location, 'green');
+                await changeCircleColor('#svg-calibrate', location, '#34eba4');
             }
         }
     })

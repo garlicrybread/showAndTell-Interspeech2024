@@ -132,7 +132,8 @@ export async function changeCircleColor(svgId, location, newColor) {
     const disabledColor = circle.attr('fill');
     circle.attr("fill", newColor);
     svg.select(`#location-${location}`)
-        .attr("fill", newColor);
+        .attr("fill", newColor)
+        .attr('r',8);
 
     // check to see if all circles have been colored in
     const loc = '#location-'

@@ -27,28 +27,32 @@
             <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
                  alt="tongue height for front high vowel">
             <label>heat</label>
+            <label class="subtitle">(front high)</label>
             <input type="button" id="frontHigh" value="Start Recording" disabled>
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}" alt="tongue height for back high vowel">
             <label>hoot</label>
+            <label class="subtitle">(back high)</label>
             <input type="button" id="backHigh" value="Start Recording" disabled>
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}" alt="tongue height for front low vowel">
             <label>hat</label>
+            <label class="subtitle">(front low)</label>
             <input type="button" id="frontLow" value="Start Recording" disabled>
         </div>
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/backLow-faceCutaway.png') }}" alt="tongue height for back low vowel">
             <label>awe</label>
+            <label class="subtitle">(back low)</label>
             <input type="button" id="backLow" value="Start Recording" disabled>
         </div>
     </div>
 
 
     <div class="flex-col">
-        <svg id="svg-calibrate" width=100% length="auto" viewBox="0,0,400,300"></svg>
+        <svg id="svg-calibrate" width=50% length="auto" viewBox="0,0,400,300"></svg>
     </div>
 
     <div id="calMessage"></div>

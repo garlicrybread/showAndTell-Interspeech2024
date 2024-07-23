@@ -103,7 +103,8 @@ input[type=button] {
     border: none;
     border-radius: 5px;
     justify-content: center;
-    margin-top: 2em;
+    margin-bottom: 2em;
+    margin-top: 1em;
 }
 input[type=button]:hover:not(:disabled) { background-color: #8e81b1; }
 input[type=button]:active:not(:disabled) { background-color: #b6aece; }
