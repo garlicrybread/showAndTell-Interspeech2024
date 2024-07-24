@@ -59,10 +59,10 @@ if (hasQueryParam('vowelP5')) {
          drawVowelChart(svgId); // Change 'pair1' to the ID of the first tab content
          var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${svgId}0/spaM0-${svgId}`;
          var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
-         audioToJson(data,svgId,true);
+         audioToJson(data,svgId,'NA',true);
          spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${svgId}1/spaM0-${svgId}`;
          data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
-         audioToJson(data,svgId,true);
+         audioToJson(data,svgId,'NA',true);
     });
     const tutP5Btn = document.getElementById('tutP5Btn');
     tutP5Btn.addEventListener('click', function () {
