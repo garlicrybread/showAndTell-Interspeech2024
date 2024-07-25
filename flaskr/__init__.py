@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 # Internal imports
 # from flaskr.user import User
 import ast
-
+from flaskr.coordinates import processCoordinateData
 from pprint import pprint
 
 # Configuration
@@ -72,16 +72,22 @@ def create_app(test_config=None):
     # read in the spanish transform if the file exists
     spaFilePath = flaskrPath + dataDir + 'spaM0/vowelCalibration/spaTransform.txt'
     tutFilePath = flaskrPath + dataDir + 'tutorial/vowelCalibration/tutTransform.txt'
-    if os.path.exists(spaFilePath) and os.path.exists(tutFilePath):
+    try:
         with open(spaFilePath, 'r') as f:
             transformSpaStr = f.read()
         transformSpa = ast.literal_eval(transformSpaStr)
         app.config['TRANSFORM_SPA'] = transformSpa
+    except FileNotFoundError:
+        print('no spa file.')
 
+    try:
         with open(tutFilePath, 'r') as f:
             transformTutStr = f.read()
         transformTut = ast.literal_eval(transformTutStr)
         app.config['TRANSFORM_TUTORIAL'] = transformTut
+    except FileNotFoundError:
+        print('no tutorial transform. Creating it')
+
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

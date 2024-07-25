@@ -17,7 +17,13 @@ flaskrPath = f'{os.getcwd()}/flaskr/'
 dataDir = 'static/participantData/'
 
 @bp.route('/api/processCoordinateData', methods=["POST"])
-def processCoordinateData():
+def processCoordinateDataRoute():
+    # spa = request.get_json()['spa']
+    if current_app.config['TRANSFORM_SPA'] == None:
+        processCoordinateData(True)
+    return processCoordinateData()
+
+def processCoordinateData(spa=False):
     spa = request.get_json()['spa']
     print(f'\n{spa, type(spa)}, spa')
     if spa:
