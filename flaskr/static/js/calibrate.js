@@ -31,8 +31,12 @@ if (window.location.href.includes("/vowelCalibration")) {
         document.getElementById('userIdDiv').style.display = 'none';
 
         // Show the success message
-        document.getElementById('successMessage').style.display = 'flex';
-
+        const successDiv = document.getElementById('successMessage')
+        successDiv.style.display = 'flex';
+        // Hide the success message after 3 seconds
+        setTimeout(function() {
+            successDiv.style.display = 'none';
+        }, 3000);
     });
 
     // get user id from url param
@@ -40,25 +44,25 @@ if (window.location.href.includes("/vowelCalibration")) {
     const userId = urlParams.get('userId')
 
     // make sure user is registered
-    if (userId !== null) {
-        frontHighBtn.disabled = false;
-        backHighBtn.disabled = false;
-        frontLowBtn.disabled = false;
-        backLowBtn.disabled = false;
-        const svgName = '#svg-calibrate';
-        frontHighBtn.addEventListener('click', async function () {
-            await toggleText('frontHigh', 'NA', true);
-        });
-        backHighBtn.addEventListener('click', async function () {
-            await toggleText('backHigh', 'NA', true);
-        });
-        frontLowBtn.addEventListener('click', async function () {
-            await toggleText('frontLow', 'NA', true);
-        });
-        backLowBtn.addEventListener('click', async function () {
-            await toggleText('backLow', 'NA', true);
-        });
-    }
+    // if (userId !== null) {
+    //     frontHighBtn.disabled = false;
+    //     backHighBtn.disabled = false;
+    //     frontLowBtn.disabled = false;
+    //     backLowBtn.disabled = false;
+    //     const svgName = '#svg-calibrate';
+    //     frontHighBtn.addEventListener('click', async function () {
+    //         await toggleText('frontHigh', 'NA', true);
+    //     });
+    //     backHighBtn.addEventListener('click', async function () {
+    //         await toggleText('backHigh', 'NA', true);
+    //     });
+    //     frontLowBtn.addEventListener('click', async function () {
+    //         await toggleText('frontLow', 'NA', true);
+    //     });
+    //     backLowBtn.addEventListener('click', async function () {
+    //         await toggleText('backLow', 'NA', true);
+    //     });
+    // }
 }
 
 function processCoordinateData(btn,spa=false) {
