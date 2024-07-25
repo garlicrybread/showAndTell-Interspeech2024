@@ -11,8 +11,9 @@ if (window.location.href.includes("/vowelCalibration")) {
     const backHighBtn = document.getElementById('backHigh');
     const frontLowBtn = document.getElementById('frontLow');
     const backLowBtn = document.getElementById('backLow');
-    const calibrateBtn = document.getElementById('calibrateBtn')
-    const button = document.getElementById('btnUserId')
+    const calibrateBtn = document.getElementById('calibrateBtn');
+    const buttonUserId = document.getElementById('btnUserId');
+    const userIDDiv = document.getElementById('userIdDiv');
 
     document.addEventListener('DOMContentLoaded', async (event) => {
         const name = 'calibrate';
@@ -21,10 +22,19 @@ if (window.location.href.includes("/vowelCalibration")) {
     });
 
 
-    homeNavBtn.addEventListener('click', function () {
-        navigateToRoute('')
+    // homeNavBtn.addEventListener('click', function () {
+    //     navigateToRoute('')
+    // });
+    buttonUserId.addEventListener("click", function () {
+        saveUserId();
+        // Hide the form
+        document.getElementById('userIdDiv').style.display = 'none';
+
+        // Show the success message
+        document.getElementById('successMessage').style.display = 'flex';
+
     });
-    button.addEventListener("click", saveUserId);
+
     // get user id from url param
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId')

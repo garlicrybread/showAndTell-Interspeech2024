@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block content %}
+    <svg id="svg-calibrate" width=0% length="auto" viewBox="0,0,400,300"></svg>
     <p>Choose an id, record the following words, then click 'calibrate!'.</p>
     {#    User Id input field and button    #}
     <form>
@@ -39,11 +40,6 @@
                 <input type="button" id="frontLow" value="Start Recording" disabled>
             </div>
         </div>
-        <div class="flex-row vowel-chart">
-            <div class="flex-col">
-                <svg id="svg-calibrate" width=100% length="auto" viewBox="0,0,400,300"></svg>
-            </div>
-        </div>
         <div class="flex-row face-cutaway">
             <div class="flex-row">
                 <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}" alt="tongue height for back high vowel">
@@ -59,7 +55,6 @@
             </div>
         </div>
     </div>
-
 
 
     <div id="calMessage"></div>

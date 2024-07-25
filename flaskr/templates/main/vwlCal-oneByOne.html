@@ -1,0 +1,96 @@
+<!-- Template: auth/login.html -->
+{% extends 'base.html' %}
+
+{% block header %}
+    <div class="flex-col">
+        <h2>{% block title %}Speaker Calibration{% endblock %}</h2>
+{#        <div class="flex-col-right">#}
+{#            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >#}
+{#        </div>#}
+    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calibration.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="tabs">
+        <div class="tab active-tab" onclick="openTab(event, 'frontHigh')"></div>
+        <div class="tab" onclick="openTab(event, 'backHigh')"></div>
+        <div class="tab" onclick="openTab(event, 'frontLow')"></div>
+        <div class="tab" onclick="openTab(event, 'backLow')"></div>
+    </div>
+    <svg id="svg-calibrate" width=100% length="auto" viewBox="0,0,400,300" display="none"></svg>
+    <p>Choose an id, record the following words, then click 'calibrate!'.</p>
+    {#    User Id input field and button    #}
+    <div id="userIdDiv" style="display: flex">
+        <div class="flex-row">
+            <input name="userId" id="textInputId" placeholder="name (e.g. Zhen)" required>
+            <button type="submit" id="btnUserId">Save ID</button>
+        </div>
+    </div>
+    <div id="successMessage" style="display: none">ID submitted successfully!</div>
+
+    <hr>
+
+    <!-- Tab content for frontHigh -->
+    <div id="frontHigh" class="tab-content visible" style="display: flex">
+        <div class="flex-row">
+            <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
+                 alt="tongue height for front high vowel">
+            <label>heat</label>
+            <label class="subtitle">(front high)</label>
+            <input type="button" id="frontHigh" value="Start Recording" disabled>
+        </div>
+    </div>
+
+    <!-- Tab content for Pair 2 -->
+    <div id="pair2" class="tab-content" style="display: none">
+        <!-- Repeat the same structure for Pair 2 -->
+        <div class="flex-row">
+            <div class="flex-col">
+                <input type="button" id="p21" value="record audio">
+            </div>
+            <hr>
+            <div id="message"></div>
+            <div class="flex-col">
+                <svg id="svg-pair2" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <!-- Recordings and loader would go here, if applicable -->
+            <div id="recordingsList"></div>
+        </div>
+    </div>
+
+    <!-- Tab content for Pair 3 -->
+    <div id="pair3" class="tab-content" style="display: none;">
+        <!-- Repeat the same structure for Pair 3 -->
+        <div class="flex-row">
+            <div class="flex-col">
+                <input type="button" id="p31" value="record audio">
+            </div>
+            <hr>
+            <div id="message"></div>
+            <div class="flex-col">
+                <svg id="svg-pair3" width=100% length="auto" viewBox="0,0,400,300"></svg>
+            </div>
+            <!-- Recordings and loader would go here, if applicable -->
+            <div id="recordingsList"></div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/vwlChart.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/practice.js') }}"></script>
+{#    <script type="module" src="../../static/js/myJS.js"></script>#}
+
+
+    {#        <input type="button" class="next-btn" value=">" idnum="" >#}
+
+    <div id="recordingsList"></div>
+
+    <div class="loader loader1">
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+        <span class="stroke"></span>
+    </div>
+{% endblock %}
