@@ -69,7 +69,14 @@ export function openTab(evt, tabName) {
 
     // Show the current tab, and add an "active-content" class to the button that opened the tab
     document.getElementById(tabName).style.display = "flex";
-    evt.currentTarget.className += " active-tab";
+    if (window.location.href.includes('/practice')) {
+        evt.currentTarget.className += " active-tab";
+        practiceTabOpen(tabName);
+    };
+};
+
+
+function practiceTabOpen(tabName) {
     // load vowel chart for tab
     drawVowelChart(tabName);
     var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
@@ -78,6 +85,5 @@ export function openTab(evt, tabName) {
     spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
     data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
     audioToJson(data,tabName,'NA',true);
-};
-
+}
  // Optionally open the first tab by default on page load

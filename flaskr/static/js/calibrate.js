@@ -1,16 +1,17 @@
 import {navigateToRoute, calPath, audioToJson} from "./myJS.js";
 import {toggleText} from './myJS.js';
 import {drawVowelChart, getSvgCoordinates} from "./vwlChart.js";
+import {openTab} from "./practice.js";
 
 
 if (window.location.href.includes("/vowelCalibration")) {
     console.log('in vowelCalibration')
     const notCalColor = "#AF6868"
     const homeNavBtn = document.getElementById('homeNavBtn');
-    const frontHighBtn = document.getElementById('frontHigh');
-    const backHighBtn = document.getElementById('backHigh');
-    const frontLowBtn = document.getElementById('frontLow');
-    const backLowBtn = document.getElementById('backLow');
+    const frontHighBtn = document.getElementById('frontHighTab').getElementsByClassName('btnVwlCal')[0];
+    const backHighTab = document.getElementById('backHighTab');
+    const frontLowTab = document.getElementById('frontLowTab');
+    const backLowTab = document.getElementById('backLowTab');
     const calibrateBtn = document.getElementById('calibrateBtn');
     const buttonUserId = document.getElementById('btnUserId');
     const userIDDiv = document.getElementById('userIdDiv');
@@ -26,28 +27,36 @@ if (window.location.href.includes("/vowelCalibration")) {
     homeNavBtn.addEventListener('click', function () {
         navigateToRoute('')
     });
-    buttonUserId.addEventListener("click", function () {
-        saveUserId();
-        // Hide the form
-        document.getElementById('userIdDiv').style.display = 'none';
-        frontHighBtn.disabled = false;
-        // backHighBtn.disabled = false;
-        // frontLowBtn.disabled = false;
-        // backLowBtn.disabled = false;
-        const svgName = '#svg-calibrate';
-        frontHighBtn.addEventListener('click', async function () {
-            await toggleText('frontHigh', 'NA', true);
-        });
-        // backHighBtn.addEventListener('click', async function () {
-        //     await toggleText('backHigh', 'NA', true);
-        // });
-        // frontLowBtn.addEventListener('click', async function () {
-        //     await toggleText('frontLow', 'NA', true);
-        // });
-        // backLowBtn.addEventListener('click', async function () {
-        //     await toggleText('backLow', 'NA', true);
-        // });
 
+
+        // // Show the success message
+        // const successDiv = document.getElementById('successMessage')
+        // successDiv.style.display = 'flex';
+        // // Hide the success message after 3 seconds
+        // setTimeout(function() {
+        //     successDiv.style.display = 'none';
+        // }, 3000);
+    // });
+    buttonUserId.addEventListener("click", handleUserClick);
+    document.getElementsByClassName('btnVwlCal')[0].addEventListener('click', function () {
+        var tab = 0;
+        let yesBtn = document.getElementsByClassName('yesBtn')[tab];
+        recordingVwlCal('frontHigh',tab,yesBtn);
+        yesBtn.addEventListener('click', function () {
+            openTab('na','backHighTab');
+        });
+    })
+
+    document.getElementsByClassName('btnVwlCal')[1].addEventListener('click', function () {
+        var tab = 1;
+        let yesBtn = document.getElementsByClassName('yesBtn')[tab];
+        recordingVwlCal('frontHigh',tab,yesBtn);
+        yesBtn.addEventListener('click', function () {
+            openTab('na','backHighTab');
+        });
+    })
+    function handleUserClick() {
+        saveUserId();
         // Show the success message
         const successDiv = document.getElementById('successMessage')
         successDiv.style.display = 'flex';
@@ -55,33 +64,74 @@ if (window.location.href.includes("/vowelCalibration")) {
         setTimeout(function() {
             successDiv.style.display = 'none';
         }, 3000);
-    });
-
-    // get user id from url param
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId')
-    console.log('userId ', userId)
-
-    // make sure user is registered
-    if (userId !== null) {
+        document.getElementById('userIdDiv').style.display = 'none';
         frontHighBtn.disabled = false;
-        // backHighBtn.disabled = false;
-        // frontLowBtn.disabled = false;
-        // backLowBtn.disabled = false;
-        const svgName = '#svg-calibrate';
-        frontHighBtn.addEventListener('click', async function () {
-            await toggleText('frontHigh', 'NA', true);
-        });
-        // backHighBtn.addEventListener('click', async function () {
-        //     await toggleText('backHigh', 'NA', true);
-        // });
-        // frontLowBtn.addEventListener('click', async function () {
-        //     await toggleText('frontLow', 'NA', true);
-        // });
-        // backLowBtn.addEventListener('click', async function () {
-        //     await toggleText('backLow', 'NA', true);
-        // });
     }
+
+    async function handleSwitchingTabs(currentBtn, currentType, nextTabId, nextBtn, tabIndex) {
+        console.log('tab ', tabIndex);
+
+        // Ensure tabIndex is a valid number and within range
+        var yesBtnElements = document.getElementsByClassName('yesBtn');
+        if (tabIndex < 0 || tabIndex >= yesBtnElements.length) {
+            console.error('Invalid tabIndex:', tabIndex);
+            return;
+        }
+
+        var yesBtn = yesBtnElements[tabIndex];
+        // Await recordingVwlCal if it returns a promise
+        recordingVwlCal(currentBtn, currentType, tabIndex, yesBtn);
+
+        yesBtn.addEventListener('click', () => {
+            openTab('na', nextTabId);
+            console.log('tab ', tabIndex);
+
+            if (nextTabId === "backLowTab") {
+                nextBtn.addEventListener('click', () => handleLastStep(nextBtn, 'backLow', tabIndex));
+            } else {
+                let nextType = nextTabId === "backHighTab" ? 'backHigh' : 'frontLow';
+                let nextNextTabId = nextTabId === "backHighTab" ? 'frontLowTab' : 'backLowTab';
+                let nextNextBtn = nextTabId === "backHighTab" ? frontLowBtn : backLowBtn;
+                let nextTabIndex = tabIndex + 1; // Increment tabIndex for next step
+                nextBtn.addEventListener('click', () => handleSwitchingTabs(nextBtn, nextType, nextNextTabId, nextNextBtn, nextTabIndex));
+            }
+        });
+    };
+}
+
+async function handleLastStep(btn, type, tabIndex) {
+    console.log(`Handling last step: ${type} at tabIndex ${tabIndex}`);
+    var yesBtnElements = document.getElementsByClassName('yesBtn');
+    if (tabIndex < 0 || tabIndex >= yesBtnElements.length) {
+        console.error('Invalid tabIndex:', tabIndex);
+        return;
+    }
+
+    var yesBtn = yesBtnElements[tabIndex];
+    await recordingVwlCal(btn, type, tabIndex, yesBtn);
+    yesBtn.addEventListener('click', () => {
+        console.log('Final tab:', tabIndex);
+        navigateToRoute('');
+    });
+}
+
+async function recordingVwlCal(btnName,tab,yesBtn) {
+    const btn = document.getElementById(btnName);
+    const divmessage = document.getElementsByClassName('messageForTab')[0];
+    divmessage.style.display = 'none';
+    toggleText(btnName, 'NA', true, tab);
+    const noBtn = document.getElementsByClassName('noBtn')[tab];
+    const qPara = document.getElementsByClassName('questionQual')[tab];
+    console.log('frontbtn ',yesBtn);
+    noBtn.addEventListener('click', function () {
+        btn.disabled = false;
+        btn.value = 'Record';
+        yesBtn.style.display = 'none';
+        noBtn.style.display = 'none';
+        qPara.style.display = 'none';
+        divmessage.style.display = 'flex';
+
+    });
 }
 
 function processCoordinateData(btn,spa=false) {

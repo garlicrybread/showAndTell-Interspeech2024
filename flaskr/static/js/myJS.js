@@ -33,7 +33,7 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export async function toggleText(buttonId,svgId='NA',cal=false) {
+export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
     console.log(`toggle Text cal ${cal}`, typeof  cal)
     var button = document.getElementById(buttonId);
     var loader_number;
@@ -53,7 +53,7 @@ export async function toggleText(buttonId,svgId='NA',cal=false) {
     if (button.value !== "Recording...") {
         // Change the text content to "Don't click"
         button.value = "Calibrating...";
-        startRecording(buttonId,cal,buttonId, svgId);
+        startRecording(buttonId,cal,buttonId, svgId,tab);
         console.log('Microphone Being used', stream);
         setTimeout(changeToRecording,1250)
         //{showWaves && <div className="wave-animation"></div>}
@@ -70,7 +70,7 @@ export async function toggleText(buttonId,svgId='NA',cal=false) {
     return 'done'
 }
 
-function startRecording(word,cal,btnID,svgId) {
+function startRecording(word,cal,btnID,svgId,tab=0) {
     const messageElement = document.getElementById('message');
     messageElement.textContent = "";
     // Prepare the data to be sent to the server
@@ -98,7 +98,7 @@ function startRecording(word,cal,btnID,svgId) {
     .then(filePath => {
         // put the text back to record
         toggleText(btnID)
-        audioToJson(filePath, svgId,btnID,false, cal)
+        audioToJson(filePath, svgId,btnID,false, cal,tab)
     })
     .catch(error => {
         // Handle errors
@@ -106,7 +106,7 @@ function startRecording(word,cal,btnID,svgId) {
     });
 }
 
-export function audioToJson(filePath, svgId,btnID,spa=false,cal=false) {
+export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
     const messageElement = document.getElementById('message');
     const obj = JSON.parse(filePath);
     // Check if "gotAudio" is "Quiet"
@@ -154,13 +154,7 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false) {
                 const cacheBustingUrl = `${audioPath}?t=${new Date().getTime()}`;
                 const audio = new Audio(cacheBustingUrl);
                 audio.play();
-                const yesBtn = document.getElementsByClassName('yesBtn')[0];
-                const noBtn = document.getElementsByClassName('noBtn')[0];
-                const qPara = document.getElementsByClassName('questionQual')[0];
-                console.log('yesbtn ',yesBtn)
-                yesBtn.style.display = 'flex';
-                noBtn.style.display = 'flex';
-                qPara.style.display = 'flex'
+                recordedVwlCalWord(tab);
             }
         }
     })
@@ -168,6 +162,18 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false) {
         // Handle errors
         console.error('Error recording file:', error);
     });
+}
+
+async function recordedVwlCalWord(tab) {
+    const yesBtn = document.getElementsByClassName('yesBtn')[tab];
+    const noBtn = document.getElementsByClassName('noBtn')[tab];
+    const qPara = document.getElementsByClassName('questionQual')[tab];
+    console.log('yesbtn ',yesBtn)
+    yesBtn.style.display = 'flex';
+    noBtn.style.display = 'flex';
+    qPara.style.display = 'flex'
+    console.log(document.getElementsByClassName('yesBtn'))
+    return [yesBtn, noBtn]
 }
 
 function plotJson(filePath, svgId,spa=false) {
