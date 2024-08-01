@@ -4,9 +4,9 @@
 {% block header %}
     <div class="flex-col">
         <h2>{% block title %}Speaker Calibration{% endblock %}</h2>
-{#        <div class="flex-col-right">#}
-{#            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >#}
-{#        </div>#}
+        <div class="flex-col-right">
+            <input type="button" class="nav-btn" id="homeNavBtn" value="Home" >
+        </div>
     </div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calibration.css') }}">
 {% endblock %}
@@ -32,18 +32,22 @@
     <hr>
 
     <!-- Tab content for frontHigh -->
-    <div id="frontHigh" class="tab-content visible" style="display: flex">
+    <div id="frontHighTab" class="tab-content visible" style="display: flex">
         <div class="flex-row">
             <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
                  alt="tongue height for front high vowel">
             <label>heat</label>
             <label class="subtitle">(front high)</label>
             <input type="button" id="frontHigh" value="Start Recording" disabled>
+
+            <div class="questionQual" style="display: none">Did the recording capture you saying 'heat'?</div>
+            <input type="button" class="yesBtn" value="Yes" style="display: none;">
+            <input type="button" class="noBtn" value="No" style="display: none;">
         </div>
     </div>
 
     <!-- Tab content for Pair 2 -->
-    <div id="pair2" class="tab-content" style="display: none">
+    <div id="backHighTab" class="tab-content" style="display: none">
         <!-- Repeat the same structure for Pair 2 -->
         <div class="flex-row">
             <div class="flex-col">
@@ -60,7 +64,7 @@
     </div>
 
     <!-- Tab content for Pair 3 -->
-    <div id="pair3" class="tab-content" style="display: none;">
+    <div id="frontLowTab" class="tab-content" style="display: none;">
         <!-- Repeat the same structure for Pair 3 -->
         <div class="flex-row">
             <div class="flex-col">

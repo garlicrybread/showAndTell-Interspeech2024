@@ -145,15 +145,22 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false) {
                 const messageElement = document.getElementById('message');
                 messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
             } else {
-                await changeCircleColor('#svg-calibrate', location, '#34eba4');
                 const btn = document.getElementById(btnID);
                 const successColor = '#34eba4';
-                btn.value = 'Record again';
-                btn.style.backgroundColor = successColor;
+                btn.value = 'Recorded';
+                btn.disabled = true;
                 const audioPath = relfilepath.replace('-vwlCal.json','.wav');
-                console.log('audio file ', audioPath);
-                console.log(typeof audioPath);
-                new Audio(audioPath).play();
+                // Generate a unique URL to bypass the cache
+                const cacheBustingUrl = `${audioPath}?t=${new Date().getTime()}`;
+                const audio = new Audio(cacheBustingUrl);
+                audio.play();
+                const yesBtn = document.getElementsByClassName('yesBtn')[0];
+                const noBtn = document.getElementsByClassName('noBtn')[0];
+                const qPara = document.getElementsByClassName('questionQual')[0];
+                console.log('yesbtn ',yesBtn)
+                yesBtn.style.display = 'flex';
+                noBtn.style.display = 'flex';
+                qPara.style.display = 'flex'
             }
         }
     })

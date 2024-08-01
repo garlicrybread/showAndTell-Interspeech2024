@@ -14,6 +14,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     const calibrateBtn = document.getElementById('calibrateBtn');
     const buttonUserId = document.getElementById('btnUserId');
     const userIDDiv = document.getElementById('userIdDiv');
+    console.log('fronthigh ', document.getElementById('frontHigh'))
 
     document.addEventListener('DOMContentLoaded', async (event) => {
         const name = 'calibrate';
@@ -22,13 +23,30 @@ if (window.location.href.includes("/vowelCalibration")) {
     });
 
 
-    // homeNavBtn.addEventListener('click', function () {
-    //     navigateToRoute('')
-    // });
+    homeNavBtn.addEventListener('click', function () {
+        navigateToRoute('')
+    });
     buttonUserId.addEventListener("click", function () {
         saveUserId();
         // Hide the form
         document.getElementById('userIdDiv').style.display = 'none';
+        frontHighBtn.disabled = false;
+        // backHighBtn.disabled = false;
+        // frontLowBtn.disabled = false;
+        // backLowBtn.disabled = false;
+        const svgName = '#svg-calibrate';
+        frontHighBtn.addEventListener('click', async function () {
+            await toggleText('frontHigh', 'NA', true);
+        });
+        // backHighBtn.addEventListener('click', async function () {
+        //     await toggleText('backHigh', 'NA', true);
+        // });
+        // frontLowBtn.addEventListener('click', async function () {
+        //     await toggleText('frontLow', 'NA', true);
+        // });
+        // backLowBtn.addEventListener('click', async function () {
+        //     await toggleText('backLow', 'NA', true);
+        // });
 
         // Show the success message
         const successDiv = document.getElementById('successMessage')
@@ -42,27 +60,28 @@ if (window.location.href.includes("/vowelCalibration")) {
     // get user id from url param
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId')
+    console.log('userId ', userId)
 
     // make sure user is registered
-    // if (userId !== null) {
-    //     frontHighBtn.disabled = false;
-    //     backHighBtn.disabled = false;
-    //     frontLowBtn.disabled = false;
-    //     backLowBtn.disabled = false;
-    //     const svgName = '#svg-calibrate';
-    //     frontHighBtn.addEventListener('click', async function () {
-    //         await toggleText('frontHigh', 'NA', true);
-    //     });
-    //     backHighBtn.addEventListener('click', async function () {
-    //         await toggleText('backHigh', 'NA', true);
-    //     });
-    //     frontLowBtn.addEventListener('click', async function () {
-    //         await toggleText('frontLow', 'NA', true);
-    //     });
-    //     backLowBtn.addEventListener('click', async function () {
-    //         await toggleText('backLow', 'NA', true);
-    //     });
-    // }
+    if (userId !== null) {
+        frontHighBtn.disabled = false;
+        // backHighBtn.disabled = false;
+        // frontLowBtn.disabled = false;
+        // backLowBtn.disabled = false;
+        const svgName = '#svg-calibrate';
+        frontHighBtn.addEventListener('click', async function () {
+            await toggleText('frontHigh', 'NA', true);
+        });
+        // backHighBtn.addEventListener('click', async function () {
+        //     await toggleText('backHigh', 'NA', true);
+        // });
+        // frontLowBtn.addEventListener('click', async function () {
+        //     await toggleText('frontLow', 'NA', true);
+        // });
+        // backLowBtn.addEventListener('click', async function () {
+        //     await toggleText('backLow', 'NA', true);
+        // });
+    }
 }
 
 function processCoordinateData(btn,spa=false) {

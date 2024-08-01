@@ -29,7 +29,7 @@ dark:   #b30000
 "use strict";
 // window.addEventListener("load", drawVowelChart());
 export async function drawVowelChart(svgId){
-    console.log('in drawvowelchart')
+    console.log('in drawvowelchart ', svgId)
     const svg = d3.select(`#svg-${svgId}`);
     const vwlChrtProperties = await svgGetPadding(svg);
     const paddingVwlChrt = vwlChrtProperties.padding;
