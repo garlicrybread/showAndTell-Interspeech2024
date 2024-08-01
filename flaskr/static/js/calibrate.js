@@ -50,9 +50,9 @@ if (window.location.href.includes("/vowelCalibration")) {
     document.getElementsByClassName('btnVwlCal')[1].addEventListener('click', function () {
         var tab = 1;
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
-        recordingVwlCal('frontHigh',tab,yesBtn);
+        recordingVwlCal('backHigh',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
-            openTab('na','backHighTab');
+            openTab('na','frontLowTab');
         });
     })
     function handleUserClick() {
