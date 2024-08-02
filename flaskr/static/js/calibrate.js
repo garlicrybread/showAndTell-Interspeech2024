@@ -55,6 +55,25 @@ if (window.location.href.includes("/vowelCalibration")) {
             openTab('na','frontLowTab');
         });
     })
+
+    document.getElementsByClassName('btnVwlCal')[2].addEventListener('click', function () {
+        var tab = 2;
+        let yesBtn = document.getElementsByClassName('yesBtn')[tab];
+        recordingVwlCal('frontLow',tab,yesBtn);
+        yesBtn.addEventListener('click', function () {
+            openTab('na','backLowTab');
+        });
+    })
+
+    document.getElementsByClassName('btnVwlCal')[3].addEventListener('click', function () {
+        var tab = 3;
+        let yesBtn = document.getElementsByClassName('yesBtn')[tab];
+        recordingVwlCal('backLow',tab,yesBtn);
+        yesBtn.addEventListener('click', function () {
+            navigateToRoute('');
+        });
+    })
+
     function handleUserClick() {
         saveUserId();
         // Show the success message
@@ -130,7 +149,6 @@ async function recordingVwlCal(btnName,tab,yesBtn) {
         noBtn.style.display = 'none';
         qPara.style.display = 'none';
         divmessage.style.display = 'flex';
-
     });
 }
 
