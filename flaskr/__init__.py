@@ -65,7 +65,8 @@ def create_app(test_config=None):
         print("Development config")
 
     if 'MONGO_URI' in app.config:
-        app.config['MONGO'] = PyMongo(app)  # Initialize Flask-PyMongo with the app
+        # app.config['MONGO'] = PyMongo(app)  # Initialize Flask-PyMongo with the app
+        pass
     else:
         raise Exception("No MONGO_URI configuration found.")
 
@@ -84,6 +85,8 @@ def create_app(test_config=None):
         with open(tutFilePath, 'r') as f:
             transformTutStr = f.read()
         transformTut = ast.literal_eval(transformTutStr)
+        print(tutFilePath, "tut file path")
+        print(transformTut)
         app.config['TRANSFORM_TUTORIAL'] = transformTut
     except FileNotFoundError:
         print('no tutorial transform. Creating it')
