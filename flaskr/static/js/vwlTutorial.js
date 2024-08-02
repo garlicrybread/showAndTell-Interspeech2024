@@ -27,11 +27,14 @@ if (!hasQueryParam('vowelP1')) {
             const flPath = `${path}/frontLow.json`;
             const blPath = `${path}/backLow.json`;
             // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+            console.log("---")
+            console.log(fhPath,bhPath,flPath,blPath);
+            console.log("---")
             try {
-                drawVowels(fhPath, id);
-                drawVowels(bhPath, id);
-                drawVowels(flPath, id);
-                drawVowels(blPath, id);
+                drawVowels(fhPath, id, false,true);
+                drawVowels(bhPath, id, false,true);
+                drawVowels(flPath, id, false,true);
+                drawVowels(blPath, id, false,true);
                 // messageElement.textContent = ''; // Clear message or provide a success message
             } catch (error) {
                 console.error('Error drawing vowels:', error);

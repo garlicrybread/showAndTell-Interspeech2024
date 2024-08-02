@@ -34,7 +34,6 @@ export async function navigateToRoute(location) {
 }
 
 export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
-    console.log(`toggle Text cal ${cal}`, typeof  cal)
     var button = document.getElementById(buttonId);
     var loader_number;
     if (buttonId == "myButton") {
@@ -191,23 +190,7 @@ function plotJson(filePath, svgId,spa=false) {
         messageElement.textContent = 'Failed to process the file. Please check the console for more details.';
     }
 }
-// function startRecording() {
-//     navigator.mediaDevices.getUserMedia({
-//         audio: true
-//     }).then(stream => {
-//         mediaRecorders[recordingIndex] = new MediaRecorder(stream);
-//
-//         mediaRecorders[recordingIndex].ondataavailable = (e) => {
-//             chunks.push(e.data);
-//         };
-//
-//         mediaRecorders[recordingIndex].start();
-//
-//         stateIndex = 1; //meaning that i have started recording.
-//     }).catch(error => {
-//         console.log('Following error has occurred: ', error);
-//     });
-// }
+
 function startAnimation(loaderNumber) {
     var animationElement = document.querySelector(`.loader${loaderNumber}`);
     if (animationElement) {

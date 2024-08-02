@@ -227,7 +227,7 @@ export async function drawVowelChart(svgId){
         .attr("stroke-width", strokeWidth);
 }
 
-export async function drawVowels(dataL1Path, svgId,spa=false) {
+export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
     // fetch json data
     console.log('spa in drawVowels ', spa)
     const response1 = await fetch(dataL1Path);
@@ -307,8 +307,8 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                         .attr("fill", colors[0]);
 
                 const pathData = await Promise.all(vowel.vwl.map(async d => ({
-                    x: await freqToSVG(d, 'x', spa),
-                    y: await freqToSVG(d, 'y', spa)
+                    x: await freqToSVG(d, 'x', spa, tut),
+                    y: await freqToSVG(d, 'y', spa, tut)
                 })));
                 console.log('pathData',pathData,svg)
                 const pathElement = svg.append("path")
@@ -363,8 +363,8 @@ export async function drawVowels(dataL1Path, svgId,spa=false) {
                 // Draw individual points if no related data points found
                 // Await the computation of x and y coordinates before appending the circle
                 const coord = await Promise.resolve({
-                    cx: await freqToSVG(vowel.vwl[0], 'x',spa),
-                    cy: await freqToSVG(vowel.vwl[0], 'y',spa)
+                    cx: await freqToSVG(vowel.vwl[0], 'x',spa, tut),
+                    cy: await freqToSVG(vowel.vwl[0], 'y',spa, tut)
                 });
                 const circleElement = svg.append("circle")
                     .data([coord])
@@ -503,11 +503,11 @@ export async function getSvgCoordinates() {
     return data.coordinates;
 }
 
-async function freqToSVG(freq,axis,spa=false){
+async function freqToSVG(freq,axis,spa=false, tut=false){
     // fetch json data
     console.log('frequency, spa', freq, spa, typeof spa)
     const urlPath = `${processingPath}/api/freqToSVG`
-    const data = {'freq':freq, 'spa':spa}
+    const data = {'freq':freq, 'spa':spa, 'tut':tut}
     const response = await fetch(urlPath, {
         method: 'POST',
         headers: {
