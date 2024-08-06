@@ -231,12 +231,15 @@ def analyzeformants(vowels,pointProcess):
             f1_list = f_list_dict[num_formants][0]
             f2_list = f_list_dict[num_formants][1]
     #### At this point we should have the formants and their values. Now analyze the values
-    # Analyze and then return the list of the two formants 
+    # Analyze and then return the list of the two formants
+    print('---')
+    print(f'best formant {bestFmt}')
+    print('---')
     return f1_list,f2_list,bestFmt
 
 def audioToVwlFormants(path,file_name, cal=False):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
-    vocalToolKitDir = flaskrDir+"flaskr/plugin_VocalToolkit/"
+    vocalToolKitDir = flaskrDir+"plugin_VocalToolkit/"
     extractVwlFile = "extractvowelsNoViewAndEdit.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
@@ -287,35 +290,35 @@ def audioToVwlFormants(path,file_name, cal=False):
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
-<<<<<<< HEAD
-    preemphasis = 50
-    formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
-                          preemphasis)
-    numPoints = praat.call(pointProcess, "Get number of points")
-    # get vowel either first or second
-    if len(intervals) != 0:
-        for i in range(1,len(intervals)+1):
-            f1_list = []
-            f2_list = []
-            fromIdx = sounds[f'vwl{i}'][0]
-            print(fromIdx)
-            fromTime = intervals[fromIdx].start_time
-            toIdx = sounds[f'vwl{i}'][-1]
-            toTime = intervals[toIdx].end_time
-            for point in range(0, numPoints):
-                point += 1
-                t = praat.call(pointProcess, "Get time from index", point)
-                if t >= fromTime and t <= toTime:
-                    f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
-                    f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-                    # filter out "nan"
-                    if f1 > 0:
-                        f1_list.append(f1)
-                        f2_list.append(f2)
-            if len(f1_list) != 0:
-                return f1_list, f2_list
-    return [], []
-=======
+# <<<<<<< HEAD
+#     preemphasis = 50
+#     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
+#                           preemphasis)
+#     numPoints = praat.call(pointProcess, "Get number of points")
+#     # get vowel either first or second
+#     if len(intervals) != 0:
+#         for i in range(1,len(intervals)+1):
+#             f1_list = []
+#             f2_list = []
+#             fromIdx = sounds[f'vwl{i}'][0]
+#             print(fromIdx)
+#             fromTime = intervals[fromIdx].start_time
+#             toIdx = sounds[f'vwl{i}'][-1]
+#             toTime = intervals[toIdx].end_time
+#             for point in range(0, numPoints):
+#                 point += 1
+#                 t = praat.call(pointProcess, "Get time from index", point)
+#                 if t >= fromTime and t <= toTime:
+#                     f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+#                     f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+#                     # filter out "nan"
+#                     if f1 > 0:
+#                         f1_list.append(f1)
+#                         f2_list.append(f2)
+#             if len(f1_list) != 0:
+#                 return f1_list, f2_list
+#     return [], []
+# =======
     preemphasis = 100
 
     # #[Dip] We will put this section under a function and then analyze the values ( our metric ) to select the optimal num_formant 
@@ -343,7 +346,6 @@ def audioToVwlFormants(path,file_name, cal=False):
     f1_list,f2_list,fmtNum = analyzeformants(vowels,pointProcess)
     print(fmtNum,f1_list,f2_list)
     return f1_list, f2_list
->>>>>>> main/dipayan
 
 def condenseFormantList(formantList):
     # condenses the formant list / smooths it out
