@@ -115,9 +115,13 @@ function startRecording(word,cal,btnID,svgId,tab=0) {
 export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
     const messageElement = document.getElementById('message');
     const obj = JSON.parse(filePath);
+    const btn = document.getElementById(btnID);
     // Check if "gotAudio" is "Quiet"
     if (obj["gotAudio"] === "Quiet") {
         messageElement.textContent = "We weren't able to hear anything! Try speaking louder."; // Display a user-friendly message
+        btn.disabled = false;
+        btn.style.display = 'flex';
+
         return 'empty'; // You might not need to return 'empty' unless it's used elsewhere
     }
 
@@ -148,13 +152,14 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
              await plotJson(relfilepath, svgId, spa);
              console.log('things should be done plotting');
              console.log('-----');
-             const btn = document.getElementById(btnID);
              btn.disabled = false;
              btn.style.display = 'flex';
         } else {
             if (relfilepath === 'empty') {
                 const messageElement = document.getElementById('message');
                 messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
+                btn.disabled = false;
+                btn.style.display = 'flex';
             } else {
                 const btn = document.getElementById(btnID);
                 const successColor = '#34eba4';
