@@ -66,9 +66,9 @@ export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
         console.log('Stopped Using mic:', stream);
         //addNewAudioBar(buttonId);
         button.style.backgroundColor = "";
+        button.style.display = 'none';
         paraInstructions.innerHTML= "";
         paraInstructions.style.display = 'none';
-        // stopAnimation(loader_number);
     }
     console.log('end of toggling')
     return 'done'
@@ -145,7 +145,12 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
         const [relfilepath, location] = obj['data']
         if (!cal) {
             console.log('Formants extracted successfully:', relfilepath);
-            plotJson(relfilepath, svgId, spa)
+             await plotJson(relfilepath, svgId, spa);
+             console.log('things should be done plotting');
+             console.log('-----');
+             const btn = document.getElementById(btnID);
+             btn.disabled = false;
+             btn.style.display = 'flex';
         } else {
             if (relfilepath === 'empty') {
                 const messageElement = document.getElementById('message');
@@ -182,7 +187,7 @@ async function recordedVwlCalWord(tab) {
     return [yesBtn, noBtn]
 }
 
-function plotJson(filePath, svgId,spa=false) {
+async function plotJson(filePath, svgId,spa=false) {
     const messageElement = document.getElementById('message');
     if (filePath === 'empty') {
         messageElement.textContent = 'No vowels detected.'; // Display a user-friendly message
@@ -190,8 +195,8 @@ function plotJson(filePath, svgId,spa=false) {
     }
 
     try {
-        drawVowels(filePath, svgId, spa);
         messageElement.textContent = ''; // Clear message or provide a success message
+        await drawVowels(filePath, svgId, spa);
     } catch (error) {
         console.error('Error drawing vowels:', error);
         messageElement.textContent = 'Failed to process the file. Please check the console for more details.';

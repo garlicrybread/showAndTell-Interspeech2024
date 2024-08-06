@@ -22,31 +22,28 @@
      });
 
      const p11btn = 'p11'
-     const p12btn = 'p12'
      const p21btn = 'p21'
-     const p22btn = 'p22'
      const p31btn = 'p31'
-     const p32btn = 'p32'
      // define strings for svg ids
      const svgP1 = 'pair1'
      const svgP2 = 'pair2'
      const svgP3 = 'pair3'
      document.getElementById(p11btn).addEventListener("click", function () {
-         toggleText(p11btn, svgP1);
+         toggleText(p11btn, svgP1,false,0);
      });
      // document.getElementById(p12btn).addEventListener("click", function () {
      //     toggleText(p12btn, svgP1);
      // });
 
      document.getElementById(p21btn).addEventListener("click", function () {
-         toggleText(p21btn, svgP2);
+         toggleText(p21btn, svgP2, false, 1);
      });
      // document.getElementById(p22btn).addEventListener("click", function () {
      //     toggleText(p22btn, svgP2);
      // });
 
      document.getElementById(p31btn).addEventListener("click", function () {
-         toggleText(p31btn, svgP3);
+         toggleText(p31btn, svgP3, false, 2);
      });
  }
  // document.getElementById(p32btn).addEventListener("click", function () {
