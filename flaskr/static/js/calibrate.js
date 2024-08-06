@@ -28,15 +28,6 @@ if (window.location.href.includes("/vowelCalibration")) {
         navigateToRoute('')
     });
 
-
-        // // Show the success message
-        // const successDiv = document.getElementById('successMessage')
-        // successDiv.style.display = 'flex';
-        // // Hide the success message after 3 seconds
-        // setTimeout(function() {
-        //     successDiv.style.display = 'none';
-        // }, 3000);
-    // });
     buttonUserId.addEventListener("click", handleUserClick);
     document.getElementsByClassName('btnVwlCal')[0].addEventListener('click', function () {
         var tab = 0;
@@ -70,6 +61,7 @@ if (window.location.href.includes("/vowelCalibration")) {
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
         recordingVwlCal('backLow',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
+            processCoordinateData(calibrateBtn,false);
             navigateToRoute('');
         });
     })
@@ -86,52 +78,6 @@ if (window.location.href.includes("/vowelCalibration")) {
         document.getElementById('userIdDiv').style.display = 'none';
         frontHighBtn.disabled = false;
     }
-
-    async function handleSwitchingTabs(currentBtn, currentType, nextTabId, nextBtn, tabIndex) {
-        console.log('tab ', tabIndex);
-
-        // Ensure tabIndex is a valid number and within range
-        var yesBtnElements = document.getElementsByClassName('yesBtn');
-        if (tabIndex < 0 || tabIndex >= yesBtnElements.length) {
-            console.error('Invalid tabIndex:', tabIndex);
-            return;
-        }
-
-        var yesBtn = yesBtnElements[tabIndex];
-        // Await recordingVwlCal if it returns a promise
-        recordingVwlCal(currentBtn, currentType, tabIndex, yesBtn);
-
-        yesBtn.addEventListener('click', () => {
-            openTab('na', nextTabId);
-            console.log('tab ', tabIndex);
-
-            if (nextTabId === "backLowTab") {
-                nextBtn.addEventListener('click', () => handleLastStep(nextBtn, 'backLow', tabIndex));
-            } else {
-                let nextType = nextTabId === "backHighTab" ? 'backHigh' : 'frontLow';
-                let nextNextTabId = nextTabId === "backHighTab" ? 'frontLowTab' : 'backLowTab';
-                let nextNextBtn = nextTabId === "backHighTab" ? frontLowBtn : backLowBtn;
-                let nextTabIndex = tabIndex + 1; // Increment tabIndex for next step
-                nextBtn.addEventListener('click', () => handleSwitchingTabs(nextBtn, nextType, nextNextTabId, nextNextBtn, nextTabIndex));
-            }
-        });
-    };
-}
-
-async function handleLastStep(btn, type, tabIndex) {
-    console.log(`Handling last step: ${type} at tabIndex ${tabIndex}`);
-    var yesBtnElements = document.getElementsByClassName('yesBtn');
-    if (tabIndex < 0 || tabIndex >= yesBtnElements.length) {
-        console.error('Invalid tabIndex:', tabIndex);
-        return;
-    }
-
-    var yesBtn = yesBtnElements[tabIndex];
-    await recordingVwlCal(btn, type, tabIndex, yesBtn);
-    yesBtn.addEventListener('click', () => {
-        console.log('Final tab:', tabIndex);
-        navigateToRoute('');
-    });
 }
 
 async function recordingVwlCal(btnName,tab,yesBtn) {

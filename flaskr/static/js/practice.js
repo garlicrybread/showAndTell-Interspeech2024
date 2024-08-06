@@ -5,12 +5,13 @@
      document.addEventListener('DOMContentLoaded', (event) => {
          const tabName = 'pair1';
          drawVowelChart(tabName); // Change 'pair1' to the ID of the first tab content
-         var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
-         var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
-         audioToJson(data,tabName,'NA',true);
-         spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
-         data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
-         audioToJson(data,tabName,'NA',true);
+         practiceTabOpen(tabName);
+         // var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
+         // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+         // audioToJson(data,tabName,'NA',true);
+         // spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
+         // data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
+         // audioToJson(data,tabName,'NA',true);
      });
      window.openTab = openTab
 
@@ -76,14 +77,15 @@ export function openTab(evt, tabName) {
 };
 
 
-function practiceTabOpen(tabName) {
+export function practiceTabOpen(svgId) {
     // load vowel chart for tab
-    drawVowelChart(tabName);
-    var spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}0/spaM0-${tabName}`;
-    var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
-    audioToJson(data,tabName,'NA',true);
-    spaPath = `/Users/hearth/PycharmProjects/showAndTell-SP24/flaskr/static/participantData/spaM0/${tabName}1/spaM0-${tabName}`;
-    data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
-    audioToJson(data,tabName,'NA',true);
+    drawVowelChart(svgId);
+    const homeDirPath = '../../static/participantData/spaM0/'
+    var spaPath = `${homeDirPath}${svgId}0/spaM0-${svgId}0.json`;
+    // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
+    drawVowels(spaPath,svgId,true);
+    spaPath = `${homeDirPath}${svgId}1/spaM0-${svgId}1.json`;
+    // data = `{"gotAudio": "${spaPath}1-p1.wav"}`;
+    drawVowels(spaPath,svgId,true);
 }
  // Optionally open the first tab by default on page load

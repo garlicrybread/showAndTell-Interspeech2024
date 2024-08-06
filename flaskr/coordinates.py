@@ -24,8 +24,6 @@ def processCoordinateDataRoute():
     return processCoordinateData()
 
 def processCoordinateData(spa=False):
-    spa = request.get_json()['spa']
-    print(f'\n{spa, type(spa)}, spa')
     if spa:
         id = 'spaM0'
     else:
@@ -68,8 +66,9 @@ def transformArray(actualCoordinates, svgCoordinates, spa=False):
     transform = [x,y,w]
     if spa:
         current_app.config.update(TRANSFORM_SPA=transform)
-        spaFilePath = flaskrPath + dataDir + 'vowelCalibration/spaTransform.txt'
-        with open(flaskrPath+dataDir+'spaM0/vowelCalibration/spaTransform.txt', 'w') as f:
+        id = 'spaM0'
+        spaFilePath = flaskrPath + dataDir + f'{id}/vowelCalibration/spaTransform.txt'
+        with open(spaFilePath, 'w') as f:
             f.write(str(current_app.config['TRANSFORM_SPA']))
     else:
         current_app.config.update(TRANSFORM_FREQ_SVG=transform)
