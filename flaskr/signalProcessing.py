@@ -170,9 +170,73 @@ def maxAndMinOfFormants(f1List, f2List):
     minF2 = min(f2List)
     return maxF1, maxF2, minF1, minF2
 
-def audioToVwlFormants(path,file_name,cal=False):
+def metricFmt(fmtList,alpha=0.8,linear=0):
+    lenfmt = len(fmtList)
+    mtr = np.std(fmtList[0])
+    mtr += np.std(fmtList[1])
+    count = 2
+    if linear == 1:
+        for i in range(2,lenfmt):
+            mtr += alpha*np.std(fmtList[i])
+            count += alpha
+    else:
+        for i in range(2,lenfmt):
+            mtr += pow(alpha,i-1) * np.std(fmtList[i])
+            count += pow(alpha,i-1)
+    mtr = mtr/count
+    return mtr
+
+def analyzeformants(vowels,pointProcess):
+    time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
+    formant_ceiling = 5500
+    # higher window length to deal with smoothing
+    window_len = 0.025
+    preemphasis = 100
+
+    # num_formants = 5
+
+    ## Looping through the formant count
+    f_list_dict = {}
+    bestMetric = 9223372036854775807 ## sys.maxsize
+    f1_list = []
+    f2_list = []
+    bestFmt = 0
+    for num_formants in range(3,8):
+        formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
+                            preemphasis)
+                
+        numPoints = praat.call(pointProcess, "Get number of points")
+
+        ## Creating a list of list of for each formant
+        f_list_dict[num_formants] = [ [] for _ in range(num_formants) ]
+        
+
+        for point in range(0, numPoints):
+            point += 1
+            f_local = [ 0 for _ in range(num_formants)]
+            t = praat.call(pointProcess, "Get time from index", point)
+            for fmt in range(num_formants):
+                f_local[fmt] = praat.call(formants, "Get value at time", fmt+1, t, 'Hertz', 'Linear')
+            # f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+            # f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+            # filter out "nan"
+            if f_local[0] > 0:
+                for fmt in range(num_formants):
+                    f_list_dict[num_formants][fmt].append(f_local[fmt])
+                # f2_list.append(f2)
+        metricVal = metricFmt(f_list_dict[num_formants])
+        if metricVal < bestMetric:
+            bestMetric = metricVal
+            bestFmt = num_formants
+            f1_list = f_list_dict[num_formants][0]
+            f2_list = f_list_dict[num_formants][1]
+    #### At this point we should have the formants and their values. Now analyze the values
+    # Analyze and then return the list of the two formants 
+    return f1_list,f2_list,bestFmt
+
+def audioToVwlFormants(path,file_name, cal=False):
     # vocalToolKitDir = '~/plugin_VocalToolkit/'
-    vocalToolKitDir = flaskrDir +'plugin_VocalToolkit/'
+    vocalToolKitDir = flaskrDir+"flaskr/plugin_VocalToolkit/"
     extractVwlFile = "extractvowelsNoViewAndEdit.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
@@ -223,6 +287,7 @@ def audioToVwlFormants(path,file_name,cal=False):
     num_formants = 5
     # higher window length to deal with smoothing
     window_len = 0.025
+<<<<<<< HEAD
     preemphasis = 50
     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                           preemphasis)
@@ -250,6 +315,35 @@ def audioToVwlFormants(path,file_name,cal=False):
             if len(f1_list) != 0:
                 return f1_list, f2_list
     return [], []
+=======
+    preemphasis = 100
+
+    # #[Dip] We will put this section under a function and then analyze the values ( our metric ) to select the optimal num_formant 
+    # formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
+    #                       preemphasis)
+             
+    # numPoints = praat.call(pointProcess, "Get number of points")
+    # f1_list = []
+    # f2_list = []
+    # # f_3,4..7 = []
+    # for point in range(0, numPoints):
+    #     point += 1
+    #     t = praat.call(pointProcess, "Get time from index", point)
+    #     f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
+    #     f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
+    #     # filter out "nan"
+    #     if f1 > 0:
+    #         f1_list.append(f1)
+    #         f2_list.append(f2)
+
+    
+    # print(f1_list,f2_list)
+    # # [Dip] end of previous code
+
+    f1_list,f2_list,fmtNum = analyzeformants(vowels,pointProcess)
+    print(fmtNum,f1_list,f2_list)
+    return f1_list, f2_list
+>>>>>>> main/dipayan
 
 def condenseFormantList(formantList):
     # condenses the formant list / smooths it out
