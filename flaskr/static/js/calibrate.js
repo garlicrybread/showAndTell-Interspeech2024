@@ -82,19 +82,19 @@ if (window.location.href.includes("/vowelCalibration")) {
 
 async function recordingVwlCal(btnName,tab,yesBtn) {
     const btn = document.getElementById(btnName);
-    const divmessage = document.getElementsByClassName('messageForTab')[0];
+    const divmessage = document.getElementsByClassName('recordingInstructions')[tab];
     divmessage.style.display = 'none';
     toggleText(btnName, 'NA', true, tab);
     const noBtn = document.getElementsByClassName('noBtn')[tab];
     const qPara = document.getElementsByClassName('questionQual')[tab];
     console.log('frontbtn ',yesBtn);
     noBtn.addEventListener('click', function () {
+        btn.style.display = 'flex';
+        btn.value = "Start";
         btn.disabled = false;
-        btn.value = 'Record';
         yesBtn.style.display = 'none';
         noBtn.style.display = 'none';
         qPara.style.display = 'none';
-        divmessage.style.display = 'flex';
     });
 }
 

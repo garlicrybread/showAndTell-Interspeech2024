@@ -229,10 +229,6 @@ export async function drawVowelChart(svgId){
 
 export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
     // fetch json data
-    console.log('spa in drawVowels ', spa)
-    console.log('----')
-    console.log('data path ', dataL1Path)
-    console.log('----')
     const response1 = await fetch(dataL1Path);
     const dataL1 = await response1.json();
     console.log(dataL1Path);
@@ -245,8 +241,8 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
         .curve(d3.curveCardinal);
 
     const hoverColor = 'green';
-    const strokeWidthDefault = 5;
-    const strokeWidthHover = 8;
+    const strokeWidthDefault = 8;
+    const strokeWidthHover = 12;
 
     let colors;
     if (spa){

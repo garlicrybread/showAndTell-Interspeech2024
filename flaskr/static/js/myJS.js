@@ -35,23 +35,27 @@ export async function navigateToRoute(location) {
 
 export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
     var button = document.getElementById(buttonId);
-    var loader_number;
-    if (buttonId == "myButton") {
-        loader_number = 1;
-    } else {
-        loader_number = 2;
-    }
+    const paraInstructions = document.getElementsByClassName('recordingInstructions')[tab];
+    console.log(paraInstructions, tab)
+    // var loader_number;
+    // if (buttonId == "myButton") {
+    //     loader_number = 1;
+    // } else {
+    //     loader_number = 2;
+    // }
 
     function changeToRecording() {
-        button.value = "Recording...";
+        paraInstructions.innerHTML= "Say the word!";
         button.style.backgroundColor = "#78a9eb";
-        startAnimation(loader_number);
+        // startAnimation(loader_number);
         //{showWaves && <div className="wave-animation"></div>}
     }
     // Check the current text content of the button
-    if (button.value !== "Recording...") {
-        // Change the text content to "Don't click"
-        button.value = "Calibrating...";
+    if (button.disabled !== true) {
+        button.disabled = true;
+        button.style.display = 'none';
+        paraInstructions.style.display = 'flex';
+        paraInstructions.innerHTML = "Please wait...";
         startRecording(buttonId,cal,buttonId, svgId,tab);
         console.log('Microphone Being used', stream);
         setTimeout(changeToRecording,1250)
@@ -61,15 +65,17 @@ export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
         // Change the text content to "Click me!"
         console.log('Stopped Using mic:', stream);
         //addNewAudioBar(buttonId);
-        button.value = "Start Recording";
         button.style.backgroundColor = "";
-        stopAnimation(loader_number);
+        paraInstructions.innerHTML= "";
+        paraInstructions.style.display = 'none';
+        // stopAnimation(loader_number);
     }
     console.log('end of toggling')
     return 'done'
 }
 
 function startRecording(word,cal,btnID,svgId,tab=0) {
+    console.log('tab at startRecording', tab)
     const messageElement = document.getElementById('message');
     messageElement.textContent = "";
     // Prepare the data to be sent to the server
@@ -96,7 +102,8 @@ function startRecording(word,cal,btnID,svgId,tab=0) {
     })
     .then(filePath => {
         // put the text back to record
-        toggleText(btnID)
+        console.log('toggleText to change back to word ', tab)
+        toggleText(btnID, 'NA',true,tab)
         audioToJson(filePath, svgId,btnID,false, cal,tab)
     })
     .catch(error => {
