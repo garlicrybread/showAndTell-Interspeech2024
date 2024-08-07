@@ -201,7 +201,7 @@ def analyzeformants(vowels,pointProcess):
     f1_list = []
     f2_list = []
     bestFmt = 0
-    for num_formants in range(3,8):
+    for num_formants in range(4,7):
         formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                             preemphasis)
                 
