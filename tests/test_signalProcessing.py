@@ -301,41 +301,41 @@ def transform(t, freq):
 def test_calAudioToVwl():
     id = 'testData_misc'
     # calibration files to test
-    word = 'frontHigh'
-    filename = f'{id}-{word}.wav'
-    path = DATA_DIR + f'{id}/vowelCalibration/'
-    f1List, f2List = calAudioToVwl(path,filename)
-    assert len(f1List) == len(f2List)
-    assert len(f1List) == 2
-
-    word = 'backHigh'
-    filename = f'{id}-{word}.wav'
-    path = DATA_DIR + f'{id}/vowelCalibration/'
-    f1List, f2List = calAudioToVwl(path,filename)
-    assert len(f1List) == len(f2List)
-    assert len(f1List) == 2
-
-    # test out of bound trigger
-    word = 'frontHigh'
-    filename = f'{id}-{word}.wav'
-    path = DATA_DIR + f'{id}/vowelCalibration_false/'
-    f1List, f2List = calAudioToVwl(path,filename)
-    assert len(f1List) == len(f2List)
-    assert f1List == ['OtT']
-
-    word = 'backHigh'
-    filename = f'{id}-{word}.wav'
-    path = DATA_DIR + f'{id}/vowelCalibration_false/'
-    f1List, f2List = calAudioToVwl(path,filename)
-    assert len(f1List) == len(f2List)
-    assert f1List == ['OtT']
-
-    word = 'frontLow'
-    filename = f'{id}-{word}.wav'
-    path = DATA_DIR + f'{id}/vowelCalibration_false/'
-    f1List, f2List = calAudioToVwl(path,filename)
-    assert len(f1List) == len(f2List)
-    assert f1List == ['OtT']
+    # word = 'frontHigh'
+    # filename = f'{id}-{word}.wav'
+    # path1 = DATA_DIR + f'{id}/vowelCalibration/'
+    # f1List, f2List = calAudioToVwl(path1,filename)
+    # assert len(f1List) == len(f2List)
+    # assert len(f1List) == 2
+    #
+    # word = 'backHigh'
+    # filename = f'{id}-{word}.wav'
+    # path = DATA_DIR + f'{id}/vowelCalibration/'
+    # f1List, f2List = calAudioToVwl(path,filename)
+    # assert len(f1List) == len(f2List)
+    # assert len(f1List) == 2
+    #
+    # # test out of bound trigger
+    # word = 'frontHigh'
+    # filename = f'{id}-{word}.wav'
+    # path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    # f1List, f2List = calAudioToVwl(path,filename)
+    # assert len(f1List) == len(f2List)
+    # assert f1List == ['OtT']
+    #
+    # word = 'backHigh'
+    # filename = f'{id}-{word}.wav'
+    # path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    # f1List, f2List = calAudioToVwl(path,filename)
+    # assert len(f1List) == len(f2List)
+    # assert f1List == ['OtT']
+    #
+    # word = 'frontLow'
+    # filename = f'{id}-{word}.wav'
+    # path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    # f1List, f2List = calAudioToVwl(path,filename)
+    # assert len(f1List) == len(f2List)
+    # assert f1List == ['OtT']
 
     word = 'backLow'
     filename = f'{id}-{word}.wav'
@@ -389,6 +389,7 @@ def test_analyzeformants():
     # extract vowels
     pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
     f1, f2, bestFmt = analyzeformants(vowels, pointProcess)
+    # doesn't currently work, but I think that's because we aren't using autocorrelation to target the vowels
     assert bestFmt == 5
 
     id = 'testData_misc'

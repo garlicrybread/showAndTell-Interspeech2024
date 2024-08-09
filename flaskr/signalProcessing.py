@@ -142,6 +142,7 @@ def calAudioToVwl(path, file_name):
         if maxF1 >= 1500 or maxF2 >= 2500:
             return ['OtT'], ['OtT']
     else:
+        print(word,maxF1, minF2)
         # make sure minF2 and maxF1 are acceptable for backLow
         if maxF1 <= 500 or minF2 >= 1500:
             return ['OtT'], ['OtT']
@@ -159,18 +160,21 @@ def maxAndMinOfFormants(f1List, f2List):
 
 def metricFmt(fmtList,alpha=0.8,linear=0):
     lenfmt = len(fmtList)
+    for i in range(lenfmt):
+        fmtList[i] = [x for x in fmtList[i] if x > 0]
     mtr = np.std(fmtList[0])
-    mtr += np.std(fmtList[1])
+    # mtr +=  np.std(fmtList[1])
     count = 2
     if linear == 1:
         for i in range(2,lenfmt):
-            mtr += alpha*np.std(fmtList[i])
-            count += alpha
+            if fmtList[i] != []:
+                mtr += alpha*np.std(fmtList[i])
+                count += alpha
     else:
-        for i in range(2,lenfmt):
-            fmtList[i] = [x for x in fmtList[i] if x > 0]
-            mtr += pow(alpha,i-1) * np.std(fmtList[i])
-            count += pow(alpha,i-1)
+        for i in range(1,lenfmt):
+            if fmtList[i] != []:
+                mtr += pow(alpha,i) * np.std(fmtList[i])
+                count += pow(alpha,i)
     mtr = mtr/count
     return mtr
 
@@ -190,7 +194,6 @@ def analyzeformants(vowels,pointProcess):
     f2_list = []
     bestFmt = 0
     for num_formants in range(4,7):
-        print(num_formants,f1_list)
         formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                             preemphasis)
                 
@@ -211,10 +214,10 @@ def analyzeformants(vowels,pointProcess):
             # f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
             for fmt in range(num_formants):
                 # filter out "nan"
-                if f_local[fmt] > 0:
-                    f_list_dict[num_formants][fmt].append(f_local[fmt])
+                f_list_dict[num_formants][fmt].append(f_local[fmt])
                 # f2_list.append(f2)
-        metricVal = metricFmt(f_list_dict[num_formants])
+        print(num_formants,f_list_dict[num_formants])
+        metricVal = metricFmt(f_list_dict[num_formants],0.5)
         if metricVal < bestMetric:
             bestMetric = metricVal
             bestFmt = num_formants
