@@ -1,9 +1,12 @@
 import os
 
+import numpy as np
+
 import app
 from flaskr.signalProcessing import (
     freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
-    audioToVwlFormants, maxAndMinOfFormants, calAudioToVwl, analyzeformants
+    audioToVwlFormants, maxAndMinOfFormants, calAudioToVwl, analyzeformants,
+    metricFmt
 )
 from flask import (current_app, url_for)
 import json
@@ -298,12 +301,48 @@ def transform(t, freq):
 def test_calAudioToVwl():
     id = 'testData_misc'
     # calibration files to test
-    word1 = 'frontHigh'
-    filename1 = f'{id}-{word1}.wav'
-    path1 = DATA_DIR + f'{id}/vowelCalibration/'
-    f1List, f2List = calAudioToVwl(path1,filename1)
+    word = 'frontHigh'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration/'
+    f1List, f2List = calAudioToVwl(path,filename)
     assert len(f1List) == len(f2List)
     assert len(f1List) == 2
+
+    word = 'backHigh'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration/'
+    f1List, f2List = calAudioToVwl(path,filename)
+    assert len(f1List) == len(f2List)
+    assert len(f1List) == 2
+
+    # test out of bound trigger
+    word = 'frontHigh'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    f1List, f2List = calAudioToVwl(path,filename)
+    assert len(f1List) == len(f2List)
+    assert f1List == ['OtT']
+
+    word = 'backHigh'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    f1List, f2List = calAudioToVwl(path,filename)
+    assert len(f1List) == len(f2List)
+    assert f1List == ['OtT']
+
+    word = 'frontLow'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    f1List, f2List = calAudioToVwl(path,filename)
+    assert len(f1List) == len(f2List)
+    assert f1List == ['OtT']
+
+    word = 'backLow'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration_false/'
+    f1List, f2List = calAudioToVwl(path, filename)
+    assert len(f1List) == len(f2List)
+    assert f1List == ['OtT']
 
     # empty audio file to test fail case
     word1 = 'snaps'
@@ -352,4 +391,20 @@ def test_analyzeformants():
     f1, f2, bestFmt = analyzeformants(vowels, pointProcess)
     assert bestFmt == 5
 
+    id = 'testData_misc'
+    word = 'backHigh'
+    filename = f'{id}-{word}.wav'
+    path = DATA_DIR + f'{id}/vowelCalibration/'
+    sound = parselmouth.Sound(path+filename)
+    vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
+    f0min = 75
+    f0max = 600
+    # extract vowels
+    pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
+    f1, f2, bestFmt = analyzeformants(vowels, pointProcess)
+    assert bestFmt == 4
 
+def test_metricFmt():
+    fmtList = [[1, 2,4],[1,2,4],[1,2,4],[1,np.nan,np.nan]]
+    mtr = metricFmt(fmtList)
+    assert not np.isnan(mtr)

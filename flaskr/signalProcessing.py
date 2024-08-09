@@ -130,27 +130,20 @@ def calAudioToVwl(path, file_name):
     # F = Front, B = Back, H = High, L = Low
     if word == words[0]:
         # make sure maxF2 and minF1 are acceptable for frontHigh
-        if minF1 >= 1200:
-            return ['OtT'], ['OtT']
-        elif maxF2 <= 2000:
+        print(maxF2)
+        if minF1 >= 1200 or maxF2 <= 2000:
             return ['OtT'], ['OtT']
     elif word == words[1]:
         # make sure maxF2 and minF1 are acceptable for backHigh
-        if minF1 >= 1500:
-            return ['OtT'], ['OtT']
-        elif minF2 >= 1500:
+        if minF1 >= 700 or minF2 >= 1500:
             return ['OtT'], ['OtT']
     elif word == words[2]:
         # make sure maxF2 and maxF1 are acceptable for frontLow
-        if maxF1 >= 1000:
-            return ['OtT'], ['OtT']
-        elif maxF2 >= 2500:
+        if maxF1 >= 1500 or maxF2 >= 2500:
             return ['OtT'], ['OtT']
     else:
         # make sure minF2 and maxF1 are acceptable for backLow
-        if maxF1 <= 500:
-            return ['OtT'], ['OtT']
-        elif minF2 >= 1500:
+        if maxF1 <= 500 or minF2 >= 1500:
             return ['OtT'], ['OtT']
     f1List = [maxF1, minF1]
     f2List = [maxF2, minF2]
@@ -175,6 +168,7 @@ def metricFmt(fmtList,alpha=0.8,linear=0):
             count += alpha
     else:
         for i in range(2,lenfmt):
+            fmtList[i] = [x for x in fmtList[i] if x > 0]
             mtr += pow(alpha,i-1) * np.std(fmtList[i])
             count += pow(alpha,i-1)
     mtr = mtr/count
@@ -196,6 +190,7 @@ def analyzeformants(vowels,pointProcess):
     f2_list = []
     bestFmt = 0
     for num_formants in range(4,7):
+        print(num_formants,f1_list)
         formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
                             preemphasis)
                 
@@ -211,11 +206,12 @@ def analyzeformants(vowels,pointProcess):
             t = praat.call(pointProcess, "Get time from index", point)
             for fmt in range(num_formants):
                 f_local[fmt] = praat.call(formants, "Get value at time", fmt+1, t, 'Hertz', 'Linear')
+                # print(fmt,f_local[fmt])
             # f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
             # f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-            # filter out "nan"
-            if f_local[0] > 0:
-                for fmt in range(num_formants):
+            for fmt in range(num_formants):
+                # filter out "nan"
+                if f_local[fmt] > 0:
                     f_list_dict[num_formants][fmt].append(f_local[fmt])
                 # f2_list.append(f2)
         metricVal = metricFmt(f_list_dict[num_formants])
