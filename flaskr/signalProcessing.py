@@ -32,6 +32,8 @@ def processVwlData():
         f1List, f2List = calAudioToVwl(path, filename)
         jsonName = filename.split('.')[0] + '-vwlCal.json'
         data = {"f1List":f1List,"f2List":f2List}
+        if f1List == ['OtT']:
+            return jsonify({'data': ['OvertheThresh', 'OvertheThresh']})
     else:
         f1List, f2List = audioToVwlFormants(path,filename)
         jsonName = filename.split('.')[0] + '.json'
@@ -118,46 +120,38 @@ def mean(l):
         return sum(l) / len(l)
 
 def calAudioToVwl(path, file_name):
-    # id, word = file_name.split('-')
-    # word = word.replace('.wav','')
+    id, word = file_name.split('-')
+    word = word.replace('.wav','')
     f1List, f2List = audioToVwlFormants(path, file_name)
     if len(f1List) == 0:
         return [], []
-    # words = ['frontHigh','backHigh','frontLow', 'backLow']
+    words = ['frontHigh','backHigh','frontLow', 'backLow']
     maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(f1List,f2List)
     # F = Front, B = Back, H = High, L = Low
-    # if word == words[0]:
-    #     # make sure maxF2 and minF1 are acceptable for frontHigh
-    #     if minF1 >= 1000:
-    #         return [], []
-    #     elif maxF2 >= 3000:
-    #         return [], []
-    #     elif maxF2 - minF1 <= 2000:
-    #         return [], []
-    # elif word == words[1]:
-    #     # make sure maxF2 and minF1 are acceptable for backHigh
-    #     if minF1 <= 1500:
-    #         return [], []
-    #     elif minF2 <= 1500:
-    #         return [], []
-    #     elif abs(minF1 - minF2) >= 1000:
-    #         return [], []
-    # elif word == words[2]:
-    #     # make sure maxF2 and maxF1 are acceptable for frontLow
-    #     if maxF1 >= 1000:
-    #         return [], []
-    #     elif maxF2 >= 2500:
-    #         return [], []
-    #     elif abs(minF1 - minF2) >= 1500:
-    #         return [], []
-    # else:
-    #     # make sure minF2 and maxF1 are acceptable for backLow
-    #     if maxF1 >= 500:
-    #         return [], []
-    #     elif minF2 >= 3000:
-    #         return [], []
-    #     elif abs(minF1 - minF2) >= 1100:
-    #         return [], []
+    if word == words[0]:
+        # make sure maxF2 and minF1 are acceptable for frontHigh
+        if minF1 >= 1200:
+            return ['OtT'], ['OtT']
+        elif maxF2 <= 2000:
+            return ['OtT'], ['OtT']
+    elif word == words[1]:
+        # make sure maxF2 and minF1 are acceptable for backHigh
+        if minF1 >= 1500:
+            return ['OtT'], ['OtT']
+        elif minF2 >= 1500:
+            return ['OtT'], ['OtT']
+    elif word == words[2]:
+        # make sure maxF2 and maxF1 are acceptable for frontLow
+        if maxF1 >= 1000:
+            return ['OtT'], ['OtT']
+        elif maxF2 >= 2500:
+            return ['OtT'], ['OtT']
+    else:
+        # make sure minF2 and maxF1 are acceptable for backLow
+        if maxF1 <= 500:
+            return ['OtT'], ['OtT']
+        elif minF2 >= 1500:
+            return ['OtT'], ['OtT']
     f1List = [maxF1, minF1]
     f2List = [maxF2, minF2]
 
