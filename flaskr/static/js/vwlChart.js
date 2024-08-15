@@ -285,6 +285,8 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
         let label;
         if (spa) {
             label = 'A';
+        } else if (tut) {
+            label = '';
         } else {
             label = 'most recent';
         }
