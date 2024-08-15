@@ -243,7 +243,11 @@ def audioToVwlFormants(path,file_name, cal=False):
     f0min = 75
     f0max = 600
     # extract vowels
-    pointProcess = praat.call(vwlSound, "To PointProcess (periodic, cc)", f0min, f0max)
+    try:
+        pointProcess = praat.call(vwlSound, "To PointProcess (periodic, cc)", f0min, f0max)
+    except parselmouth.PraatError as error:
+        print(error)
+        return [],[]
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
 
     f1_list,f2_list,fmtNum = analyzeformants(vwlSound,pointProcess)
