@@ -286,7 +286,7 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
         if (spa) {
             label = 'A';
         } else {
-            label = 1;
+            label = 'most recent';
         }
 
 
@@ -436,16 +436,18 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
                     .attr('data-index', index); // Store the current index in the element's data
                 console.log(element)
                 // Check if the element is a 'path' or 'circle' by inspecting the nodeName
-                if (element.node().nodeName === 'circle') {
-                    // It's a circle, apply the 'fill' attribute
-                    element.attr('fill', colors[index]);  // Set fill for circles
-                    d3.select(`#text-${id}`).text(index+1);
-                } else if (element.node().nodeName === 'path') {
-                    // It's a path, apply the 'stroke' attribute
-                    element.attr('stroke', colors[index]); // Set stroke for paths
-                    // Also update the corresponding arrow marker color if it exists
-                    d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
-                    d3.select(`#text-${id}`).text(index+1);
+                if (index > 0){
+                    if (element.node().nodeName === 'circle') {
+                        // It's a circle, apply the 'fill' attribute
+                        element.attr('fill', colors[index]);  // Set fill for circles
+                        d3.select(`#text-${id}`).text('');
+                    } else if (element.node().nodeName === 'path') {
+                        // It's a path, apply the 'stroke' attribute
+                        element.attr('stroke', colors[index]); // Set stroke for paths
+                        // Also update the corresponding arrow marker color if it exists
+                        d3.select(`#arrow-${id} path`).attr('fill', colors[index]);
+                        d3.select(`#text-${id}`).text('');
+                    }
                 }
             });
         }
