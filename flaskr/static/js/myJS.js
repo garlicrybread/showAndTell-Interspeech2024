@@ -74,6 +74,18 @@ export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
     return 'done'
 }
 
+function changeInnerHTML(tab,message='',hide=false,name='recordingInstructions') {
+    const paraInstructions = document.getElementsByClassName(name)[tab];
+    let disp
+    if (hide) {
+        disp = 'none'
+    } else {
+        disp = 'flex'
+    }
+    paraInstructions.style.display = disp;
+    paraInstructions.innerHTML= message;
+}
+
 function startRecording(word,cal,btnID,svgId,tab=0) {
     console.log('tab at startRecording', tab)
     const messageElement = document.getElementById('message');
@@ -104,6 +116,7 @@ function startRecording(word,cal,btnID,svgId,tab=0) {
         // put the text back to record
         console.log('toggleText to change back to word ', tab)
         toggleText(btnID, 'NA',true,tab)
+        changeInnerHTML(tab,'Processing data...',false)
         audioToJson(filePath, svgId,btnID,false, cal,tab)
     })
     .catch(error => {
@@ -150,17 +163,17 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
         if (!cal) {
             console.log('Formants extracted successfully:', relfilepath);
              await plotJson(relfilepath, svgId, spa);
-             console.log('things should be done plotting');
-             console.log('-----');
+             changeInnerHTML(tab)
              btn.disabled = false;
              btn.style.display = 'flex';
         } else {
             if (relfilepath === 'empty') {
-                const messageElement = document.getElementById('message');
-                messageElement.textContent = 'Unable to detect vowel. Please record again!'; // Display a user-friendly message
+                const message = 'Unable to detect vowel. Please try speaking a bit slower!'
+                changeInnerHTML(tab,message,false)
                 btn.disabled = false;
                 btn.style.display = 'flex';
             } else {
+                changeInnerHTML(tab)
                 const btn = document.getElementById(btnID);
                 const successColor = '#34eba4';
                 btn.value = 'Recorded';
