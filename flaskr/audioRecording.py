@@ -36,10 +36,11 @@ def recordFile(word, participantID, cal=False, debug=False):
         print(f"Please say {word}")
         # timeout after 5 seconds of not hearing anything and let user know that there was a timeout
         timeout = 4.0
+        phraseTL = 2.0
         try:
             # timeout triggers if nothing is heard at all. Phrase time limit triggers if something is continuously
             # heard (i.e. if there are a lot of people talking in the background, ptl will timeout after 4 seconds
-            audio = r.listen(source, timeout=timeout, phrase_time_limit=timeout)
+            audio = r.listen(source, timeout=timeout, phrase_time_limit=phraseTL)
             print("Heard you, just a moment\n")
             audioObtained = True
         except sr.WaitTimeoutError:
