@@ -13,6 +13,7 @@ import json
 
 from flask import (Blueprint, request, current_app, jsonify)
 # for transforming actual Vwl to SVG vwl points
+from flaskr.autocorrelationVwlExtract import extractVwlBoundaries
 import numpy as np
 
 homeDir = f'{os.getcwd()}/'
@@ -236,109 +237,16 @@ def audioToVwlFormants(path,file_name, cal=False):
     extractVwlFile = "extractvowelsNoViewAndEdit.praat"
     file = path + file_name
     # read the wav file and get the samplerate and data
-    samplerate, data = wavfile.read(file)
-    # fft_data = np.fft.fft(data)
 
-    sound = parselmouth.Sound(file)
-
-    # run file returns [sound object, text grid object]
-    vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
-    print('vowels')
-    print(vowels,type(vowels))
-    intervals = grid.to_tgt().tiers[0].intervals
-    # determine if vowel sounds are one continuous sound
-    def cleanIntervalText(text):
-        textTotalTime = text.split("ob")[1]
-        textTimeSplit = textTotalTime.split("to")
-        textIntList = [float(text.replace("_",".")) for text in textTimeSplit]
-        return textIntList
-    intervalsInt = [cleanIntervalText(inter.text) for inter in intervals]
-    max = 0.05
-    sounds = {}
-    keyIdx = 1
-    sounds[f'vwl{keyIdx}'] = [0]
-    if len(intervalsInt) > 1:
-        currInter = intervalsInt[1]
-        prevInter = intervalsInt[0]
-        for i in range(1,len(intervals)):
-            diff = abs(currInter[0]-prevInter[1])
-            if diff < max and f'vwl{keyIdx}' not in sounds:
-                sounds[f'vwl{keyIdx}'] = [i-1,i]
-            elif diff < max:
-                sounds[f'vwl{keyIdx}'].append(i)
-            elif i not in sounds[f'vwl{keyIdx}']:
-                keyIdx+=1
-                sounds[f'vwl{keyIdx}'] = [i]
-            prevInter = currInter
-            currInter = intervalsInt[i]
-    # TODO after deadline automate this step
-    # charlotte 65, 500, 5500, 4
-    # dipayan 65, 300, 5500, 5
+    justVwlFile, timeStamps = extractVwlBoundaries(file)
+    vwlSound = parselmouth.Sound(justVwlFile)
     f0min = 75
     f0max = 600
     # extract vowels
-    pointProcess = praat.call(vowels, "To PointProcess (periodic, cc)", f0min, f0max)
+    pointProcess = praat.call(vwlSound, "To PointProcess (periodic, cc)", f0min, f0max)
     # source: https://www.fon.hum.uva.nl/praat/manual/Sound__To_Formant__burg____.html
-    # retrieve formants of vowels
-    time_step = 0.0  # if time step = 0.0 (the standard), Praat will set it to 25% of the analysis window length
-    formant_ceiling = 5000
-    num_formants = 5
-    # higher window length to deal with smoothing
-    window_len = 0.025
-# <<<<<<< HEAD
-#     preemphasis = 50
-#     formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
-#                           preemphasis)
-#     numPoints = praat.call(pointProcess, "Get number of points")
-#     # get vowel either first or second
-#     if len(intervals) != 0:
-#         for i in range(1,len(intervals)+1):
-#             f1_list = []
-#             f2_list = []
-#             fromIdx = sounds[f'vwl{i}'][0]
-#             print(fromIdx)
-#             fromTime = intervals[fromIdx].start_time
-#             toIdx = sounds[f'vwl{i}'][-1]
-#             toTime = intervals[toIdx].end_time
-#             for point in range(0, numPoints):
-#                 point += 1
-#                 t = praat.call(pointProcess, "Get time from index", point)
-#                 if t >= fromTime and t <= toTime:
-#                     f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
-#                     f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-#                     # filter out "nan"
-#                     if f1 > 0:
-#                         f1_list.append(f1)
-#                         f2_list.append(f2)
-#             if len(f1_list) != 0:
-#                 return f1_list, f2_list
-#     return [], []
-# =======
-    preemphasis = 100
 
-    # #[Dip] We will put this section under a function and then analyze the values ( our metric ) to select the optimal num_formant 
-    # formants = praat.call(vowels, "To Formant (burg)", time_step, num_formants, formant_ceiling, window_len,
-    #                       preemphasis)
-             
-    # numPoints = praat.call(pointProcess, "Get number of points")
-    # f1_list = []
-    # f2_list = []
-    # # f_3,4..7 = []
-    # for point in range(0, numPoints):
-    #     point += 1
-    #     t = praat.call(pointProcess, "Get time from index", point)
-    #     f1 = praat.call(formants, "Get value at time", 1, t, 'Hertz', 'Linear')
-    #     f2 = praat.call(formants, "Get value at time", 2, t, 'Hertz', 'Linear')
-    #     # filter out "nan"
-    #     if f1 > 0:
-    #         f1_list.append(f1)
-    #         f2_list.append(f2)
-
-    
-    # print(f1_list,f2_list)
-    # # [Dip] end of previous code
-
-    f1_list,f2_list,fmtNum = analyzeformants(vowels,pointProcess)
+    f1_list,f2_list,fmtNum = analyzeformants(vwlSound,pointProcess)
     print(fmtNum,f1_list,f2_list)
     return f1_list, f2_list
 

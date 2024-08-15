@@ -5,9 +5,9 @@
 import numpy as np
 import scipy.io.wavfile as wav
 
-def extract_frame(data, rate, time_t, frame_size_ms=30):
+def extract_frame(data, rate, midTime_t, frame_size_ms=30):
     frame_size = int(rate * frame_size_ms / 1000)
-    start_index = int(time_t * rate) - frame_size // 2
+    start_index = int(midTime_t * rate) - frame_size // 2
     end_index = start_index + frame_size
     frame = data[start_index:end_index]
     return frame
@@ -17,9 +17,7 @@ def autocorrelation(frame):
     result = result[result.size // 2:]
     return result
 
-def extractVwlBoundaries(path,filename):
-    filePath = path + filename
-
+def extractVwlBoundaries(filePath):
     # Example usage
     frameSize = 30
 
@@ -52,5 +50,11 @@ def extractVwlBoundaries(path,filename):
     startT = tOverThresh[0]
     endT = tOverThresh[-1]
     frameSizeMs = (endT - startT) * 1000
-    print(frameSizeMs, startT, endT)
-    return extract_frame(data, rate, startT,frameSizeMs), [startT,endT]
+    midT = (endT + startT) / 2
+    print(frameSizeMs, startT,midT, endT)
+    extractedData = extract_frame(data, rate, midT,frameSizeMs)
+    newFile = filePath.replace('.wav','') + '-extractVwl.wav'
+    wav.write(newFile,rate,extractedData)
+    rate, data = wav.read(newFile)
+    print(rate,data)
+    return newFile, [startT,endT]

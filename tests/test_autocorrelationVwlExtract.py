@@ -15,7 +15,8 @@ def test_extractVwlBoundaries():
     filename = f'{id}-{word}.wav'
     path = DATA_DIR + f'{id}/vowelCalibration/'
     fs, _ = wav.read(path+filename)
-    data, tList = extractVwlBoundaries(path,filename)
+    justVwlFile, tList = extractVwlBoundaries(path+filename)
+    _,data = wav.read(justVwlFile)
     start = 0.6599999999999999
     end = 0.8099999999999999
     frameLen = round(fs * (end - start))
@@ -26,7 +27,8 @@ def test_extractVwlBoundaries():
     word = 'bait_noisy'
     filename = f'{word}.wav'
     fs, _ = wav.read(path+filename)
-    data, tList = extractVwlBoundaries(path,filename)
+    justVwlFile, tList = extractVwlBoundaries(path+filename)
+    _,data = wav.read(justVwlFile)
     start = 2.61
     end = 2.6999999999999997
     frameLen = floor(fs * (end - start))
@@ -36,7 +38,8 @@ def test_extractVwlBoundaries():
     word = 'dipayan_bait'
     filename = f'{word}.wav'
     fs, _ = wav.read(path+filename)
-    data, tList = extractVwlBoundaries(path,filename)
+    justVwlFile, tList = extractVwlBoundaries(path+filename)
+    _, data = wav.read(justVwlFile)
     start = 1.65
     end = 1.89
     frameLen = floor(fs * (end - start))
