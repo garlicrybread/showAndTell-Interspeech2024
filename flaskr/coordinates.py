@@ -32,6 +32,7 @@ def processCoordinateData(spa=False):
     svg = current_app.config['SVG_COORDINATES']
     vowels = jsonToVowelPoints(rootDirectory)
     coordinates = vowelChartCoordinates(vowels)
+    writeToJson(rootDirectory,'vowelCoordinates.json',coordinates)
     if spa:
         transformArray(coordinates, svg, True)
     else:
