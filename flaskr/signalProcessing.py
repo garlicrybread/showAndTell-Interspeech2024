@@ -243,6 +243,8 @@ def audioToVwlFormants(path,file_name, cal=False):
 
     # run file returns [sound object, text grid object]
     vowels, grid = praat.run_file(sound, vocalToolKitDir + extractVwlFile,1,0)
+    print('vowels')
+    print(vowels,type(vowels))
     intervals = grid.to_tgt().tiers[0].intervals
     # determine if vowel sounds are one continuous sound
     def cleanIntervalText(text):
