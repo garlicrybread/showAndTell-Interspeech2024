@@ -15,6 +15,7 @@ from flask import (Blueprint, request, current_app, jsonify)
 # for transforming actual Vwl to SVG vwl points
 from flaskr.autocorrelationVwlExtract import extractVwlBoundaries
 import numpy as np
+import statistics as stat
 
 homeDir = f'{os.getcwd()}/'
 flaskrDir = f'{os.getcwd()}/flaskr/'
@@ -121,6 +122,25 @@ def mean(l):
     if len(l) != 0:
         return sum(l) / len(l)
 
+def split_and_find_medians(numbers):
+    # Sort the list
+    sorted_numbers = sorted(numbers)
+    n = len(sorted_numbers)
+
+    # Determine the split point
+    mid = (n + 1) // 2  # Bottom half takes the extra element if odd
+
+    # Split the list
+    bottom_half = sorted_numbers[:mid]
+    top_half = sorted_numbers[mid:]
+
+    # Calculate the medians
+    bottom_median = stat.median(bottom_half)
+    top_median = stat.median(top_half)
+
+    return bottom_median, top_median
+
+
 def calAudioToVwl(path, file_name):
     id, word = file_name.split('-')
     word = word.replace('.wav','')
@@ -128,28 +148,8 @@ def calAudioToVwl(path, file_name):
     if len(f1List) == 0:
         return [], []
     words = ['frontHigh','backHigh','frontLow', 'backLow']
-    maxF1, maxF2, minF1, minF2 = maxAndMinOfFormants(f1List,f2List)
-    # F = Front, B = Back, H = High, L = Low
-    if word == words[0]:
-        # make sure maxF2 and minF1 are acceptable for frontHigh
-        print(maxF2)
-        # if minF1 >= 1200 or maxF2 <= 2000:
-        #     return ['OtT'], ['OtT']
-    elif word == words[1]:
-        pass
-        # make sure maxF2 and minF1 are acceptable for backHigh
-        # if minF1 >= 700 or minF2 >= 1500:
-        #     return ['OtT'], ['OtT']
-    elif word == words[2]:
-        pass
-        # make sure maxF2 and maxF1 are acceptable for frontLow
-        # if maxF1 >= 1500 or maxF2 >= 2500:
-        #     return ['OtT'], ['OtT']
-    else:
-        print(word,maxF1, minF2)
-        # make sure minF2 and maxF1 are acceptable for backLow
-        # if maxF1 <= 500 or minF2 >= 1500:
-        #     return ['OtT'], ['OtT']
+    minF1, maxF1 = split_and_find_medians(f1List)
+    minF2, maxF2 = split_and_find_medians(f2List)
     f1List = [maxF1, minF1]
     f2List = [maxF2, minF2]
 

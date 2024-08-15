@@ -6,7 +6,7 @@ import app
 from flaskr.signalProcessing import (
     freqToSVG, formantsToJsonFormat, condenseFormantList, writeToJson,
     audioToVwlFormants, maxAndMinOfFormants, calAudioToVwl, analyzeformants,
-    metricFmt
+    metricFmt, split_and_find_medians
 )
 from flask import (current_app, url_for)
 import json
@@ -409,3 +409,12 @@ def test_metricFmt():
     fmtList = [[1, 2,4],[1,2,4],[1,2,4],[1,np.nan,np.nan]]
     mtr = metricFmt(fmtList)
     assert not np.isnan(mtr)
+
+def test_splitAndFindMedians():
+    f1 = [1,1,2,5,5]
+    min, max = split_and_find_medians(f1)
+    assert min == 1 and max == 5
+
+    f = [6,3,6,6]
+    min, max = split_and_find_medians(f)
+    assert min == 4.5 and max == 6
