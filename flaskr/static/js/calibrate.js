@@ -32,7 +32,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     document.getElementsByClassName('btnVwlCal')[0].addEventListener('click', function () {
         var tab = 0;
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
-        recordingVwlCal('frontHigh',tab,yesBtn);
+        recordingVwlCal('heat','frontHigh',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
             openTab('na','backHighTab');
         });
@@ -41,7 +41,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     document.getElementsByClassName('btnVwlCal')[1].addEventListener('click', function () {
         var tab = 1;
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
-        recordingVwlCal('backHigh',tab,yesBtn);
+        recordingVwlCal('hoot','backHigh',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
             openTab('na','frontLowTab');
         });
@@ -50,7 +50,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     document.getElementsByClassName('btnVwlCal')[2].addEventListener('click', function () {
         var tab = 2;
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
-        recordingVwlCal('frontLow',tab,yesBtn);
+        recordingVwlCal('hat','frontLow',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
             openTab('na','backLowTab');
         });
@@ -59,7 +59,7 @@ if (window.location.href.includes("/vowelCalibration")) {
     document.getElementsByClassName('btnVwlCal')[3].addEventListener('click', function () {
         var tab = 3;
         let yesBtn = document.getElementsByClassName('yesBtn')[tab];
-        recordingVwlCal('backLow',tab,yesBtn);
+        recordingVwlCal('awe','backLow',tab,yesBtn);
         yesBtn.addEventListener('click', function () {
             processCoordinateData(calibrateBtn,false);
             navigateToRoute('');
@@ -80,11 +80,11 @@ if (window.location.href.includes("/vowelCalibration")) {
     }
 }
 
-async function recordingVwlCal(btnName,tab,yesBtn) {
+async function recordingVwlCal(word,btnName,tab,yesBtn) {
     const btn = document.getElementById(btnName);
     const divmessage = document.getElementsByClassName('recordingInstructions')[tab];
     divmessage.style.display = 'none';
-    toggleText(btnName, 'NA', true, tab);
+    toggleText(word,btnName, 'NA', true, tab);
     const noBtn = document.getElementsByClassName('noBtn')[tab];
     const qPara = document.getElementsByClassName('questionQual')[tab];
     console.log('frontbtn ',yesBtn);

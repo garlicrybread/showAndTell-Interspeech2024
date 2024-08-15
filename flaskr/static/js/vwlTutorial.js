@@ -48,13 +48,13 @@ if (!hasQueryParam('vowelP1')) {
 if (hasQueryParam('vowelP3')) {
     const tutP3Btn = document.getElementById('tutP3Btn');
     tutP3Btn.addEventListener('click', function () {
-        toggleText('tutP3Btn','tutP3')
+        toggleText('either beet or boot!','tutP3Btn','tutP3')
     });
 }
 if (hasQueryParam('vowelP4')) {
     const tutP4Btn = document.getElementById('tutP4Btn');
     tutP4Btn.addEventListener('click', function () {
-        toggleText('tutP4Btn','tutP4')
+        toggleText('either beet or bat!','tutP4Btn','tutP4')
     });
 }
 if (hasQueryParam('vowelP5')) {
@@ -64,7 +64,7 @@ if (hasQueryParam('vowelP5')) {
     });
     const tutP5Btn = document.getElementById('tutP5Btn');
     tutP5Btn.addEventListener('click', function () {
-        toggleText('tutP5Btn','tutP5')
+        toggleText('either word','tutP5Btn','tutP5')
     });
 }
 if (hasQueryParam('vowelP6')) {

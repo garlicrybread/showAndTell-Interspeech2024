@@ -33,10 +33,10 @@ export async function navigateToRoute(location) {
     window.location.href = path
 }
 
-export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
+export async function toggleText(word,buttonId,svgId='NA',cal=false,tab=0) {
     var button = document.getElementById(buttonId);
     const paraInstructions = document.getElementsByClassName('recordingInstructions')[tab];
-    console.log(paraInstructions, tab)
+    console.log(word, buttonId,button, tab)
     // var loader_number;
     // if (buttonId == "myButton") {
     //     loader_number = 1;
@@ -44,7 +44,7 @@ export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
     //     loader_number = 2;
     // }
 
-    function changeToRecording() {
+    function changeToRecording(word) {
         paraInstructions.innerHTML= "Say the word!";
         button.style.backgroundColor = "#78a9eb";
         // startAnimation(loader_number);
@@ -56,9 +56,11 @@ export async function toggleText(buttonId,svgId='NA',cal=false,tab=0) {
         button.style.display = 'none';
         paraInstructions.style.display = 'flex';
         paraInstructions.innerHTML = "Please wait...";
-        startRecording(buttonId,cal,buttonId, svgId,tab);
+        startRecording(word,cal,buttonId, svgId,tab);
         console.log('Microphone Being used', stream);
-        setTimeout(changeToRecording,1250)
+        setTimeout(() => {
+            changeInnerHTML(tab, `Say ${word}!`);
+        }, 1250);
         //{showWaves && <div className="wave-animation"></div>}
     } else {
         stopRecording(buttonId);
@@ -91,8 +93,10 @@ function startRecording(word,cal,btnID,svgId,tab=0) {
     const messageElement = document.getElementById('message');
     messageElement.textContent = "";
     // Prepare the data to be sent to the server
+    let name;
+    if (cal) {name=btnID} else {name=btnID}
     var requestData = {
-        word: word, // Provide the word you want to record
+        word: name, // Provide the filename you want to record (usually the word)
         debug: false, // Set debug mode if needed
         cal: cal
     };
@@ -181,6 +185,7 @@ export function audioToJson(filePath, svgId,btnID,spa=false,cal=false,tab=0) {
                 const audioPath = relfilepath.replace('-vwlCal.json','.wav');
                 // Generate a unique URL to bypass the cache
                 const cacheBustingUrl = `${audioPath}?t=${new Date().getTime()}`;
+                console.log(cacheBustingUrl, 'cachebust')
                 const audio = new Audio(cacheBustingUrl);
                 audio.play();
                 recordedVwlCalWord(tab);

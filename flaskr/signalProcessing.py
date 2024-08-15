@@ -49,6 +49,7 @@ def processVwlData():
 
     writeToJson(path,jsonName,data)
     id, word, _ = jsonName.split('-')
+    print(f'cal {cal,word,jsonName}')
     if cal:
         locations = ['frontHigh', 'backHigh', 'frontLow', 'backLow']
         relPath = f'../../static/participantData/{id}/vowelCalibration/{jsonName}'
@@ -132,21 +133,23 @@ def calAudioToVwl(path, file_name):
     if word == words[0]:
         # make sure maxF2 and minF1 are acceptable for frontHigh
         print(maxF2)
-        if minF1 >= 1200 or maxF2 <= 2000:
-            return ['OtT'], ['OtT']
+        # if minF1 >= 1200 or maxF2 <= 2000:
+        #     return ['OtT'], ['OtT']
     elif word == words[1]:
+        pass
         # make sure maxF2 and minF1 are acceptable for backHigh
-        if minF1 >= 700 or minF2 >= 1500:
-            return ['OtT'], ['OtT']
+        # if minF1 >= 700 or minF2 >= 1500:
+        #     return ['OtT'], ['OtT']
     elif word == words[2]:
+        pass
         # make sure maxF2 and maxF1 are acceptable for frontLow
-        if maxF1 >= 1500 or maxF2 >= 2500:
-            return ['OtT'], ['OtT']
+        # if maxF1 >= 1500 or maxF2 >= 2500:
+        #     return ['OtT'], ['OtT']
     else:
         print(word,maxF1, minF2)
         # make sure minF2 and maxF1 are acceptable for backLow
-        if maxF1 <= 500 or minF2 >= 1500:
-            return ['OtT'], ['OtT']
+        # if maxF1 <= 500 or minF2 >= 1500:
+        #     return ['OtT'], ['OtT']
     f1List = [maxF1, minF1]
     f2List = [maxF2, minF2]
 

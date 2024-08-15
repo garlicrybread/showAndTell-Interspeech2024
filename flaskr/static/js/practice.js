@@ -29,21 +29,21 @@
      const svgP2 = 'pair2'
      const svgP3 = 'pair3'
      document.getElementById(p11btn).addEventListener("click", function () {
-         toggleText(p11btn, svgP1,false,0);
+         toggleText('the word', p11btn, svgP1,false,0);
      });
      // document.getElementById(p12btn).addEventListener("click", function () {
      //     toggleText(p12btn, svgP1);
      // });
 
      document.getElementById(p21btn).addEventListener("click", function () {
-         toggleText(p21btn, svgP2, false, 1);
+         toggleText('the word',p21btn, svgP2, false, 1);
      });
      // document.getElementById(p22btn).addEventListener("click", function () {
      //     toggleText(p22btn, svgP2);
      // });
 
      document.getElementById(p31btn).addEventListener("click", function () {
-         toggleText(p31btn, svgP3, false, 2);
+         toggleText('the word',p31btn, svgP3, false, 2);
      });
  }
  // document.getElementById(p32btn).addEventListener("click", function () {
