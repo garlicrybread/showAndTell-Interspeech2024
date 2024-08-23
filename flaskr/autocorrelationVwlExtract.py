@@ -44,9 +44,12 @@ def extractVwlBoundaries(filePath):
     voicing_degrees = voicing_degrees / maxVD
     # print(voicing_degrees)
     tOverThresh = []
+    rise = False
     for i,vd in enumerate(voicing_degrees):
         if vd >= 0.2:
             tOverThresh.append(time_stamps[i])
+        elif rise:
+            break
     startT = tOverThresh[0]
     endT = tOverThresh[-1]
     frameSizeMs = (endT - startT) * 1000
