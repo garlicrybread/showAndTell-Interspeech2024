@@ -1,10 +1,8 @@
 import pytest
-
 from flaskr import create_app
 from flaskr.coordinates import transformArray
 from flaskr.db import init_db
 from flask_login import current_user, login_user
-
 from flask import current_app
 from skimage.transform import ProjectiveTransform
 import numpy as np

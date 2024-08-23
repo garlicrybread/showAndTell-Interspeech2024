@@ -89,7 +89,7 @@ def create_app(test_config=None):
         print(transformTut)
         app.config['TRANSFORM_TUTORIAL'] = transformTut
     except FileNotFoundError:
-        print('no tutorial transform. Creating it')
+        print('no tutorial transform.')
 
 
     if test_config is None:

@@ -3,7 +3,6 @@ from datetime import datetime
 import os
 import numpy as np
 from flask import (Blueprint, jsonify, request, current_app)
-import librosa as lr
 import soundfile as sf
 
 MAIN_DIR = os.getcwd() + "/" # "/Users/hearth/PycharmProjects/vwl_const_algo/"
@@ -27,7 +26,6 @@ def record():
 
 def recordFile(word, participantID, cal=False, debug=False):
     # obtain lang_files from the microphone
-    import speech_recognition as sr
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Please wait. Calibrating microphone...")

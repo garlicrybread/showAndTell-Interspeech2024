@@ -17,100 +17,100 @@ DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
 flaskrDir = f'{os.getcwd()}/flaskr/'
 
 
-# def test_processVwlData(app,client):
-#     # DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
-#     id = 'testData'
-#     word1 = 'audio'
-#     filename1 = f'{id}-{word1}-0000'
-#     path1 = DATA_DIR + f'{id}/{word1}/{filename1}.wav'
-#     data = {'filePath': path1, 'cal': False}
-#
-#     # second file to test
-#     word2 = 'aaudiioo'
-#     filename2 = f'{id}-{word2}-0000'
-#     path2 = DATA_DIR + f'{id}/{word2}/{filename2}.wav'
-#     data2 = {'filePath': path2, 'cal': False}
-#
-#     # third file to test
-#     word3 = 'crudo'
-#     filename3 = f'{id}-{word3}-0000'
-#     path3 = DATA_DIR + f'{id}/{word3}/{filename3}.wav'
-#     data3 = {'filePath': path3, 'cal': False}
-#
-#     # calibration files to test
-#     word4 = 'frontHigh'
-#     id1 = 'testData'
-#     filename4 = f'{id1}-{word4}'
-#     path4 = DATA_DIR + f'{id1}/vowelCalibration/{filename4}.wav'
-#     data4 = {'filePath': path4, 'cal': True}
-#
-#     word5 = 'backHigh'
-#     filename5 = f'{id1}-{word5}'
-#     path5 = DATA_DIR + f'{id1}/vowelCalibration/{filename5}.wav'
-#     data5 = {'filePath': path5, 'cal': True}
-#
-#     word6 = 'frontLow'
-#     filename6 = f'{id1}-{word6}'
-#     path6 = DATA_DIR + f'{id1}/vowelCalibration/{filename6}.wav'
-#     data6 = {'filePath': path6, 'cal': True}
-#
-#     word7 = 'backLow'
-#     filename7 = f'{id1}-{word7}'
-#     path7 = DATA_DIR + f'{id1}/vowelCalibration/{filename7}.wav'
-#     data7 = {'filePath': path7, 'cal': True}
-#
-#     with app.app_context():
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert path == f'../../static/participantData/{id}/{word1}/{filename1}.json'
-#
-#         # check for another file to be sure
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert path == f'../../static/participantData/{id}/{word2}/{filename2}.json'
-#
-#         # test edge case of consonant classified as first vowel
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data3)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert path == f'../../static/participantData/{id}/{word3}/{filename3}.json'
-#
-#         # test case of vowel calibration FrontHigh
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data4)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert location == '0'
-#         assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename4}-vwlCal.json'
-#
-#         # test case of vowel calibration backHigh
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data5)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert location == '1'
-#         assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename5}-vwlCal.json'
-#
-#         # test case of vowel calibration frontLow
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data6)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert location == '2'
-#         assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename6}-vwlCal.json'
-#
-#         # test case of vowel calibration backLow
-#         response = client.post(url_for('signalProcessing.processVwlData'), json=data7)
-#         assert response.status_code == 200
-#         relPath = response.get_json()
-#         path, location = relPath['data']
-#         assert location == '3'
-#         assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename7}-vwlCal.json'
+def test_processVwlData(app,client):
+    # DATA_DIR = f'{os.getcwd()}/flaskr/static/participantData/'
+    id = 'testData'
+    word1 = 'audio'
+    filename1 = f'{id}-{word1}-0000'
+    path1 = DATA_DIR + f'{id}/{word1}/{filename1}.wav'
+    data = {'filePath': path1, 'cal': False}
+
+    # second file to test
+    word2 = 'aaudiioo'
+    filename2 = f'{id}-{word2}-0000'
+    path2 = DATA_DIR + f'{id}/{word2}/{filename2}.wav'
+    data2 = {'filePath': path2, 'cal': False}
+
+    # third file to test
+    word3 = 'crudo'
+    filename3 = f'{id}-{word3}-0000'
+    path3 = DATA_DIR + f'{id}/{word3}/{filename3}.wav'
+    data3 = {'filePath': path3, 'cal': False}
+
+    # calibration files to test
+    word4 = 'frontHigh'
+    id1 = 'testData'
+    filename4 = f'{id1}-{word4}'
+    path4 = DATA_DIR + f'{id1}/vowelCalibration/{filename4}.wav'
+    data4 = {'filePath': path4, 'cal': True}
+
+    word5 = 'backHigh'
+    filename5 = f'{id1}-{word5}'
+    path5 = DATA_DIR + f'{id1}/vowelCalibration/{filename5}.wav'
+    data5 = {'filePath': path5, 'cal': True}
+
+    word6 = 'frontLow'
+    filename6 = f'{id1}-{word6}'
+    path6 = DATA_DIR + f'{id1}/vowelCalibration/{filename6}.wav'
+    data6 = {'filePath': path6, 'cal': True}
+
+    word7 = 'backLow'
+    filename7 = f'{id1}-{word7}'
+    path7 = DATA_DIR + f'{id1}/vowelCalibration/{filename7}.wav'
+    data7 = {'filePath': path7, 'cal': True}
+
+    with app.app_context():
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert path == f'../../static/participantData/{id}/{word1}/{filename1}.json'
+
+        # check for another file to be sure
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data2)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert path == f'../../static/participantData/{id}/{word2}/{filename2}.json'
+
+        # test edge case of consonant classified as first vowel
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data3)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert path == f'../../static/participantData/{id}/{word3}/{filename3}.json'
+
+        # test case of vowel calibration FrontHigh
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data4)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert location == '0'
+        assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename4}-vwlCal.json'
+
+        # test case of vowel calibration backHigh
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data5)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert location == '1'
+        assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename5}-vwlCal.json'
+
+        # test case of vowel calibration frontLow
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data6)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert location == '2'
+        assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename6}-vwlCal.json'
+
+        # test case of vowel calibration backLow
+        response = client.post(url_for('signalProcessing.processVwlData'), json=data7)
+        assert response.status_code == 200
+        relPath = response.get_json()
+        path, location = relPath['data']
+        assert location == '3'
+        assert path == f'../../static/participantData/{id1}/vowelCalibration/{filename7}-vwlCal.json'
 
 
 def mean(l):
