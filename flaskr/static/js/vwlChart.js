@@ -20,6 +20,11 @@ med:        #41b6c4
 between:    #2c7fb8
 darkest:    #253494
 
+FH: 117733
+FL: 44AA99
+BH: AA4499
+BL: CC6677
+
 orange (L1)
 light:  #fc8d59
 med:    #e34a33
@@ -241,15 +246,15 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
         .curve(d3.curveCardinal);
 
     const hoverColor = 'green';
-    const strokeWidthDefault = 8;
-    const strokeWidthHover = 12;
+    const strokeWidthDefault = 10;
+    const strokeWidthHover = 14;
 
     let colors;
     if (spa){
         colors = ['#fc8d59','#fc8d59'];
     } else {
         // Define the color array
-        colors = ['#253494', '#2c7fb8', '#41b6c4', '#a1dab4', '#ffffcc'];
+        colors = ['#CC6677', '#44AA99', '#AA4499', '#117733', '#ffffcc'];
     }
 
     // Draw curves between related data points

@@ -14,23 +14,23 @@
 {% block content %}
     <div class="flex-row">
         <p>
-            Vowels are formed by the position of the tongue in the mouth.
+            Vowels are formed by the position of the tongue in the mouth, marked in pink in the pictures.
         </p>
         <p>
-            Click on the pictures to hear the vowel for the corresponding approximate position of the tongue.
+            Click on each of the four pictures to hear the vowel for the corresponding approximate position of the tongue.
         </p>
     </div>
     <div class="flex-col">
         <div class="flex-row">
             <div class="flex-row">
-                <img src="{{ url_for('static', filename='images/frontHigh-faceCutaway.png') }}"
+                <img src="{{ url_for('static', filename='images/FH-faceCutaway.png') }}"
                      alt="tongue height for front high vowel"
                      onclick="playSound('frontHigh')">
                 <label>'ee' as in 'heat'</label>
                 <audio id="frontHigh" src="{{ url_for('static', filename='audio/frontHigh.wav') }}"></audio>
             </div>
             <div class="flex-row">
-                <img src="{{ url_for('static', filename='images/frontLow-faceCutaway.png') }}"
+                <img src="{{ url_for('static', filename='images/FL-faceCutaway.png') }}"
                      alt="tongue height for front low vowel"
                      onclick="playSound('frontLow')">
                 <label>'ae' as in 'hat' </label>
@@ -40,14 +40,14 @@
         </div>
         <div class="flex-row">
             <div class="flex-row">
-                <img src="{{ url_for('static', filename='images/backHigh-faceCutaway.png') }}"
+                <img src="{{ url_for('static', filename='images/BH-faceCutaway.png') }}"
                      alt="tongue height for back high vowel"
                      onclick="playSound('backHigh')">
                 <audio id="backHigh" src="{{ url_for('static', filename='audio/backHigh.wav') }}"></audio>
                 <label>'oo' as in 'hoot'</label>
             </div>
             <div class="flex-row">
-                <img src="{{ url_for('static', filename='images/backLow-faceCutaway.png') }}"
+                <img src="{{ url_for('static', filename='images/BL-faceCutaway.png') }}"
                      alt="tongue height for back low vowel"
                      onclick="playSound('backLow')">
                 <label>'a' as in 'awe'</label>

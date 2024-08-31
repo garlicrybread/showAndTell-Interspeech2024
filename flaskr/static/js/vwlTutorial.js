@@ -17,7 +17,7 @@ function hasQueryParam(paramName) {
 }
 
 if (!hasQueryParam('vowelP1')) {
-    document.addEventListener('DOMContentLoaded', (event) => {
+    document.addEventListener('DOMContentLoaded', async (event) => {
         const svgId = document.getElementsByTagName('svg')[0].id;
         const id = svgId.replace('svg-', '')
         drawVowelChart(id); // Change 'pair1' to the ID of the first tab content
@@ -29,13 +29,13 @@ if (!hasQueryParam('vowelP1')) {
             const blPath = `${path}/backLow.json`;
             // var data = `{"gotAudio": "${spaPath}0-p0.wav"}`;
             console.log("---")
-            console.log(fhPath,bhPath,flPath,blPath);
+            console.log(fhPath, bhPath, flPath, blPath);
             console.log("---")
             try {
-                drawVowels(fhPath, id, false,true);
-                drawVowels(bhPath, id, false,true);
-                drawVowels(flPath, id, false,true);
-                drawVowels(blPath, id, false,true);
+                await drawVowels(fhPath, id, false, true);
+                await drawVowels(bhPath, id, false, true);
+                await drawVowels(flPath, id, false, true);
+                await drawVowels(blPath, id, false, true);
                 // messageElement.textContent = ''; // Clear message or provide a success message
             } catch (error) {
                 console.error('Error drawing vowels:', error);
