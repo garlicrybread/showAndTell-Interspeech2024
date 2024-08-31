@@ -252,9 +252,11 @@ export async function drawVowels(dataL1Path, svgId,spa=false, tut=false) {
     let colors;
     if (spa){
         colors = ['#fc8d59','#fc8d59'];
-    } else {
+    } else if (tut) {
         // Define the color array
-        colors = ['#CC6677', '#44AA99', '#AA4499', '#117733', '#ffffcc'];
+        colors = ['#53BBEF', '#44AA99', '#AA4499', '#117733', '#ffffcc'];
+    } else {
+        colors = ['#88CCEEFF', '#88CCEEAA', '#88CCEE88', '#88CCEE44', '#88CCEE11'];
     }
 
     // Draw curves between related data points
