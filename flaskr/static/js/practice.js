@@ -20,6 +20,10 @@
      homeNavBtn.addEventListener('click', function () {
          navigateToRoute('')
      });
+     const tutNavBtn = document.getElementById('tutorialNavBtn')
+     tutNavBtn.addEventListener("click", function() {
+         navigateToRoute('tutorial/vowelP1');
+     });
 
      const p11btn = 'p11'
      const p21btn = 'p21'
